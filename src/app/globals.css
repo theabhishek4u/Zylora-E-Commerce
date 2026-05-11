@@ -49,6 +49,18 @@
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+  --animate-slide-in-left: slideInLeft 0.5s ease-out forwards;
+  --animate-slide-in-right: slideInRight 0.5s ease-out forwards;
+  --animate-scale-up: scaleUp 0.3s ease-out forwards;
+  --animate-gradient-shift: gradientShift 8s ease infinite;
+  --animate-marquee: marquee 20s linear infinite;
+  --animate-bounce-subtle: bounceSubtle 2s ease-in-out infinite;
+  --animate-notification-pulse: notificationPulse 2s ease-in-out infinite;
+  --animate-badge-pulse: badgePulse 1.5s ease-in-out infinite;
+  --animate-gradient-border: gradientBorderRotate 3s linear infinite;
+  --animate-page-transition: pageTransition 0.4s ease-out forwards;
 }
 
 :root {
@@ -129,7 +141,196 @@
   }
 }
 
-/* Custom scrollbar */
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+/* 1. Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* 2. Pulse glow - brand color glow */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(37, 99, 235, 0.2), 0 0 12px rgba(37, 99, 235, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.4), 0 0 24px rgba(37, 99, 235, 0.2);
+  }
+}
+
+/* 3. Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 3. Slide in from right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 4. Scale up animation */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 5. Gradient background animation for hero */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 6. Marquee animation for deal tickers */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* 7. Bounce subtle */
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Notification dot pulse */
+@keyframes notificationPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+/* Badge pulse */
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
+  }
+}
+
+/* Animated gradient border rotation */
+@keyframes gradientBorderRotate {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Page transition */
+@keyframes pageTransition {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Particle float variations */
+@keyframes particleFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(10px, -15px) rotate(90deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-5px, -30px) rotate(180deg);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(15px, -15px) rotate(270deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes particleFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  33% {
+    transform: translate(-12px, -20px) scale(1.2);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translate(8px, -35px) scale(0.8);
+    opacity: 0.4;
+  }
+}
+
+@keyframes particleFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-8px, -25px) rotate(180deg);
+    opacity: 0.7;
+  }
+}
+
+/* ============================================
+   SCROLLBAR STYLES
+   ============================================ */
+
+/* Custom scrollbar - hidden */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -138,7 +339,7 @@
   scrollbar-width: none;
 }
 
-/* Premium scrollbar */
+/* 19. Premium scrollbar for webkit browsers (thin, blue-tinted) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -149,15 +350,29 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.78 0.02 260);
+  background: oklch(0.78 0.02 260 / 60%);
   border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.65 0.05 260);
+  background: oklch(0.65 0.08 264 / 80%);
 }
 
-/* Glassmorphism utilities */
+/* Premium scrollbar for dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.40 0.05 264 / 50%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.50 0.10 264 / 70%);
+}
+
+/* ============================================
+   GLASSMORPHISM STYLES
+   ============================================ */
+
+/* Standard glass */
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
@@ -170,6 +385,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Strong glass */
 .glass-strong {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(24px);
@@ -182,6 +398,29 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* 8. Premium glassmorphism - stronger blur, subtle gradient border */
+.glass-premium {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 4px 24px rgba(37, 99, 235, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-premium {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(96, 165, 250, 0.12);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(96, 165, 250, 0.08);
+}
+
+/* ============================================
+   GRADIENT TEXT STYLES
+   ============================================ */
+
 /* Premium gradient text */
 .gradient-text {
   background: linear-gradient(135deg, #2563EB 0%, #60A5FA 50%, #2563EB 100%);
@@ -189,6 +428,42 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* 10. Animated blue gradient text */
+.text-gradient-blue {
+  background: linear-gradient(
+    135deg,
+    #1D4ED8 0%,
+    #2563EB 25%,
+    #60A5FA 50%,
+    #2563EB 75%,
+    #1D4ED8 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite;
+}
+
+.dark .text-gradient-blue {
+  background: linear-gradient(
+    135deg,
+    #60A5FA 0%,
+    #93C5FD 25%,
+    #BFDBFE 50%,
+    #93C5FD 75%,
+    #60A5FA 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   SHADOW UTILITIES
+   ============================================ */
 
 /* Premium shadow utilities */
 .shadow-brand {
@@ -198,6 +473,10 @@
 .shadow-brand-lg {
   box-shadow: 0 8px 28px -4px rgba(37, 99, 235, 0.25);
 }
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
 
 /* Premium button styles */
 .btn-brand {
@@ -215,22 +494,40 @@
   transform: translateY(-1px);
 }
 
+/* ============================================
+   SKELETON / SHIMMER STYLES
+   ============================================ */
+
 /* Skeleton animation */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
+/* 11. Enhanced skeleton with better colors */
 .skeleton {
-  background: linear-gradient(90deg, oklch(0.94 0.01 260) 25%, oklch(0.96 0.01 260) 50%, oklch(0.94 0.01 260) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    oklch(0.94 0.01 260) 25%,
+    oklch(0.97 0.005 264) 37%,
+    oklch(0.95 0.01 264) 63%,
+    oklch(0.94 0.01 260) 75%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: 0.5rem;
 }
 
 .dark .skeleton {
-  background: linear-gradient(90deg, oklch(0.22 0.02 260) 25%, oklch(0.26 0.02 260) 50%, oklch(0.22 0.02 260) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    oklch(0.22 0.02 260) 25%,
+    oklch(0.27 0.02 264) 37%,
+    oklch(0.24 0.02 264) 63%,
+    oklch(0.22 0.02 260) 75%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 /* Announcement bar shimmer overlay */
@@ -261,10 +558,255 @@
   animation: shimmerSlide 3s ease-in-out infinite;
 }
 
-/* Safe area bottom for mobile devices (iOS) */
+/* ============================================
+   CARD & INTERACTIVE STYLES
+   ============================================ */
+
+/* 9. Card hover effect - lift + shadow transition */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px -8px rgba(37, 99, 235, 0.15),
+              0 4px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.3),
+              0 4px 12px -2px rgba(37, 99, 235, 0.1);
+}
+
+/* ============================================
+   NOTIFICATION & BADGE STYLES
+   ============================================ */
+
+/* 12. Notification dot pulse */
+.notification-pulse {
+  position: relative;
+}
+
+.notification-pulse::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: #EF4444;
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: notificationPulse 2s ease-in-out infinite;
+}
+
+.dark .notification-pulse::after {
+  border-color: oklch(0.17 0.02 260);
+}
+
+/* 16. Badge pulse for animated badges */
+.badge-pulse {
+  position: relative;
+  animation: badgePulse 1.5s ease-in-out infinite;
+}
+
+.badge-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: badgePulse 1.5s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* ============================================
+   FLOATING PARTICLES
+   ============================================ */
+
+/* 13. Floating particles with random animation */
+.particle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+.particle-1 {
+  animation: particleFloat1 6s ease-in-out infinite;
+}
+
+.particle-2 {
+  animation: particleFloat2 8s ease-in-out infinite;
+}
+
+.particle-3 {
+  animation: particleFloat3 7s ease-in-out infinite;
+}
+
+.particle-blue {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
+}
+
+.particle-light {
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
+}
+
+.particle-white {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+}
+
+/* ============================================
+   PAGE TRANSITIONS
+   ============================================ */
+
+/* 14. Smooth page transition class */
+.page-transition {
+  animation: pageTransition 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.page-transition-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.page-transition-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.page-transition-delay-3 {
+  animation-delay: 0.3s;
+}
+
+/* ============================================
+   FOCUS STYLES
+   ============================================ */
+
+/* 15. Premium focus ring with blue glow */
+.focus-ring-blue {
+  outline: none;
+  transition: box-shadow 0.2s ease, outline 0.2s ease;
+}
+
+.focus-ring-blue:focus-visible {
+  box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(37, 99, 235, 0.5), 0 0 12px rgba(37, 99, 235, 0.2);
+  outline: none;
+}
+
+.dark .focus-ring-blue:focus-visible {
+  box-shadow: 0 0 0 2px oklch(0.17 0.02 260), 0 0 0 4px rgba(96, 165, 250, 0.5), 0 0 12px rgba(96, 165, 250, 0.2);
+}
+
+/* ============================================
+   SCROLL SNAP CONTAINER
+   ============================================ */
+
+/* 17. Horizontal scroll snap container */
+.snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.snap-x::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-x > * {
+  scroll-snap-align: start;
+}
+
+/* ============================================
+   ANIMATED GRADIENT BORDER
+   ============================================ */
+
+/* 18. Animated gradient border for cards */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #2563EB,
+    #60A5FA,
+    #93C5FD,
+    #60A5FA,
+    #2563EB
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradientBorderRotate 3s linear infinite;
+  pointer-events: none;
+}
+
+.dark .gradient-border::before {
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #60A5FA,
+    #93C5FD,
+    #BFDBFE,
+    #93C5FD,
+    #60A5FA
+  );
+}
+
+/* ============================================
+   SAFE AREA (ENHANCED iOS SUPPORT)
+   ============================================ */
+
+/* 20. Enhanced safe area bottom with better iOS support */
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+@supports (padding-bottom: max(0px)) {
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  }
+}
+
+/* Safe area top for notch devices */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@supports (padding-top: max(0px)) {
+  .safe-area-top {
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+  }
+}
+
+/* Full safe area container */
+.safe-area-container {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* ============================================
+   TOUCH & MOBILE ENHANCEMENTS
+   ============================================ */
 
 /* Touch-friendly - disable hover on mobile */
 @media (hover: none) {
@@ -282,11 +824,130 @@
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
-  
+
   /* Disable text selection on interactive elements for better touch */
   button, a, [role="button"] {
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
   }
+}
+
+/* ============================================
+   UTILITY ANIMATION CLASSES
+   ============================================ */
+
+/* Float animation utility */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow utility */
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Slide in left utility */
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+/* Slide in right utility */
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+/* Scale up utility */
+.animate-scale-up {
+  animation: scaleUp 0.3s ease-out forwards;
+}
+
+/* Gradient shift utility */
+.animate-gradient-shift {
+  animation: gradientShift 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Marquee utility */
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Bounce subtle utility */
+.animate-bounce-subtle {
+  animation: bounceSubtle 2s ease-in-out infinite;
+}
+
+/* Gradient border animation utility */
+.animate-gradient-border {
+  animation: gradientBorderRotate 3s linear infinite;
+}
+
+/* Stagger delay utilities for sequential animations */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+
+/* ============================================
+   MARQUEE CONTAINER
+   ============================================ */
+
+/* Marquee container for deal tickers */
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   PREMIUM DECORATIVE ELEMENTS
+   ============================================ */
+
+/* Subtle noise texture overlay */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  border-radius: inherit;
+}
+
+.dark .noise-overlay::after {
+  opacity: 0.03;
 }

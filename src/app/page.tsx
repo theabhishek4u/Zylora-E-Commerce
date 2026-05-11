@@ -17,6 +17,19 @@ import { UserDashboardView } from '@/components/shop/user-dashboard-view';
 import { AdminView } from '@/components/shop/admin-view';
 import { useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const viewVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
+
+const viewTransition = {
+  type: 'tween',
+  ease: 'easeInOut',
+  duration: 0.25,
+};
 
 function AppContent() {
   const { currentView, setProducts, setCategories, setIsLoading } = useShopStore();
@@ -65,7 +78,18 @@ function AppContent() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/80 to-white">
       <Header />
       <main className={`flex-1 ${needsMobilePadding ? 'pb-20 md:pb-0' : ''}`}>
-        {renderView()}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentView}
+            variants={viewVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={viewTransition}
+          >
+            {renderView()}
+          </motion.div>
+        </AnimatePresence>
       </main>
       {!hideFooter && <Footer />}
       <MobileBottomNav />
