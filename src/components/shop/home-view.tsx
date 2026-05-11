@@ -127,7 +127,7 @@ export function HomeView() {
           {/* Background image overlay */}
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&h=600&fit=crop')] bg-cover bg-center opacity-[0.07]" />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 lg:py-28">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -140,7 +140,7 @@ export function HomeView() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.5 }}
               >
-                <Badge className="mb-6 bg-blue-500/15 text-blue-300 border border-blue-400/25 backdrop-blur-md px-4 py-1.5 text-sm font-medium">
+                <Badge className="mb-4 sm:mb-6 bg-blue-500/15 text-blue-300 border border-blue-400/25 backdrop-blur-md px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-medium">
                   ✨ New Collection 2025
                 </Badge>
               </motion.div>
@@ -150,7 +150,7 @@ export function HomeView() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.6 }}
-                className="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white mb-5 leading-[1.1] tracking-tight"
+                className="font-heading text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white mb-3 sm:mb-5 leading-[1.1] tracking-tight"
               >
                 Shop Smarter{' '}
                 <span className="gradient-text">with Zylora</span>
@@ -161,7 +161,7 @@ export function HomeView() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-slate-300 text-base sm:text-lg lg:text-xl mb-8 max-w-lg leading-relaxed"
+                className="text-slate-300 text-sm sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-lg leading-relaxed"
               >
                 Premium shopping experience. Up to 70% off on electronics, fashion, home &amp; more.
               </motion.p>
@@ -171,12 +171,12 @@ export function HomeView() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.55, duration: 0.5 }}
-                className="flex flex-wrap gap-4"
+                className="flex flex-wrap gap-3 sm:gap-4"
               >
                 <Button
                   size="lg"
                   onClick={() => setSelectedCategory(null)}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-lg shadow-blue-500/25 rounded-xl px-8 h-12 text-base"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-lg shadow-blue-500/25 rounded-xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base"
                 >
                   Shop Now
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -185,7 +185,7 @@ export function HomeView() {
                   size="lg"
                   variant="outline"
                   onClick={() => setSortBy('rating')}
-                  className="border-white/20 text-white hover:bg-white/10 backdrop-blur-sm rounded-xl px-8 h-12 text-base"
+                  className="border-white/20 text-white hover:bg-white/10 backdrop-blur-sm rounded-xl px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base"
                 >
                   Explore Deals
                   <Star className="ml-2 h-4 w-4" />
@@ -226,25 +226,29 @@ export function HomeView() {
       ═══════════════════════════════════════════════════════════ */}
       {showHero && (
         <section className="glass border-b border-border/40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
+            <div className="grid grid-cols-4 gap-2 sm:gap-6">
               {[
-                { icon: Truck, text: 'Free Delivery ₹499+' },
-                { icon: Shield, text: 'Secure Payments' },
-                { icon: Percent, text: 'Best Prices' },
-                { icon: RotateCcw, text: '7-Day Returns' },
+                { icon: Truck, text: 'Free Delivery', subtext: '₹499+' },
+                { icon: Shield, text: 'Secure', subtext: 'Payments' },
+                { icon: Percent, text: 'Best', subtext: 'Prices' },
+                { icon: RotateCcw, text: '7-Day', subtext: 'Returns' },
               ].map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-3 text-sm"
+                  className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-center sm:text-left sm:text-sm"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
-                    <item.icon className="h-4.5 w-4.5 text-blue-600" />
+                  <div className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+                    <item.icon className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-blue-600" />
                   </div>
-                  <span className="text-muted-foreground font-medium">{item.text}</span>
+                  <div className="sm:hidden">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground font-medium leading-tight block">{item.text}</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground font-medium leading-tight block">{item.subtext}</span>
+                  </div>
+                  <span className="hidden sm:inline text-muted-foreground font-medium">{item.text} {item.subtext}</span>
                 </motion.div>
               ))}
             </div>
@@ -255,8 +259,45 @@ export function HomeView() {
       {/* ═══════════════════════════════════════════════════════════
           SHOP BY CATEGORY
       ═══════════════════════════════════════════════════════════ */}
+      {/* Mobile Category Chips - visible only on mobile */}
       {showHero && categories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+        <section className="md:hidden">
+          <div className="overflow-x-auto scrollbar-hide px-4 py-3">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <motion.button
+                onClick={() => setSelectedCategory(null)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+                  !selectedCategory
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
+                    : 'bg-white text-slate-600 border border-slate-200 shadow-sm'
+                }`}
+                whileTap={{ scale: 0.95 }}
+              >
+                All
+              </motion.button>
+              {categories.map((cat) => (
+                <motion.button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.slug)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+                    selectedCategory === cat.slug
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
+                      : 'bg-white text-slate-600 border border-slate-200 shadow-sm'
+                  }`}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                  {cat.name}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Desktop Category Grid */}
+      {showHero && categories.length > 0 && (
+        <section className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
           <motion.div
             variants={fadeInUp}
             initial="hidden"
@@ -327,7 +368,7 @@ export function HomeView() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                 {saleProducts.slice(0, 4).map((product, i) => (
                   <motion.button
                     key={product.id}
@@ -336,9 +377,9 @@ export function HomeView() {
                     transition={{ delay: i * 0.08 }}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => navigateToProduct(product.id)}
-                    className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-colors text-left text-white border border-white/10"
+                    className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 hover:bg-white/20 transition-colors text-left text-white border border-white/10"
                   >
-                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-white/20">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden shrink-0 bg-white/20">
                       <img
                         src={product.images?.[0]}
                         alt={product.name}
@@ -347,17 +388,17 @@ export function HomeView() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm line-clamp-1">{product.name}</p>
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="font-bold">{formatINR(product.price)}</span>
+                      <p className="font-semibold text-xs sm:text-sm line-clamp-1">{product.name}</p>
+                      <div className="flex items-baseline gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                        <span className="font-bold text-xs sm:text-sm">{formatINR(product.price)}</span>
                         {product.originalPrice && (
-                          <span className="text-sm line-through opacity-60">
+                          <span className="text-[10px] sm:text-sm line-through opacity-60">
                             {formatINR(product.originalPrice)}
                           </span>
                         )}
                       </div>
                       {product.originalPrice && (
-                        <Badge className="mt-1 bg-white/20 text-white text-xs border-white/10">
+                        <Badge className="mt-0.5 sm:mt-1 bg-white/20 text-white text-[9px] sm:text-xs border-white/10 px-1 sm:px-2">
                           {calculateDiscount(product.price, product.originalPrice)}% OFF
                         </Badge>
                       )}

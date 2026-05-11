@@ -50,6 +50,16 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  // Listen for mobile bottom nav search focus event
+  useEffect(() => {
+    const handleSearchFocus = () => {
+      setShowSearch(true);
+      setTimeout(() => searchInputRef.current?.focus(), 150);
+    };
+    window.addEventListener('zylora-focus-search', handleSearchFocus);
+    return () => window.removeEventListener('zylora-focus-search', handleSearchFocus);
+  }, []);
+
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setSearchQuery(localSearch);
@@ -534,8 +544,8 @@ export function Header() {
         </div>
       </div>
 
-      {/* ── Category Navigation Bar ── */}
-      <div className="glass overflow-x-auto scrollbar-hide border-b border-border/30">
+      {/* ── Category Navigation Bar (hidden on mobile, shown on md+) ── */}
+      <div className="hidden md:block glass overflow-x-auto scrollbar-hide border-b border-border/30">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-1.5 py-2.5 whitespace-nowrap">
             <motion.button

@@ -133,12 +133,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           )}
 
-          {/* Quick Add to Cart - Bottom Right (appears on hover) */}
+          {/* Quick Add to Cart - Bottom Right */}
           <div className="absolute bottom-2.5 right-2.5 z-20">
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.8 }}
               whileHover={{ scale: 1.08 }}
-              className="opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out"
+              className="opacity-0 translate-y-3 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300 ease-out sm:opacity-100 sm:translate-y-0"
             >
               <motion.button
                 whileTap={{ scale: 0.9 }}
@@ -154,37 +154,37 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
 
         {/* Content Section */}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           {/* Brand Name */}
           {product.brand && (
-            <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-wider mb-1">
+            <p className="text-[10px] sm:text-[11px] text-blue-600 font-semibold uppercase tracking-wider mb-0.5 sm:mb-1">
               {product.brand}
             </p>
           )}
 
           {/* Product Name */}
-          <h3 className="font-medium text-sm leading-snug line-clamp-2 min-h-[2.5rem] mb-2 text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
+          <h3 className="font-medium text-xs sm:text-sm leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] mb-1.5 sm:mb-2 text-slate-800 group-hover:text-blue-600 transition-colors duration-200">
             {product.name}
           </h3>
 
           {/* Rating */}
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <div className="flex items-center gap-0.5 bg-blue-500 text-white px-1.5 py-0.5 rounded text-[11px] font-bold">
+          <div className="flex items-center gap-1 sm:gap-1.5 mb-1.5 sm:mb-2.5">
+            <div className="flex items-center gap-0.5 bg-blue-500 text-white px-1 sm:px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold">
               {product.rating}
-              <Star className="h-2.5 w-2.5 fill-white ml-0.5" />
+              <Star className="h-2 sm:h-2.5 w-2 sm:w-2.5 fill-white ml-0.5" />
             </div>
-            <span className="text-[11px] text-slate-400 font-medium">
+            <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">
               ({product.reviewCount.toLocaleString('en-IN')})
             </span>
           </div>
 
           {/* Price */}
-          <div className="flex items-baseline gap-2">
-            <span className="text-base font-bold text-slate-900">
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-sm sm:text-base font-bold text-slate-900">
               {formatINR(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-xs text-slate-400 line-through font-medium">
+              <span className="text-[10px] sm:text-xs text-slate-400 line-through font-medium">
                 {formatINR(product.originalPrice)}
               </span>
             )}

@@ -260,3 +260,33 @@
   );
   animation: shimmerSlide 3s ease-in-out infinite;
 }
+
+/* Safe area bottom for mobile devices (iOS) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Touch-friendly - disable hover on mobile */
+@media (hover: none) {
+  .group:hover .group-hover\:opacity-100,
+  .group:hover .group-hover\:translate-y-0,
+  .group:hover .group-hover\:scale-110 {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1.1) !important;
+  }
+}
+
+/* Smooth scroll for mobile */
+@media (max-width: 768px) {
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Disable text selection on interactive elements for better touch */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}

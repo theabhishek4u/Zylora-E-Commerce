@@ -20,20 +20,20 @@ export function UserDashboardView() {
     if (user?.email) fetch(`/api/orders?email=${encodeURIComponent(user.email)}`).then((r) => r.json()).then(setOrders).catch(console.error);
   }, [user]);
 
-  if (!user) return <div className="max-w-7xl mx-auto px-4 py-16 text-center"><p>Please login first</p><Button className="mt-4 bg-blue-600 text-white" onClick={() => setCurrentView('auth')}>Login</Button></div>;
+  if (!user) return <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 text-center"><p className="text-sm sm:text-base text-muted-foreground">Please login first</p><Button className="mt-4 bg-blue-600 text-white" onClick={() => setCurrentView('auth')}>Login</Button></div>;
 
   const tabs = [{ key: 'overview', label: 'Overview', icon: User }, { key: 'orders', label: 'Orders', icon: Package }, { key: 'wishlist', label: 'Wishlist', icon: Heart }, { key: 'addresses', label: 'Addresses', icon: MapPin }];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => setCurrentView('home')}><ArrowLeft className="h-5 w-5" /></Button>
-        <h1 className="text-2xl font-bold font-heading">My Dashboard</h1>
+    <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
+      <div className="flex items-center gap-3 mb-4 sm:mb-6">
+        <Button variant="ghost" size="icon" onClick={() => setCurrentView('home')} className="shrink-0"><ArrowLeft className="h-5 w-5" /></Button>
+        <h1 className="text-xl sm:text-2xl font-bold font-heading">My Dashboard</h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Sidebar - Desktop */}
+        <div className="hidden lg:block lg:col-span-1">
           <Card className="border-border/30 bg-white/80 backdrop-blur-sm">
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-4">
@@ -50,11 +50,43 @@ export function UserDashboardView() {
           </Card>
         </div>
 
+        {/* Mobile Tab Bar */}
+        <div className="lg:hidden col-span-full">
+          {/* User info card */}
+          <Card className="border-border/30 bg-white/80 backdrop-blur-sm mb-3">
+            <CardContent className="p-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-bold">{user.name?.charAt(0).toUpperCase()}</div>
+                <div className="flex-1 min-w-0"><p className="font-semibold text-sm truncate">{user.name}</p><p className="text-xs text-muted-foreground truncate">{user.email}</p></div>
+                <Badge className="text-[10px]">{user.role}</Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Horizontal tabs */}
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-4">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => { if (t.key === 'wishlist') setCurrentView('wishlist'); else setTab(t.key); }}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
+                  tab === t.key
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                <t.icon className="h-3.5 w-3.5" />
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Main */}
         <div className="lg:col-span-3">
           {tab === 'overview' && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {[
                   { label: 'Orders', value: orders.length, color: 'from-blue-500 to-blue-600' },
                   { label: 'Wishlist', value: useShopStore.getState().wishlistIds.length, color: 'from-red-500 to-red-600' },
@@ -63,31 +95,31 @@ export function UserDashboardView() {
                   <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                     <Card className="border-border/30 bg-white/80 backdrop-blur-sm overflow-hidden">
                       <div className={`h-1 bg-gradient-to-r ${stat.color}`} />
-                      <CardContent className="p-4"><p className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</p><p className="text-2xl font-bold mt-1">{stat.value}</p></CardContent>
+                      <CardContent className="p-3 sm:p-4"><p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</p><p className="text-lg sm:text-2xl font-bold mt-0.5 sm:mt-1">{stat.value}</p></CardContent>
                     </Card>
                   </motion.div>
                 ))}
               </div>
               <Card className="border-border/30 bg-white/80 backdrop-blur-sm">
-                <CardHeader><CardTitle className="text-lg">Recent Orders</CardTitle></CardHeader>
-                <CardContent>{orders.length === 0 ? <p className="text-sm text-muted-foreground">No orders yet</p> :
-                  <div className="space-y-3">{orders.slice(0, 5).map((o) => (<div key={o.id} className="flex items-center justify-between py-2 border-b last:border-0">
-                    <div><p className="text-sm font-medium">{o.orderNumber}</p><p className="text-xs text-muted-foreground">{new Date(o.createdAt).toLocaleDateString('en-IN')}</p></div>
-                    <div className="text-right"><p className="text-sm font-semibold">{formatINR(o.totalAmount)}</p><Badge variant="secondary" className="text-xs">{o.status}</Badge></div>
+                <CardHeader className="pb-2 sm:pb-3"><CardTitle className="text-base sm:text-lg">Recent Orders</CardTitle></CardHeader>
+                <CardContent>{orders.length === 0 ? <p className="text-xs sm:text-sm text-muted-foreground">No orders yet</p> :
+                  <div className="space-y-2 sm:space-y-3">{orders.slice(0, 5).map((o) => (<div key={o.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                    <div><p className="text-xs sm:text-sm font-medium">{o.orderNumber}</p><p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(o.createdAt).toLocaleDateString('en-IN')}</p></div>
+                    <div className="text-right"><p className="text-xs sm:text-sm font-semibold">{formatINR(o.totalAmount)}</p><Badge variant="secondary" className="text-[10px] sm:text-xs">{o.status}</Badge></div>
                   </div>))}</div>
                 }</CardContent>
               </Card>
             </div>
           )}
           {tab === 'orders' && (
-            <div className="space-y-3">
-              {orders.length === 0 ? <p className="text-center text-muted-foreground py-12">No orders yet</p> :
+            <div className="space-y-2 sm:space-y-3">
+              {orders.length === 0 ? <p className="text-center text-muted-foreground py-10 sm:py-12 text-sm">No orders yet</p> :
                 orders.map((o) => (
                   <Card key={o.id} className="border-border/30 bg-white/80 backdrop-blur-sm">
-                    <CardContent className="p-4 flex items-center justify-between">
-                      <div><p className="font-medium">{o.orderNumber}</p><p className="text-xs text-muted-foreground">{new Date(o.createdAt).toLocaleDateString('en-IN')} · {o.items.length} items</p></div>
-                      <div className="flex items-center gap-3"><span className="font-semibold">{formatINR(o.totalAmount)}</span><Badge variant="secondary">{o.status}</Badge>
-                        <Button size="sm" variant="outline" onClick={() => useShopStore.getState().navigateToOrder(o.id, o.orderNumber)}>View</Button></div>
+                    <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-2">
+                      <div className="min-w-0"><p className="font-medium text-xs sm:text-sm truncate">{o.orderNumber}</p><p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(o.createdAt).toLocaleDateString('en-IN')} · {o.items.length} items</p></div>
+                      <div className="flex items-center gap-2 sm:gap-3 shrink-0"><span className="font-semibold text-xs sm:text-sm">{formatINR(o.totalAmount)}</span><Badge variant="secondary" className="text-[10px] sm:text-xs hidden sm:inline-flex">{o.status}</Badge>
+                        <Button size="sm" variant="outline" className="h-7 sm:h-8 text-[10px] sm:text-xs" onClick={() => useShopStore.getState().navigateToOrder(o.id, o.orderNumber)}>View</Button></div>
                     </CardContent>
                   </Card>
                 ))
@@ -96,8 +128,8 @@ export function UserDashboardView() {
           )}
           {tab === 'addresses' && (
             <Card className="border-border/30 bg-white/80 backdrop-blur-sm">
-              <CardHeader><CardTitle className="text-lg">Saved Addresses</CardTitle></CardHeader>
-              <CardContent><p className="text-muted-foreground text-sm">Address management coming soon. Add addresses during checkout.</p></CardContent>
+              <CardHeader className="pb-2"><CardTitle className="text-base sm:text-lg">Saved Addresses</CardTitle></CardHeader>
+              <CardContent><p className="text-muted-foreground text-xs sm:text-sm">Address management coming soon. Add addresses during checkout.</p></CardContent>
             </Card>
           )}
         </div>

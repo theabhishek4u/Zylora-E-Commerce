@@ -48,9 +48,9 @@ export function OrderSuccessView() {
           </Card>
         </>
       )}
-      <div className="flex gap-3 justify-center">
-        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white" onClick={goHome}><ShoppingBag className="mr-2 h-5 w-5" />Continue Shopping</Button>
-        <Button variant="outline" onClick={() => setCurrentView('orders')}>View All Orders</Button>
+      <div className="flex flex-wrap gap-3 justify-center">
+        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-base" onClick={goHome}><ShoppingBag className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />Continue Shopping</Button>
+        <Button variant="outline" className="text-sm sm:text-base" onClick={() => setCurrentView('orders')}>View All Orders</Button>
       </div>
     </div>
   );

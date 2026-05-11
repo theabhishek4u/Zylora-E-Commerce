@@ -45,9 +45,9 @@ export function AdminView() {
         <div><h1 className="text-2xl font-bold font-heading">Admin Panel</h1><p className="text-sm text-muted-foreground">Manage your store</p></div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
+        {/* Sidebar - Desktop */}
+        <div className="hidden lg:block lg:col-span-1">
           <Card className="border-border/30 bg-white/80 backdrop-blur-sm">
             <CardContent className="p-3">
               <nav className="space-y-1">
@@ -60,12 +60,36 @@ export function AdminView() {
           </Card>
         </div>
 
+        {/* Mobile Tab Bar */}
+        <div className="lg:hidden col-span-full">
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+            {ADMIN_TABS.map((t) => {
+              const Icon = t.icon;
+              const isActive = adminTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  onClick={() => setAdminTab(t.key)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
+                      : 'bg-white text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Content */}
         <div className="lg:col-span-4">
           {/* Overview */}
           {adminTab === 'overview' && stats && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {[
                   { label: 'Revenue', value: formatINR(stats.revenue), icon: TrendingUp, gradient: 'from-emerald-500 to-teal-500' },
                   { label: 'Orders', value: stats.totalOrders.toString(), icon: ShoppingBag, gradient: 'from-blue-500 to-indigo-500' },

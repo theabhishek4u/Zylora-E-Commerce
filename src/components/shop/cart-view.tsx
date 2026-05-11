@@ -38,46 +38,46 @@ export function CartView() {
   const handleRemoveCoupon = () => { setCouponDiscount(0); setAppliedCoupon(null); setCouponInput(''); toast.info('Coupon removed'); };
 
   if (cartItems.length === 0) return (
-    <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-      <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground/20 mb-6" />
-      <h2 className="text-2xl font-bold font-heading mb-2">Your cart is empty</h2>
-      <p className="text-muted-foreground mb-6">Start shopping to find amazing deals!</p>
+    <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 text-center">
+      <ShoppingBag className="h-20 w-20 sm:h-24 sm:w-24 mx-auto text-muted-foreground/20 mb-4 sm:mb-6" />
+      <h2 className="text-xl sm:text-2xl font-bold font-heading mb-2">Your cart is empty</h2>
+      <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">Start shopping to find amazing deals!</p>
       <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 text-white" onClick={() => setCurrentView('home')}><ShoppingCart className="mr-2 h-5 w-5" />Start Shopping</Button>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => setCurrentView('home')}><ArrowLeft className="h-5 w-5" /></Button>
-        <div><h1 className="text-2xl font-bold font-heading">Shopping Cart</h1><p className="text-sm text-muted-foreground">{cartItems.length} items</p></div>
+    <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 pb-32 sm:pb-6">
+      <div className="flex items-center gap-3 mb-4 sm:mb-6">
+        <Button variant="ghost" size="icon" onClick={() => setCurrentView('home')} className="shrink-0"><ArrowLeft className="h-5 w-5" /></Button>
+        <div><h1 className="text-xl sm:text-2xl font-bold font-heading">Shopping Cart</h1><p className="text-xs sm:text-sm text-muted-foreground">{cartItems.length} items</p></div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="lg:col-span-2 space-y-2 sm:space-y-3">
           <AnimatePresence>
             {cartItems.map((item) => {
               const disc = calculateDiscount(item.price, item.originalPrice);
               return (
                 <motion.div key={item.id} layout initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                   <Card className="overflow-hidden border-border/30 bg-white/80 backdrop-blur-sm">
-                    <CardContent className="p-4">
-                      <div className="flex gap-4">
-                        <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-slate-50 shrink-0 cursor-pointer" onClick={() => useShopStore.getState().navigateToProduct(item.productId)}>
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex gap-3 sm:gap-4">
+                        <div className="w-16 h-16 sm:w-28 sm:h-28 rounded-lg sm:rounded-xl overflow-hidden bg-slate-50 shrink-0 cursor-pointer" onClick={() => useShopStore.getState().navigateToProduct(item.productId)}>
                           <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{item.productName}</h3>
-                          <div className="flex items-baseline gap-2 mt-1">
-                            <span className="font-bold">{formatINR(item.price)}</span>
-                            {item.originalPrice && item.originalPrice > item.price && <><span className="text-xs text-muted-foreground line-through">{formatINR(item.originalPrice)}</span><span className="text-xs text-emerald-600 font-semibold">{disc}% OFF</span></>}
+                          <h3 className="font-semibold text-xs sm:text-base line-clamp-2">{item.productName}</h3>
+                          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                            <span className="font-bold text-sm sm:text-base">{formatINR(item.price)}</span>
+                            {item.originalPrice && item.originalPrice > item.price && <><span className="text-[10px] sm:text-xs text-muted-foreground line-through">{formatINR(item.originalPrice)}</span><span className="text-[10px] sm:text-xs text-emerald-600 font-semibold">{disc}% OFF</span></>}
                           </div>
-                          <div className="flex items-center justify-between mt-3">
-                            <div className="flex items-center border rounded-lg">
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)}><Minus className="h-3 w-3" /></Button>
-                              <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
-                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)} disabled={item.quantity >= item.stock}><Plus className="h-3 w-3" /></Button>
+                          <div className="flex items-center justify-between mt-2 sm:mt-3">
+                            <div className="flex items-center border rounded-lg bg-slate-50">
+                              <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)}><Minus className="h-3 w-3" /></Button>
+                              <span className="w-7 sm:w-8 text-center text-xs sm:text-sm font-semibold">{item.quantity}</span>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)} disabled={item.quantity >= item.stock}><Plus className="h-3 w-3" /></Button>
                             </div>
-                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => removeFromCart(item.id)}><Trash2 className="h-4 w-4 mr-1" />Remove</Button>
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50 h-7 sm:h-auto text-xs sm:text-sm" onClick={() => removeFromCart(item.id)}><Trash2 className="h-3.5 sm:h-4 w-3.5 sm:w-4 mr-1" />Remove</Button>
                           </div>
                         </div>
                       </div>
@@ -89,11 +89,11 @@ export function CartView() {
           </AnimatePresence>
         </div>
 
-        <div>
+        {/* Desktop Order Summary */}
+        <div className="hidden lg:block">
           <Card className="sticky top-36 border-border/30 bg-white/80 backdrop-blur-sm">
             <CardHeader className="pb-3"><CardTitle className="text-lg">Order Summary</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {/* Coupon */}
               <div className="space-y-2">
                 {appliedCoupon ? (
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg p-3">
@@ -118,6 +118,34 @@ export function CartView() {
               <Button variant="outline" className="w-full" onClick={() => setCurrentView('home')}>Continue Shopping</Button>
             </CardContent>
           </Card>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Bottom - Cart Summary */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom">
+        <div className="px-4 py-3">
+          {/* Savings badge */}
+          {(totalSavings > 0 || couponDiscount > 0) && (
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-emerald-600 font-medium">🎉 You save {formatINR(totalSavings + couponDiscount)}!</span>
+              {deliveryCharge === 0 && <span className="text-xs text-emerald-600 font-medium">Free Delivery</span>}
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">{cartItems.reduce((s, i) => s + i.quantity, 0)} items</p>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">{formatINR(grandTotal)}</span>
+                {deliveryCharge > 0 && <span className="text-[10px] text-muted-foreground">+{formatINR(deliveryCharge)} delivery</span>}
+              </div>
+            </div>
+            <Button
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold h-11 px-6 shadow-lg shadow-blue-500/20"
+              onClick={() => setCurrentView('checkout')}
+            >
+              Checkout <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useShopStore } from '@/store/shop-store';
 import { Header } from '@/components/shop/header';
 import { Footer } from '@/components/shop/footer';
+import { MobileBottomNav } from '@/components/shop/mobile-bottom-nav';
 import { HomeView } from '@/components/shop/home-view';
 import { ProductDetailView } from '@/components/shop/product-detail-view';
 import { CartView } from '@/components/shop/cart-view';
@@ -55,11 +56,19 @@ function AppContent() {
     }
   };
 
+  // Hide footer on admin view and checkout for cleaner mobile UX
+  const hideFooter = currentView === 'admin' || currentView === 'checkout';
+  // Add bottom padding for mobile bottom nav (not on admin/checkout since bottom nav is hidden there too)
+  const needsMobilePadding = currentView !== 'admin' && currentView !== 'checkout';
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/80 to-white">
       <Header />
-      <main className="flex-1">{renderView()}</main>
-      <Footer />
+      <main className={`flex-1 ${needsMobilePadding ? 'pb-20 md:pb-0' : ''}`}>
+        {renderView()}
+      </main>
+      {!hideFooter && <Footer />}
+      <MobileBottomNav />
     </div>
   );
 }
