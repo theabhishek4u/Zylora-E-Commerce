@@ -65,7 +65,7 @@ export function CheckoutView() {
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        className="mx-auto mb-6 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center"
+        className="mx-auto mb-6 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center"
       >
         <CheckCircle2 className="h-12 w-12 sm:h-14 sm:w-14 text-emerald-500" strokeWidth={1.5} />
       </motion.div>
@@ -97,7 +97,7 @@ export function CheckoutView() {
                       ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white '
                       : isActive
                         ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white '
-                        : 'bg-slate-100 text-slate-400'
+                        : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
                   }`}
                   animate={isActive ? { scale: [1, 1.05, 1] } : isCompleted ? { scale: [1, 1.15, 1] } : {}}
                   transition={isActive ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : isCompleted ? { duration: 0.4 } : {}}
@@ -116,7 +116,7 @@ export function CheckoutView() {
               </div>
               {i < 2 && (
                 <div className="flex-1 mx-2 sm:mx-3 mt-3">
-                  <div className="h-[2px] rounded-full bg-slate-100 overflow-hidden relative">
+                  <div className="h-[2px] rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden relative">
                     <motion.div
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"
                       initial={{ width: '0%' }}
@@ -134,13 +134,13 @@ export function CheckoutView() {
       {/* Step 1: Address */}
       {step === 1 && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-          <div className="relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl overflow-hidden">
+          <div className="relative rounded-2xl border border-white/40 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700/40 backdrop-blur-xl overflow-hidden">
             {/* Gradient Top Accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-sky-500" />
 
             <div className="p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-bold font-heading flex items-center gap-2 mb-4 sm:mb-5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><MapPin className="h-4 w-4 text-blue-600" /></div>
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center"><MapPin className="h-4 w-4 text-blue-600" /></div>
                 Delivery Address
               </h3>
 
@@ -148,21 +148,21 @@ export function CheckoutView() {
                 {/* Row 1: Name + Phone */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs sm:text-sm font-medium">Full Name *</Label>
+                    <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">Full Name *</Label>
                     <Input
                       value={form.customerName}
                       onChange={(e) => setForm({ ...form, customerName: e.target.value })}
-                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.customerName ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.customerName ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                       placeholder="Enter your full name"
                     />
                     {errors.customerName && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.customerName}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs sm:text-sm font-medium">Mobile *</Label>
+                    <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">Mobile *</Label>
                     <Input
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.phone ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.phone ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                       placeholder="10-digit mobile number"
                     />
                     {errors.phone && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.phone}</p>}
@@ -171,12 +171,12 @@ export function CheckoutView() {
 
                 {/* Row 2: Email */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs sm:text-sm font-medium">Email *</Label>
+                  <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">Email *</Label>
                   <Input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.email ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                    className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.email ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                     placeholder="your@email.com"
                   />
                   {errors.email && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.email}</p>}
@@ -184,11 +184,11 @@ export function CheckoutView() {
 
                 {/* Row 3: Address */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs sm:text-sm font-medium">Address *</Label>
+                  <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">Address *</Label>
                   <Input
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
-                    className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.address ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                    className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.address ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                     placeholder="House no., Street, Locality"
                   />
                   {errors.address && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.address}</p>}
@@ -197,21 +197,21 @@ export function CheckoutView() {
                 {/* Row 4: City, State, PIN */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs sm:text-sm font-medium">City *</Label>
+                    <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">City *</Label>
                     <Input
                       value={form.city}
                       onChange={(e) => setForm({ ...form, city: e.target.value })}
-                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.city ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.city ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                       placeholder="City"
                     />
                     {errors.city && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.city}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs sm:text-sm font-medium">State *</Label>
+                    <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">State *</Label>
                     <select
                       value={form.state}
                       onChange={(e) => setForm({ ...form, state: e.target.value })}
-                      className={`w-full h-11 rounded-xl border px-3 text-sm bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all appearance-none ${errors.state ? 'border-red-400' : 'border-slate-200/80'}`}
+                      className={`w-full h-11 rounded-xl border px-3 text-sm bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all appearance-none ${errors.state ? 'border-red-400' : 'border-slate-200/80'}`}
                     >
                       <option value="">Select State</option>
                       {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -219,12 +219,12 @@ export function CheckoutView() {
                     {errors.state && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.state}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs sm:text-sm font-medium">PIN Code *</Label>
+                    <Label className="text-xs sm:text-sm font-medium dark:text-slate-300">PIN Code *</Label>
                     <Input
                       maxLength={6}
                       value={form.pincode}
                       onChange={(e) => setForm({ ...form, pincode: e.target.value.replace(/\D/g, '') })}
-                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.pincode ? 'border-red-400 focus:ring-red-500/20' : ''}`}
+                      className={`h-11 text-sm rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all ${errors.pincode ? 'border-red-400 focus:ring-red-500/20' : ''}`}
                       placeholder="6-digit PIN"
                     />
                     {errors.pincode && <p className="text-[10px] sm:text-xs text-red-500 mt-0.5">{errors.pincode}</p>}
@@ -246,13 +246,13 @@ export function CheckoutView() {
       {/* Step 2: Payment */}
       {step === 2 && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-          <div className="relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl overflow-hidden">
+          <div className="relative rounded-2xl border border-white/40 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700/40 backdrop-blur-xl overflow-hidden">
             {/* Gradient Top Accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-sky-500" />
 
             <div className="p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-bold font-heading flex items-center gap-2 mb-4 sm:mb-5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><CreditCard className="h-4 w-4 text-blue-600" /></div>
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center"><CreditCard className="h-4 w-4 text-blue-600" /></div>
                 Payment Method
               </h3>
 
@@ -264,8 +264,8 @@ export function CheckoutView() {
                       key={opt.value}
                       className={`relative flex items-center gap-3 sm:gap-4 rounded-xl p-3 sm:p-4 cursor-pointer transition-all duration-300 overflow-hidden border ${
                         isSelected
-                          ? 'border-blue-400/60 bg-blue-50/40 '
-                          : 'border-slate-200/60 bg-white/60 hover:bg-slate-50/80 hover:border-slate-300/60'
+                          ? 'border-blue-400/60 dark:border-blue-500/60 bg-blue-50/40 dark:bg-blue-950/40 '
+                          : 'border-slate-200/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-50/80 hover:border-slate-300/60'
                       }`}
                     >
                       {/* Gradient Left Border when Selected */}
@@ -317,18 +317,18 @@ export function CheckoutView() {
       {step === 3 && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }} className="space-y-4">
           {/* Order Review Card */}
-          <div className="relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl overflow-hidden">
+          <div className="relative rounded-2xl border border-white/40 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700/40 backdrop-blur-xl overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-sky-500" />
 
             <div className="p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-bold font-heading flex items-center gap-2 mb-4 sm:mb-5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><CheckCircle2 className="h-4 w-4 text-blue-600" /></div>
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center"><CheckCircle2 className="h-4 w-4 text-blue-600" /></div>
                 Order Review
               </h3>
 
               <div className="space-y-4">
                 {/* Delivery Info */}
-                <div className="bg-slate-50/80 rounded-xl p-3 sm:p-4">
+                <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3 sm:p-4">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Truck className="h-3.5 w-3.5 text-blue-600" />
                     <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">Delivery To</p>
@@ -338,7 +338,7 @@ export function CheckoutView() {
                 </div>
 
                 {/* Payment Info */}
-                <div className="bg-slate-50/80 rounded-xl p-3 sm:p-4">
+                <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3 sm:p-4">
                   <div className="flex items-center gap-2 mb-1.5">
                     <CreditCard className="h-3.5 w-3.5 text-blue-600" />
                     <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">Payment</p>
@@ -354,7 +354,7 @@ export function CheckoutView() {
                   <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-3">Items ({cartItems.length})</p>
                   <div className="space-y-2.5">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-center gap-3 p-2 rounded-xl bg-white/60 hover:bg-white/80 transition-colors">
+                      <div key={item.id} className="flex items-center gap-3 p-2 rounded-xl bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 transition-colors">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0 bg-slate-50 ring-1 ring-black/5">
                           <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
                         </div>
@@ -405,11 +405,11 @@ export function CheckoutView() {
 
           {/* Security Badge */}
           <div className="flex items-center justify-center gap-2 py-3">
-            <div className="flex items-center gap-2 bg-gradient-to-r from-slate-50 to-slate-100/80 rounded-full px-4 py-2 ring-1 ring-slate-200/60">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-slate-50 to-slate-100/80 dark:bg-slate-800 dark:ring-slate-700/60 rounded-full px-4 py-2 ring-1 ring-slate-200/60">
               <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                 <Shield className="h-3.5 w-3.5 text-white" />
               </div>
-              <span className="text-[10px] sm:text-xs font-semibold text-slate-600">Safe & Secure Payments</span>
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300">Safe & Secure Payments</span>
               <Lock className="h-3 w-3 text-slate-400" />
             </div>
           </div>

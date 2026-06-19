@@ -101,9 +101,9 @@ export function OrdersView() {
       <div className="relative mb-6 sm:mb-8">
         {/* Gradient top accent */}
         <div className="absolute -top-px left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full" />
-        <Card className="border-border/20 bg-white/70 backdrop-blur-xl  overflow-hidden">
+        <Card className="border-border/20 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl  overflow-hidden">
           <CardContent className="p-4 sm:p-6">
-            <h2 className="font-semibold font-heading mb-3 text-sm sm:text-base text-slate-700">Find your orders</h2>
+            <h2 className="font-semibold font-heading mb-3 text-sm sm:text-base text-slate-700 dark:text-slate-200">Find your orders</h2>
             <form onSubmit={handleSearch} className="flex gap-2 sm:gap-3">
               <div className={`flex-1 relative rounded-lg transition-all duration-300 ${inputFocused ? 'ring-2 ring-blue-400/40 ' : ''}`}>
                 <Input
@@ -113,7 +113,7 @@ export function OrdersView() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
-                  className="flex-1 text-sm h-10 border-border/30 bg-white/80 backdrop-blur-sm focus-visible:ring-blue-500/30 transition-all duration-300"
+                  className="flex-1 text-sm h-10 border-border/30 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus-visible:ring-blue-500/30 transition-all duration-300"
                 />
               </div>
               <Button
@@ -143,7 +143,7 @@ export function OrdersView() {
           transition={{ duration: 0.4, ease: 'easeOut' }}
           className="text-center py-12 sm:py-16"
         >
-          <div className="inline-flex items-center justify-center p-5 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 mb-5">
+          <div className="inline-flex items-center justify-center p-5 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 mb-5">
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -151,7 +151,7 @@ export function OrdersView() {
               <Package className="h-16 w-16 sm:h-20 sm:w-20 bg-gradient-to-br from-blue-500 to-cyan-500 bg-clip-text" style={{ color: 'transparent', background: 'linear-gradient(135deg, #3b82f6, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
             </motion.div>
           </div>
-          <h3 className="text-lg sm:text-xl font-bold font-heading mb-2 text-slate-800">No orders found</h3>
+          <h3 className="text-lg sm:text-xl font-bold font-heading mb-2 text-slate-800 dark:text-slate-200">No orders found</h3>
           <p className="text-sm text-muted-foreground mb-5 max-w-xs mx-auto">We couldn&apos;t find any orders associated with that email address.</p>
           <Button
             variant="outline"
@@ -175,7 +175,7 @@ export function OrdersView() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
               >
-                <Card className="overflow-hidden border-border/20 bg-white/70 backdrop-blur-xl  transition-all duration-300 group">
+                <Card className="overflow-hidden border-border/20 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl  transition-all duration-300 group">
                   <CardContent className="p-0">
                     {/* Gradient top border */}
                     <div className={`h-[2px] bg-gradient-to-r ${statusCfg.gradient}`} />
@@ -185,12 +185,12 @@ export function OrdersView() {
                       <div className="flex flex-wrap items-center gap-3 sm:gap-5">
                         <div>
                           <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-medium">Order</p>
-                          <p className="font-bold text-xs sm:text-sm tracking-tight">{order.orderNumber}</p>
+                          <p className="font-bold text-xs sm:text-sm tracking-tight dark:text-slate-200">{order.orderNumber}</p>
                         </div>
                         <div className="hidden sm:block w-px h-8 bg-border/40" />
                         <div>
                           <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-medium">Date</p>
-                          <p className="font-semibold text-xs sm:text-sm">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                          <p className="font-semibold text-xs sm:text-sm dark:text-slate-200">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                         </div>
                         <div className="hidden sm:block w-px h-8 bg-border/40" />
                         <div>
@@ -209,18 +209,18 @@ export function OrdersView() {
                     <div className="p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
                       <div className="flex -space-x-2 sm:-space-x-2.5">
                         {order.items.slice(0, 3).map((item) => (
-                          <div key={item.id} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden border-2 border-white bg-slate-50 ">
+                          <div key={item.id} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden border-2 border-white dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
                             <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" />
                           </div>
                         ))}
                         {order.items.length > 3 && (
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-[10px] sm:text-xs font-bold text-slate-500 border-2 border-white  relative">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-300 border-2 border-white dark:border-slate-700  relative">
                             <span>+{order.items.length - 3}</span>
                           </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-semibold truncate text-slate-800">
+                        <p className="text-xs sm:text-sm font-semibold truncate text-slate-800 dark:text-slate-200">
                           {order.items[0]?.productName}
                           {order.items.length > 1 && (
                             <span className="text-muted-foreground font-normal"> + {order.items.length - 1} more</span>

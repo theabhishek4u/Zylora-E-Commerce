@@ -67,7 +67,7 @@ export function UserDashboardView() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Sidebar - Desktop */}
         <div className="hidden lg:block lg:col-span-1">
-          <div className="glass-premium rounded-xl overflow-hidden sticky top-4">
+          <div className="glass-premium dark:bg-slate-900 dark:border-slate-700 rounded-xl overflow-hidden sticky top-4">
             <div className="h-1 bg-gradient-to-r from-blue-500 via-violet-500 to-blue-600" />
             <div className="p-5">
               {/* User Avatar with Gradient Ring */}
@@ -119,7 +119,7 @@ export function UserDashboardView() {
         {/* Mobile Section */}
         <div className="lg:hidden col-span-full">
           {/* User info card with gradient avatar ring */}
-          <div className="glass-premium rounded-xl overflow-hidden mb-3">
+          <div className="glass-premium dark:bg-slate-900 dark:border-slate-700 rounded-xl overflow-hidden mb-3">
             <div className="h-0.5 bg-gradient-to-r from-blue-500 via-violet-500 to-blue-600" />
             <div className="p-3 flex items-center gap-3">
               <div className="relative">
@@ -149,7 +149,7 @@ export function UserDashboardView() {
                     flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-300 whitespace-nowrap shrink-0
                     ${isActive
                       ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white '
-                      : 'glass text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/80'
+                      : 'glass text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-slate-800/50'
                     }
                   `}
                 >
@@ -180,7 +180,7 @@ export function UserDashboardView() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.1 }}
-                      className="glass-premium rounded-xl overflow-hidden card-hover"
+                      className="glass-premium dark:bg-slate-800/60 rounded-xl overflow-hidden card-hover"
                     >
                       <div className={`h-1 bg-gradient-to-r ${stat.color}`} />
                       <div className="p-4 sm:p-5">
@@ -202,7 +202,7 @@ export function UserDashboardView() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="glass-premium rounded-xl overflow-hidden"
+                className="glass-premium dark:bg-slate-800/60 rounded-xl overflow-hidden"
               >
                 <div className="h-1 bg-gradient-to-r from-emerald-400 via-blue-500 to-violet-500" />
                 <div className="p-4 sm:p-6">
@@ -291,7 +291,7 @@ export function UserDashboardView() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.06 }}
-                    className="glass-premium rounded-xl overflow-hidden card-hover"
+                    className="glass-premium dark:bg-slate-800/60 rounded-xl overflow-hidden card-hover"
                   >
                     <div className={`h-0.5 bg-gradient-to-r ${
                       o.status === 'delivered' ? 'from-emerald-400 to-emerald-600' :
@@ -352,7 +352,7 @@ export function UserDashboardView() {
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-premium rounded-xl overflow-hidden"
+              className="glass-premium dark:bg-slate-800/60 rounded-xl overflow-hidden"
             >
               <div className="h-1 bg-gradient-to-r from-blue-500 via-violet-500 to-emerald-500" />
               <div className="p-6 sm:p-10 text-center">

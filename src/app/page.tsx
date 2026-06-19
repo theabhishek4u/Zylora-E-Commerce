@@ -17,6 +17,7 @@ import { UserDashboardView } from '@/components/shop/user-dashboard-view';
 import { AdminView } from '@/components/shop/admin-view';
 import { useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const viewVariants = {
@@ -75,7 +76,7 @@ function AppContent() {
   const needsMobilePadding = currentView !== 'admin' && currentView !== 'checkout';
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/80 to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-950 dark:to-slate-900">
       <Header />
       <main className={`flex-1 ${needsMobilePadding ? 'pb-20 md:pb-0' : ''}`}>
         <AnimatePresence mode="wait">
@@ -100,7 +101,9 @@ function AppContent() {
 export default function ZyloraPage() {
   return (
     <SessionProvider>
-      <AppContent />
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <AppContent />
+      </ThemeProvider>
     </SessionProvider>
   );
 }

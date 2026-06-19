@@ -69,6 +69,13 @@ export function MobileBottomNav() {
       isSpecial: true,
     },
     {
+      key: 'wishlist',
+      label: 'Wishlist',
+      icon: Heart,
+      view: 'wishlist',
+      badge: wishlistCount,
+    },
+    {
       key: 'cart',
       label: 'Cart',
       icon: ShoppingCart,
@@ -81,7 +88,7 @@ export function MobileBottomNav() {
       icon: currentUser ? User : User,
       view: currentUser ? 'user-dashboard' : 'auth',
     },
-  ], [cartCount, currentUser]);
+  ], [cartCount, wishlistCount, currentUser]);
 
   const getIsActive = (item: NavItem) => {
     if (item.key === 'home') {
@@ -91,8 +98,9 @@ export function MobileBottomNav() {
       return currentView === 'home' && !!useShopStore.getState().selectedCategory;
     }
     if (item.key === 'cart') return currentView === 'cart';
+    if (item.key === 'wishlist') return currentView === 'wishlist';
     if (item.key === 'account') {
-      return currentView === 'user-dashboard' || currentView === 'auth' || currentView === 'orders' || currentView === 'wishlist';
+      return currentView === 'user-dashboard' || currentView === 'auth' || currentView === 'orders';
     }
     return false;
   };
@@ -126,6 +134,9 @@ export function MobileBottomNav() {
 
   // Don't show bottom nav on admin view or checkout flow
   const hideBottomNav = currentView === 'admin' || currentView === 'checkout';
+
+  // We have 6 nav items now - use slightly smaller min-width
+  const navItemCount = navItems.length;
 
   return (
     <AnimatePresence>
@@ -174,7 +185,7 @@ export function MobileBottomNav() {
                     <motion.button
                       key={item.key}
                       onClick={() => handleNavClick(item)}
-                      className={`relative flex flex-col items-center justify-center py-2 px-2 min-w-[56px] group ${
+                      className={`relative flex flex-col items-center justify-center py-2 px-1 min-w-[48px] group ${
                         item.isSpecial ? '-mt-4' : ''
                       }`}
                       whileTap={{ scale: 0.85 }}
@@ -252,7 +263,7 @@ export function MobileBottomNav() {
 
                       {/* Label */}
                       <span
-                        className={`text-[10px] mt-0.5 transition-all duration-200 ${
+                        className={`text-[9px] mt-0.5 transition-all duration-200 ${
                           item.isSpecial
                             ? 'bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent font-semibold -mt-0.5'
                             : isActive

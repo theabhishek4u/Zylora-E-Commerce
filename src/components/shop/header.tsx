@@ -1,7 +1,7 @@
 'use client';
 
 import { useShopStore } from '@/store/shop-store';
-import { Search, ShoppingCart, Menu, Package, Heart, User, ChevronDown, Bell, X, LayoutDashboard, LogIn, LogOut, Settings, Truck, ShieldCheck, Sparkles } from 'lucide-react';
+import { Search, ShoppingCart, Menu, Package, Heart, User, ChevronDown, Bell, X, LayoutDashboard, LogIn, LogOut, Settings, Truck, ShieldCheck, Sparkles, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signOut, useSession } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
@@ -28,12 +29,15 @@ export function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const cartCount = getCartCount();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setLocalSearch(searchQuery); }, [searchQuery]);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -120,7 +124,7 @@ export function Header() {
       </div>
 
       {/* ── Main Navbar ── */}
-      <div className={`glass-strong transition-all duration-300`}>
+      <div className={`glass-strong dark:bg-slate-900/95 dark:backdrop-blur-xl transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3 h-16">
             {/* Mobile Hamburger */}
@@ -130,13 +134,13 @@ export function Header() {
                   <Menu className="h-5 w-5 text-slate-600 dark:text-slate-300" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 p-0 glass-strong border-r-0">
+              <SheetContent side="left" className="w-80 p-0 glass-strong dark:bg-slate-900 dark:border-slate-700 border-r-0">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Mobile Menu Header */}
                 <div className="p-5 border-b border-border/50">
                   <div className="flex items-center gap-3">
                     <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-                      <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1" />
+                      <Image src="/zylora-logo.png" alt="Zylora" fill sizes="36px" className="object-contain p-1" />
                     </div>
                     <div>
                       <h2 className="font-heading font-bold text-lg gradient-text">Zylora</h2>
@@ -227,6 +231,14 @@ export function Header() {
                       <LayoutDashboard className="h-4 w-4 text-blue-600" /> Admin Panel
                     </button>
                   )}
+                  {/* Theme Toggle in Mobile Menu */}
+                  <button
+                    onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setMobileMenuOpen(false); }}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+                  >
+                    {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-blue-600" />}
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                  </button>
                 </div>
 
                 {/* Mobile Auth */}
@@ -259,7 +271,7 @@ export function Header() {
               whileHover={{ scale: 1.02 }}
             >
               <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center transition-shadow duration-300">
-                <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1.5" />
+                <Image src="/zylora-logo.png" alt="Zylora" fill sizes="36px" className="object-contain p-1.5" />
               </div>
               <span className="font-heading text-xl font-bold tracking-tight hidden sm:inline">
                 <span className="gradient-text">Zylora</span>
@@ -279,7 +291,7 @@ export function Header() {
                     : 'ring-1 ring-slate-200 dark:ring-slate-700'
                 }`}>
                   <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
-                    searchFocused ? 'text-blue-600' : 'text-slate-400'
+                    searchFocused ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'
                   }`} />
                   <Input
                     ref={searchInputRef}
@@ -289,7 +301,7 @@ export function Header() {
                     onChange={(e) => setLocalSearch(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
-                    className="w-full h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400"
+                    className="w-full h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400 dark:placeholder:text-slate-500 dark:text-slate-200"
                   />
                   <Button
                     type="submit"
@@ -325,7 +337,7 @@ export function Header() {
                 className="hidden sm:flex relative hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                 onClick={() => setCurrentView('wishlist')}
               >
-                <Heart className="h-5 w-5 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors" />
+                <Heart className="h-5 w-5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-red-400 transition-colors" />
                 {wishlistIds.length > 0 && (
                   <motion.div
                     key={wishlistIds.length}
@@ -357,7 +369,7 @@ export function Header() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.96 }}
                       transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className="absolute right-0 top-full mt-2 w-80 glass-strong rounded-xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
+                      className="absolute right-0 top-full mt-2 w-80 glass-strong dark:bg-slate-900 rounded-xl border border-white/20 dark:border-slate-700 overflow-hidden z-50"
                     >
                       <div className="p-4 border-b border-border/50">
                         <h3 className="font-heading font-semibold text-sm">Notifications</h3>
@@ -374,10 +386,23 @@ export function Header() {
                 </AnimatePresence>
               </div>
 
+              {/* Theme Toggle */}
+              {mounted && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  aria-label="Toggle theme"
+                >
+                  {theme === 'dark' ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5 text-slate-600 dark:text-slate-300" />}
+                </Button>
+              )}
+
               {/* Cart */}
               <Button
                 variant="ghost"
-                className="relative shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors gap-1.5"
+                className="relative shrink-0 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors gap-1.5"
                 onClick={() => setCurrentView('cart')}
               >
                 <ShoppingCart className="h-5 w-5 text-slate-600 dark:text-slate-300" />
@@ -407,7 +432,7 @@ export function Header() {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold">
                       {currentUser.name?.charAt(0).toUpperCase()}
                     </div>
-                    <ChevronDown className={`h-3 w-3 text-slate-500 transition-transform duration-200 hidden sm:inline ${showUserMenu ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`h-3 w-3 text-slate-500 dark:text-slate-400 transition-transform duration-200 hidden sm:inline ${showUserMenu ? 'rotate-180' : ''}`} />
                   </Button>
                 ) : (
                   <Button
@@ -415,8 +440,8 @@ export function Header() {
                     className="gap-1.5 shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                     onClick={() => setCurrentView('auth')}
                   >
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                      <User className="h-4 w-4 text-slate-500" />
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                      <User className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                     </div>
                     <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">Login</span>
                   </Button>
@@ -430,7 +455,7 @@ export function Header() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.96 }}
                       transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className="absolute right-0 top-full mt-2 w-64 glass-strong rounded-xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
+                      className="absolute right-0 top-full mt-2 w-64 glass-strong dark:bg-slate-900 rounded-xl border border-white/20 dark:border-slate-700 overflow-hidden z-50"
                     >
                       {/* User Info Header */}
                       <div className="p-4 border-b border-border/50 bg-gradient-to-r from-blue-600/5 to-blue-700/5 dark:from-blue-600/10 dark:to-blue-700/10">
@@ -486,6 +511,19 @@ export function Header() {
 
                       <Separator className="mx-2" />
 
+                      {/* Theme Toggle */}
+                      <div className="p-1.5">
+                        <button
+                          onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setShowUserMenu(false); }}
+                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+                        >
+                          {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />}
+                          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                        </button>
+                      </div>
+
+                      <Separator className="mx-2" />
+
                       {/* Sign Out */}
                       <div className="p-1.5">
                         <button
@@ -518,7 +556,7 @@ export function Header() {
                   <div className={`relative flex w-full rounded-xl transition-all duration-300 ring-1 ${
                     searchFocused ? 'ring-blue-500/40' : 'ring-slate-200 dark:ring-slate-700'
                   }`}>
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       ref={searchInputRef}
                       type="text"
@@ -527,7 +565,7 @@ export function Header() {
                       onChange={(e) => setLocalSearch(e.target.value)}
                       onFocus={() => setSearchFocused(true)}
                       onBlur={() => setSearchFocused(false)}
-                      className="flex-1 h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="flex-1 h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-slate-200 dark:placeholder:text-slate-500"
                       autoFocus
                     />
                     <Button
@@ -545,7 +583,7 @@ export function Header() {
       </div>
 
       {/* ── Category Navigation Bar (hidden on mobile, shown on md+) ── */}
-      <div className="hidden md:block glass overflow-x-auto scrollbar-hide border-b border-border/30">
+      <div className="hidden md:block glass dark:bg-slate-900/95 overflow-x-auto scrollbar-hide border-b border-border/30 dark:border-slate-700/30">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-1.5 py-2.5 whitespace-nowrap">
             <motion.button
@@ -553,7 +591,7 @@ export function Header() {
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                 !selectedCategory
                   ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-slate-200'
               }`}
               whileTap={{ scale: 0.95 }}
             >
@@ -566,7 +604,7 @@ export function Header() {
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedCategory === cat.slug
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-slate-200'
                 }`}
                 whileTap={{ scale: 0.95 }}
               >

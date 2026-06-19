@@ -238,7 +238,7 @@ export function AuthView() {
         </div>
 
         {/* Form Container */}
-        <div className="flex-1 flex items-center justify-center px-4 py-6 lg:px-12 lg:py-12 bg-gradient-to-b from-slate-50 to-white lg:from-white lg:to-white">
+        <div className="flex-1 flex items-center justify-center px-4 py-6 lg:px-12 lg:py-12 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 lg:bg-white dark:lg:bg-slate-900">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -247,7 +247,7 @@ export function AuthView() {
           >
             {/* Desktop heading */}
             <div className="hidden lg:block mb-8">
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
                 {isLogin ? 'Welcome back' : 'Create your account'}
               </h1>
               <p className="text-muted-foreground mt-2">
@@ -256,7 +256,7 @@ export function AuthView() {
             </div>
 
             {/* Form Card - on mobile overlaps the header */}
-            <div className="bg-white rounded-2xl lg:rounded-2xl  border border-slate-100 p-6 sm:p-8 -mt-8 lg:mt-0 relative z-10">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl lg:rounded-2xl border border-slate-100 dark:border-slate-800 p-6 sm:p-8 -mt-8 lg:mt-0 relative z-10">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <AnimatePresence mode="wait">
                   {!isLogin && (
@@ -268,11 +268,11 @@ export function AuthView() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <Label className="text-sm font-medium text-slate-700 mb-1.5 block">Full Name</Label>
+                      <Label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Full Name</Label>
                       <div className="relative group">
                         <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                         <Input
-                          className="pl-11 h-12 text-base bg-slate-50/80 border-slate-200 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400"
+                          className="pl-11 h-12 text-base bg-slate-50/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                           placeholder="Enter your full name"
                           value={form.name}
                           onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -283,11 +283,11 @@ export function AuthView() {
                 </AnimatePresence>
 
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1.5 block">Email Address</Label>
+                  <Label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Email Address</Label>
                   <div className="relative group">
                     <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                     <Input
-                      className="pl-11 h-12 text-base bg-slate-50/80 border-slate-200 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400"
+                      className="pl-11 h-12 text-base bg-slate-50/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       type="email"
                       placeholder="you@example.com"
                       value={form.email}
@@ -297,11 +297,11 @@ export function AuthView() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-slate-700 mb-1.5 block">Password</Label>
+                  <Label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Password</Label>
                   <div className="relative group">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                     <Input
-                      className="pl-11 pr-11 h-12 text-base bg-slate-50/80 border-slate-200 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400"
+                      className="pl-11 pr-11 h-12 text-base bg-slate-50/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-xl transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
                       value={form.password}
@@ -339,7 +339,7 @@ export function AuthView() {
 
               {/* Toggle login/signup */}
               <div className="mt-5 text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
                   <button
                     className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
@@ -354,10 +354,10 @@ export function AuthView() {
               <div className="mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200" />
+                    <div className="w-full border-t border-slate-200 dark:border-slate-700" />
                   </div>
                   <div className="relative flex justify-center">
-                    <span className="bg-white px-3 text-xs text-slate-400 uppercase tracking-wider font-medium">
+                    <span className="bg-white dark:bg-slate-900 px-3 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider font-medium">
                       or continue with
                     </span>
                   </div>
@@ -368,7 +368,7 @@ export function AuthView() {
                     variant="outline"
                     onClick={() => quickLogin('admin@zshop.in', 'Admin@123')}
                     disabled={loading}
-                    className="h-11 rounded-xl border-slate-200 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 transition-all duration-200 group"
+                    className="h-11 rounded-xl border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:text-amber-700 transition-all duration-200 group"
                   >
                     <Crown className="h-4 w-4 mr-2 text-amber-500 group-hover:text-amber-600" />
                     <span className="text-sm font-medium">Admin</span>
@@ -377,7 +377,7 @@ export function AuthView() {
                     variant="outline"
                     onClick={() => quickLogin('priya@zshop.in', 'User@123')}
                     disabled={loading}
-                    className="h-11 rounded-xl border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
+                    className="h-11 rounded-xl border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-700 transition-all duration-200 group"
                   >
                     <UserCircle className="h-4 w-4 mr-2 text-blue-500 group-hover:text-blue-600" />
                     <span className="text-sm font-medium">User</span>

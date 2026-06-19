@@ -1,0 +1,881 @@
+     1→     1→'use client';
+     2→     2→
+     3→     3→import { useShopStore } from '@/store/shop-store';
+     4→     4→import { ProductCard } from './product-card';
+     5→     5→import { formatINR, calculateDiscount } from '@/lib/format';
+     6→     6→import {
+     7→     7→  ArrowRight,
+     8→     8→  TrendingUp,
+     9→     9→  Truck,
+    10→    10→  Shield,
+    11→    11→  Percent,
+    12→    12→  Zap,
+    13→    13→  Sparkles,
+    14→    14→  RotateCcw,
+    15→    15→  Star,
+    16→    16→  Search,
+    17→    17→  SlidersHorizontal,
+    18→    18→  ChevronDown,
+    19→    19→  Clock,
+    20→    20→  Package,
+    21→    21→  Users,
+    22→    22→  Eye,
+    23→    23→  ChevronRight,
+    24→    24→  ShoppingBag,
+    25→    25→  Award,
+    26→    26→} from 'lucide-react';
+    27→    27→import { Button } from '@/components/ui/button';
+    28→    28→import { Badge } from '@/components/ui/badge';
+    29→    29→import { useMemo, useState, useEffect, useRef } from 'react';
+    30→    30→import { motion, AnimatePresence } from 'framer-motion';
+    31→    31→
+    32→    32→const container = {
+    33→    33→  hidden: {},
+    34→    34→  show: { transition: { staggerChildren: 0.06 } },
+    35→    35→};
+    36→    36→
+    37→    37→const fadeInUp = {
+    38→    38→  hidden: { opacity: 0, y: 24 },
+    39→    39→  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
+    40→    40→};
+    41→    41→
+    42→    42→const staggerItem = {
+    43→    43→  hidden: { opacity: 0, y: 20 },
+    44→    44→  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
+    45→    45→};
+    46→    46→
+    47→    47→/* ─── Animated counter hook ────────────────────────────────── */
+    48→    48→function useAnimatedCounter(end: number, duration = 2000, startOnMount = true) {
+    49→    49→  const [count, setCount] = useState(0);
+    50→    50→  const ref = useRef<HTMLElement>(null);
+    51→    51→  useEffect(() => {
+    52→    52→    if (!startOnMount) return;
+    53→    53→    let startTime: number | null = null;
+    54→    54→    let raf: number;
+    55→    55→    const step = (timestamp: number) => {
+    56→    56→      if (!startTime) startTime = timestamp;
+    57→    57→      const progress = Math.min((timestamp - startTime) / duration, 1);
+    58→    58→      setCount(Math.floor(progress * end));
+    59→    59→      if (progress < 1) raf = requestAnimationFrame(step);
+    60→    60→    };
+    61→    61→    raf = requestAnimationFrame(step);
+    62→    62→    return () => cancelAnimationFrame(raf);
+    63→    63→  }, [end, duration, startOnMount]);
+    64→    64→  return count;
+    65→    65→}
+    66→    66→
+    67→    67→/* ─── Fake countdown timer ─────────────────────────────────── */
+    68→    68→function useCountdown() {
+    69→    69→  const [time, setTime] = useState({ hours: 5, minutes: 47, seconds: 32 });
+    70→    70→  useEffect(() => {
+    71→    71→    const interval = setInterval(() => {
+    72→    72→      setTime((prev) => {
+    73→    73→        let { hours, minutes, seconds } = prev;
+    74→    74→        seconds--;
+    75→    75→        if (seconds < 0) { seconds = 59; minutes--; }
+    76→    76→        if (minutes < 0) { minutes = 59; hours--; }
+    77→    77→        if (hours < 0) { hours = 23; minutes = 59; seconds = 59; }
+    78→    78→        return { hours, minutes, seconds };
+    79→    79→      });
+    80→    80→    }, 1000);
+    81→    81→    return () => clearInterval(interval);
+    82→    82→  }, []);
+    83→    83→  return time;
+    84→    84→}
+    85→    85→
+    86→    86→/* ─── Section header component ─────────────────────────────── */
+    87→    87→function SectionHeader({
+    88→    88→  icon: Icon,
+    89→    89→  title,
+    90→    90→  color = 'blue',
+    91→    91→  onviewall,
+    92→    92→}: {
+    93→    93→  icon: React.ElementType;
+    94→    94→  title: string;
+    95→    95→  color?: string;
+    96→    96→  onviewall?: () => void;
+    97→    97→}) {
+    98→    98→  const colorMap: Record<string, { bg: string; text: string; underline: string; hover: string }> = {
+    99→    99→    blue: { bg: 'bg-blue-500/10', text: 'text-blue-600', underline: 'from-blue-500 to-blue-400', hover: 'hover:text-blue-600' },
+   100→   100→    violet: { bg: 'bg-violet-500/10', text: 'text-violet-500', underline: 'from-violet-500 to-violet-400', hover: 'hover:text-violet-600' },
+   101→   101→    amber: { bg: 'bg-amber-500/10', text: 'text-amber-500', underline: 'from-amber-500 to-amber-400', hover: 'hover:text-amber-600' },
+   102→   102→    emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-600', underline: 'from-emerald-500 to-emerald-400', hover: 'hover:text-emerald-600' },
+   103→   103→  };
+   104→   104→  const c = colorMap[color] || colorMap.blue;
+   105→   105→
+   106→   106→  return (
+   107→   107→    <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }}>
+   108→   108→      <div className="flex items-center justify-between mb-6 sm:mb-8">
+   109→   109→        <div className="flex items-center gap-2.5 sm:gap-3">
+   110→   110→          <motion.div
+   111→   111→            className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${c.bg}`}
+   112→   112→            whileHover={{ rotate: 12, scale: 1.1 }}
+   113→   113→            transition={{ type: 'spring', stiffness: 300 }}
+   114→   114→          >
+   115→   115→            <Icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 ${c.text}`} />
+   116→   116→          </motion.div>
+   117→   117→          <div>
+   118→   118→            <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+   119→   119→              {title}
+   120→   120→            </h2>
+   121→   121→            <div className={`h-1 w-12 sm:w-16 rounded-full bg-gradient-to-r ${c.underline} mt-1`} />
+   122→   122→          </div>
+   123→   123→        </div>
+   124→   124→        {onviewall && (
+   125→   125→          <Button
+   126→   126→            variant="ghost"
+   127→   127→            className={`${c.hover} text-muted-foreground rounded-xl gap-1 text-sm font-medium`}
+   128→   128→            onClick={onviewall}
+   129→   129→          >
+   130→   130→            View All <ChevronRight className="h-4 w-4" />
+   131→   131→          </Button>
+   132→   132→        )}
+   133→   133→      </div>
+   134→   134→    </motion.div>
+   135→   135→  );
+   136→   136→}
+   137→   137→
+   138→   138→/* ─── Category color map ───────────────────────────────────── */
+   139→   139→const categoryGradients = [
+   140→   140→  'from-blue-500/10 to-cyan-500/10',
+   141→   141→  'from-violet-500/10 to-pink-500/10',
+   142→   142→  'from-amber-500/10 to-orange-500/10',
+   143→   143→  'from-emerald-500/10 to-teal-500/10',
+   144→   144→  'from-rose-500/10 to-red-500/10',
+   145→   145→  'from-indigo-500/10 to-sky-500/10',
+   146→   146→];
+   147→   147→
+   148→   148→/* ────────────────────────────────────────────────────────────── */
+   149→   149→
+   150→   150→export function HomeView() {
+   151→   151→  const {
+   152→   152→    products,
+   153→   153→    categories,
+   154→   154→    selectedCategory,
+   155→   155→    setSelectedCategory,
+   156→   156→    searchQuery,
+   157→   157→    sortBy,
+   158→   158→    setSortBy,
+   159→   159→    navigateToProduct,
+   160→   160→    wishlistIds,
+   161→   161→    isInWishlist,
+   162→   162→    toggleWishlist,
+   163→   163→  } = useShopStore();
+   164→   164→
+   165→   165→  const [sortOpen, setSortOpen] = useState(false);
+   166→   166→  const sortRef = useRef<HTMLDivElement>(null);
+   167→   167→
+   168→   168→  const featuredProducts = useMemo(() => products.filter((p) => p.featured), [products]);
+   169→   169→  const saleProducts = useMemo(() => products.filter((p) => p.onSale), [products]);
+   170→   170→  const newArrivals = useMemo(() => products.filter((p) => p.newArrival), [products]);
+   171→   171→  const topRated = useMemo(
+   172→   172→    () => [...products].sort((a, b) => b.rating - a.rating).slice(0, 8),
+   173→   173→    [products]
+   174→   174→  );
+   175→   175→
+   176→   176→  const filteredProducts = useMemo(() => {
+   177→   177→    let filtered = [...products];
+   178→   178→    if (selectedCategory)
+   179→   179→      filtered = filtered.filter(
+   180→   180→        (p) => categories.find((c) => c.id === p.categoryId)?.slug === selectedCategory
+   181→   181→      );
+   182→   182→    if (searchQuery) {
+   183→   183→      const q = searchQuery.toLowerCase();
+   184→   184→      filtered = filtered.filter(
+   185→   185→        (p) =>
+   186→   186→          p.name.toLowerCase().includes(q) ||
+   187→   187→          p.description.toLowerCase().includes(q) ||
+   188→   188→          p.brand?.toLowerCase().includes(q)
+   189→   189→      );
+   190→   190→    }
+   191→   191→    switch (sortBy) {
+   192→   192→      case 'price-low':
+   193→   193→        filtered.sort((a, b) => a.price - b.price);
+   194→   194→        break;
+   195→   195→      case 'price-high':
+   196→   196→        filtered.sort((a, b) => b.price - a.price);
+   197→   197→        break;
+   198→   198→      case 'rating':
+   199→   199→        filtered.sort((a, b) => b.rating - a.rating);
+   200→   200→        break;
+   201→   201→      case 'newest':
+   202→   202→        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+   203→   203→        break;
+   204→   204→      default:
+   205→   205→        filtered.sort(
+   206→   206→          (a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || b.rating - a.rating
+   207→   207→        );
+   208→   208→    }
+   209→   209→    return filtered;
+   210→   210→  }, [products, selectedCategory, searchQuery, sortBy, categories]);
+   211→   211→
+   212→   212→  const currentCategory = categories.find((c) => c.slug === selectedCategory);
+   213→   213→  const showHero = !searchQuery && !selectedCategory;
+   214→   214→
+   215→   215→  const sortOptions = [
+   216→   216→    { value: 'featured', label: 'Featured' },
+   217→   217→    { value: 'price-low', label: 'Price: Low → High' },
+   218→   218→    { value: 'price-high', label: 'Price: High → Low' },
+   219→   219→    { value: 'rating', label: 'Top Rated' },
+   220→   220→    { value: 'newest', label: 'Newest' },
+   221→   221→  ];
+   222→   222→
+   223→   223→  // Animated counters
+   224→   224→  const productsCount = useAnimatedCounter(10000, 2000);
+   225→   225→  const customersCount = useAnimatedCounter(50000, 2500);
+   226→   226→  const discountPercent = useAnimatedCounter(70, 1800);
+   227→   227→
+   228→   228→  // Countdown timer for flash sale
+   229→   229→  const countdown = useCountdown();
+   230→   230→
+   231→   231→  // Featured product for hero showcase
+   232→   232→  const heroFeaturedProduct = useMemo(() => {
+   233→   233→    if (featuredProducts.length > 0) return featuredProducts[0];
+   234→   234→    if (products.length > 0) return products[0];
+   235→   235→    return null;
+   236→   236→  }, [featuredProducts, products]);
+   237→   237→
+   238→   238→  // Close sort dropdown on outside click
+   239→   239→  useEffect(() => {
+   240→   240→    const handleClickOutside = (e: MouseEvent) => {
+   241→   241→      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+   242→   242→        setSortOpen(false);
+   243→   243→      }
+   244→   244→    };
+   245→   245→    document.addEventListener('mousedown', handleClickOutside);
+   246→   246→    return () => document.removeEventListener('mousedown', handleClickOutside);
+   247→   247→  }, []);
+   248→   248→
+   249→   249→  const marqueeText = '🔥 Flash Sale Live Now · ⚡ Up to 70% OFF · 🚚 Free Delivery ₹499+ · ⭐ 50K+ Happy Customers · 💳 Secure Payments · 🎁 New Arrivals Daily · ✨ Best Prices Guaranteed';
+   250→   250→
+   251→   251→  return (
+   252→   252→    <div className="min-h-screen">
+   253→   253→      {/* ═══════════════════════════════════════════════════════════
+   254→   254→          HERO SECTION — Premium animated gradient with floating orbs
+   255→   255→      ═══════════════════════════════════════════════════════════ */}
+   256→   256→      {showHero && (
+   257→   257→        <section className="relative overflow-hidden gradient-shift bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
+   258→   258→          {/* Floating decorative orbs */}
+   259→   259→          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+   260→   260→            <div className="float-orb absolute -top-24 -left-24 h-80 w-80 rounded-full bg-blue-500/20 blur-[100px]" />
+   261→   261→            <div className="float-orb-delay absolute top-1/4 right-0 h-64 w-64 rounded-full bg-indigo-400/15 blur-[90px]" />
+   262→   262→            <div className="float-orb-slow absolute -bottom-16 left-1/3 h-72 w-72 rounded-full bg-cyan-400/10 blur-[100px]" />
+   263→   263→            <div className="float-orb absolute top-1/2 left-1/2 h-48 w-48 rounded-full bg-violet-400/8 blur-[80px]" />
+   264→   264→            {/* Small sparkle dots */}
+   265→   265→            <div className="absolute top-[15%] left-[20%] h-1.5 w-1.5 rounded-full bg-blue-400/60 animate-pulse" />
+   266→   266→            <div className="absolute top-[35%] right-[15%] h-1 w-1 rounded-full bg-cyan-400/50 animate-pulse delay-700" />
+   267→   267→            <div className="absolute top-[60%] left-[10%] h-1.5 w-1.5 rounded-full bg-indigo-400/40 animate-pulse delay-1000" />
+   268→   268→            <div className="absolute top-[25%] right-[35%] h-1 w-1 rounded-full bg-blue-300/50 animate-pulse delay-500" />
+   269→   269→            <div className="absolute top-[75%] right-[25%] h-1.5 w-1.5 rounded-full bg-violet-400/40 animate-pulse delay-300" />
+   270→   270→          </div>
+   271→   271→
+   272→   272→          {/* Background image overlay */}
+   273→   273→          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&h=600&fit=crop')] bg-cover bg-center opacity-[0.05]" />
+   274→   274→
+   275→   275→          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-28 lg:py-32">
+   276→   276→            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+   277→   277→              {/* Left side: Text content */}
+   278→   278→              <motion.div
+   279→   279→                initial={{ opacity: 0, x: -50 }}
+   280→   280→                animate={{ opacity: 1, x: 0 }}
+   281→   281→                transition={{ duration: 0.8, ease: 'easeOut' }}
+   282→   282→                className="flex-1 max-w-2xl text-center lg:text-left"
+   283→   283→              >
+   284→   284→                {/* Badge */}
+   285→   285→                <motion.div
+   286→   286→                  initial={{ opacity: 0, y: 12 }}
+   287→   287→                  animate={{ opacity: 1, y: 0 }}
+   288→   288→                  transition={{ delay: 0.15, duration: 0.5 }}
+   289→   289→                  className="flex justify-center lg:justify-start"
+   290→   290→                >
+   291→   291→                  <Badge className="mb-4 sm:mb-6 bg-blue-500/15 text-blue-300 border border-blue-400/25 backdrop-blur-md px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium gap-1.5">
+   292→   292→                    <Sparkles className="h-3.5 w-3.5" />
+   293→   293→                    New Collection 2025
+   294→   294→                  </Badge>
+   295→   295→                </motion.div>
+   296→   296→
+   297→   297→                {/* Heading */}
+   298→   298→                <motion.h1
+   299→   299→                  initial={{ opacity: 0, y: 20 }}
+   300→   300→                  animate={{ opacity: 1, y: 0 }}
+   301→   301→                  transition={{ delay: 0.25, duration: 0.6 }}
+   302→   302→                  className="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white mb-4 sm:mb-6 leading-[1.08] tracking-tight"
+   303→   303→                >
+   304→   304→                  Shop Smarter{' '}
+   305→   305→                  <span className="gradient-text">with Zylora</span>
+   306→   306→                </motion.h1>
+   307→   307→
+   308→   308→                {/* Subtitle */}
+   309→   309→                <motion.p
+   310→   310→                  initial={{ opacity: 0, y: 16 }}
+   311→   311→                  animate={{ opacity: 1, y: 0 }}
+   312→   312→                  transition={{ delay: 0.4, duration: 0.5 }}
+   313→   313→                  className="text-slate-300 text-sm sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed"
+   314→   314→                >
+   315→   315→                  Premium shopping experience. Up to 70% off on electronics, fashion, home &amp; more.
+   316→   316→                </motion.p>
+   317→   317→
+   318→   318→                {/* CTAs */}
+   319→   319→                <motion.div
+   320→   320→                  initial={{ opacity: 0, y: 16 }}
+   321→   321→                  animate={{ opacity: 1, y: 0 }}
+   322→   322→                  transition={{ delay: 0.55, duration: 0.5 }}
+   323→   323→                  className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
+   324→   324→                >
+   325→   325→                  <Button
+   326→   326→                    size="lg"
+   327→   327→                    onClick={() => setSelectedCategory(null)}
+   328→   328→                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-xl px-7 sm:px-9 h-12 sm:h-13 text-sm sm:text-base group"
+   329→   329→                  >
+   330→   330→                    Shop Now
+   331→   331→                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+   332→   332→                  </Button>
+   333→   333→                  <Button
+   334→   334→                    size="lg"
+   335→   335→                    variant="outline"
+   336→   336→                    onClick={() => setSortBy('rating')}
+   337→   337→                    className="border-white/20 text-white hover:bg-white/10 backdrop-blur-sm rounded-xl px-7 sm:px-9 h-12 sm:h-13 text-sm sm:text-base group"
+   338→   338→                  >
+   339→   339→                    Explore Deals
+   340→   340→                    <Star className="ml-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
+   341→   341→                  </Button>
+   342→   342→                </motion.div>
+   343→   343→
+   344→   344→                {/* Animated counter stats */}
+   345→   345→                <motion.div
+   346→   346→                  initial={{ opacity: 0, y: 16 }}
+   347→   347→                  animate={{ opacity: 1, y: 0 }}
+   348→   348→                  transition={{ delay: 0.7, duration: 0.6 }}
+   349→   349→                  className="flex items-center gap-6 sm:gap-10 mt-8 sm:mt-10 justify-center lg:justify-start"
+   350→   350→                >
+   351→   351→                  {[
+   352→   352→                    { value: productsCount.toLocaleString() + '+', label: 'Products', icon: Package },
+   353→   353→                    { value: (customersCount / 1000).toFixed(0) + 'K+', label: 'Customers', icon: Users },
+   354→   354→                    { value: discountPercent + '%', label: 'Max Off', icon: Percent },
+   355→   355→                  ].map((stat, i) => (
+   356→   356→                    <div key={i} className="text-center">
+   357→   357→                      <p className="text-2xl sm:text-3xl font-bold count-shimmer">{stat.value}</p>
+   358→   358→                      <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1 justify-center">
+   359→   359→                        <stat.icon className="h-3 w-3" />
+   360→   360→                        {stat.label}
+   361→   361→                      </p>
+   362→   362→                    </div>
+   363→   363→                  ))}
+   364→   364→                </motion.div>
+   365→   365→              </motion.div>
+   366→   366→
+   367→   367→              {/* Right side: Featured Product showcase card (desktop) */}
+   368→   368→              {heroFeaturedProduct && (
+   369→   369→                <motion.div
+   370→   370→                  initial={{ opacity: 0, x: 60, y: 20 }}
+   371→   371→                  animate={{ opacity: 1, x: 0, y: 0 }}
+   372→   372→                  transition={{ delay: 0.8, duration: 0.9, ease: 'easeOut' }}
+   373→   373→                  className="hidden lg:block relative flex-shrink-0"
+   374→   374→                >
+   375→   375→                  <motion.div
+   376→   376→                    whileHover={{ y: -6 }}
+   377→   377→                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+   378→   378→                    onClick={() => navigateToProduct(heroFeaturedProduct.id)}
+   379→   379→                    className="cursor-pointer relative w-72 xl:w-80 rounded-3xl overflow-hidden border border-white/15 group"
+   380→   380→                  >
+   381→   381→                    {/* Product image */}
+   382→   382→                    <div className="relative h-64 xl:h-72 overflow-hidden">
+   383→   383→                      <img
+   384→   384→                        src={heroFeaturedProduct.images?.[0]}
+   385→   385→                        alt={heroFeaturedProduct.name}
+   386→   386→                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+   387→   387→                      />
+   388→   388→                      {/* Glassmorphism overlay */}
+   389→   389→                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+   390→   390→                      {/* Featured badge */}
+   391→   391→                      <div className="absolute top-4 left-4">
+   392→   392→                        <Badge className="bg-blue-500/90 text-white backdrop-blur-md border-blue-400/30 px-3 py-1 text-xs font-bold">
+   393→   393→                          <Award className="h-3 w-3 mr-1" />
+   394→   394→                          Featured
+   395→   395→                        </Badge>
+   396→   396→                      </div>
+   397→   397→                    </div>
+   398→   398→                    {/* Product info on glass */}
+   399→   399→                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-white/10 backdrop-blur-xl border-t border-white/10">
+   400→   400→                      <p className="text-white/60 text-xs font-medium uppercase tracking-wider mb-1">
+   401→   401→                        {heroFeaturedProduct.brand || 'Premium'}
+   402→   402→                      </p>
+   403→   403→                      <h3 className="text-white font-bold text-lg leading-snug line-clamp-1 mb-2">
+   404→   404→                        {heroFeaturedProduct.name}
+   405→   405→                      </h3>
+   406→   406→                      <div className="flex items-center gap-2">
+   407→   407→                        <span className="text-white font-bold text-xl">
+   408→   408→                          {formatINR(heroFeaturedProduct.price)}
+   409→   409→                        </span>
+   410→   410→                        {heroFeaturedProduct.originalPrice && (
+   411→   411→                          <span className="text-white/50 text-sm line-through">
+   412→   412→                            {formatINR(heroFeaturedProduct.originalPrice)}
+   413→   413→                          </span>
+   414→   414→                        )}
+   415→   415→                        {heroFeaturedProduct.originalPrice && (
+   416→   416→                          <Badge className="bg-emerald-500/90 text-white text-[10px] px-1.5 py-0.5 border-0 ml-auto">
+   417→   417→                            {calculateDiscount(heroFeaturedProduct.price, heroFeaturedProduct.originalPrice)}% OFF
+   418→   418→                          </Badge>
+   419→   419→                        )}
+   420→   420→                      </div>
+   421→   421→                    </div>
+   422→   422→                  </motion.div>
+   423→   423→                </motion.div>
+   424→   424→              )}
+   425→   425→            </div>
+   426→   426→          </div>
+   427→   427→
+   428→   428→          {/* Bottom fade to white */}
+   429→   429→          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
+   430→   430→        </section>
+   431→   431→      )}
+   432→   432→
+   433→   433→      {/* ═══════════════════════════════════════════════════════════
+   434→   434→          DEAL TICKER / MARQUEE
+   435→   435→      ═══════════════════════════════════════════════════════════ */}
+   436→   436→      {showHero && (
+   437→   437→        <section className="relative bg-slate-900 border-y border-blue-500/20 overflow-hidden">
+   438→   438→          <div className="py-2.5 sm:py-3 flex">
+   439→   439→            <div className="marquee-scroll flex items-center whitespace-nowrap">
+   440→   440→              {[0, 1].map((copy) => (
+   441→   441→                <span key={copy} className="flex items-center text-sm sm:text-base font-medium text-blue-300 mr-8">
+   442→   442→                  {marqueeText}
+   443→   443→                  <span className="ml-8 text-blue-500/30">●</span>
+   444→   444→                </span>
+   445→   445→              ))}
+   446→   446→            </div>
+   447→   447→          </div>
+   448→   448→          {/* Left/right fade edges */}
+   449→   449→          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-900 to-transparent z-10" />
+   450→   450→          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-900 to-transparent z-10" />
+   451→   451→        </section>
+   452→   452→      )}
+   453→   453→
+   454→   454→      {/* ═══════════════════════════════════════════════════════════
+   455→   455→          TRUST BADGES BAR — Enhanced with pulse glow
+   456→   456→      ═══════════════════════════════════════════════════════════ */}
+   457→   457→      {showHero && (
+   458→   458→        <section className="bg-gradient-to-b from-slate-50 to-background dark:from-slate-800/30 dark:to-background border-b border-border/30">
+   459→   459→          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+   460→   460→            <div className="grid grid-cols-4 gap-3 sm:gap-8">
+   461→   461→              {[
+   462→   462→                { icon: Truck, text: 'Free Delivery', subtext: 'Orders ₹499+', color: 'bg-blue-500/10 text-blue-600' },
+   463→   463→                { icon: Shield, text: 'Secure', subtext: 'Payments', color: 'bg-emerald-500/10 text-emerald-600' },
+   464→   464→                { icon: Percent, text: 'Best', subtext: 'Prices', color: 'bg-amber-500/10 text-amber-600' },
+   465→   465→                { icon: RotateCcw, text: '7-Day', subtext: 'Returns', color: 'bg-violet-500/10 text-violet-600' },
+   466→   466→              ].map((item, i) => (
+   467→   467→                <motion.div
+   468→   468→                  key={i}
+   469→   469→                  initial={{ opacity: 0, y: 10 }}
+   470→   470→                  animate={{ opacity: 1, y: 0 }}
+   471→   471→                  transition={{ delay: 0.1 + i * 0.1 }}
+   472→   472→                  className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left"
+   473→   473→                >
+   474→   474→                  <div className={`pulse-glow flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl ${item.color}`}>
+   475→   475→                    <item.icon className="h-5 w-5 sm:h-5.5 sm:w-5.5" />
+   476→   476→                  </div>
+   477→   477→                  <div>
+   478→   478→                    <span className="text-xs sm:text-sm font-semibold block leading-tight text-foreground">{item.text}</span>
+   479→   479→                    <span className="text-[10px] sm:text-xs text-muted-foreground font-medium leading-tight block">{item.subtext}</span>
+   480→   480→                  </div>
+   481→   481→                </motion.div>
+   482→   482→              ))}
+   483→   483→            </div>
+   484→   484→          </div>
+   485→   485→        </section>
+   486→   486→      )}
+   487→   487→
+   488→   488→      {/* ═══════════════════════════════════════════════════════════
+   489→   489→          SHOP BY CATEGORY — Premium cards with glassmorphism
+   490→   490→      ═══════════════════════════════════════════════════════════ */}
+   491→   491→      {/* Mobile Category Chips — horizontal scrollable */}
+   492→   492→      {showHero && categories.length > 0 && (
+   493→   493→        <section className="md:hidden">
+   494→   494→          <div className="overflow-x-auto scrollbar-hide px-4 py-3">
+   495→   495→            <div className="flex items-center gap-2 whitespace-nowrap">
+   496→   496→              <motion.button
+   497→   497→                onClick={() => setSelectedCategory(null)}
+   498→   498→                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+   499→   499→                  !selectedCategory
+   500→   500→                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   501→   501→                    : 'bg-white text-slate-600 border border-slate-200'
+   502→   502→                }`}
+   503→   503→                whileTap={{ scale: 0.95 }}
+   504→   504→              >
+   505→   505→                All
+   506→   506→              </motion.button>
+   507→   507→              {categories.map((cat) => (
+   508→   508→                <motion.button
+   509→   509→                  key={cat.id}
+   510→   510→                  onClick={() => setSelectedCategory(cat.slug)}
+   511→   511→                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+   512→   512→                    selectedCategory === cat.slug
+   513→   513→                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   514→   514→                      : 'bg-white text-slate-600 border border-slate-200'
+   515→   515→                  }`}
+   516→   516→                  whileTap={{ scale: 0.95 }}
+   517→   517→                >
+   518→   518→                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+   519→   519→                  {cat.name}
+   520→   520→                </motion.button>
+   521→   521→              ))}
+   522→   522→            </div>
+   523→   523→          </div>
+   524→   524→        </section>
+   525→   525→      )}
+   526→   526→
+   527→   527→      {/* Desktop Category Grid — Premium cards */}
+   528→   528→      {showHero && categories.length > 0 && (
+   529→   529→        <section className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+   530→   530→          <SectionHeader icon={ShoppingBag} title="Shop by Category" color="blue" />
+   531→   531→
+   532→   532→          <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
+   533→   533→            {categories.map((cat, i) => (
+   534→   534→              <motion.button
+   535→   535→                key={cat.id}
+   536→   536→                variants={staggerItem}
+   537→   537→                initial="hidden"
+   538→   538→                whileInView="show"
+   539→   539→                viewport={{ once: true }}
+   540→   540→                transition={{ delay: i * 0.05 }}
+   541→   541→                whileHover={{ scale: 1.05, y: -4 }}
+   542→   542→                onClick={() => setSelectedCategory(cat.slug)}
+   543→   543→                className={`group relative overflow-hidden flex flex-col items-center gap-3 p-4 sm:p-5 rounded-2xl border border-border/30 hover:border-blue-400/50 transition-all duration-300 bg-gradient-to-br ${categoryGradients[i % categoryGradients.length]}`}
+   544→   544→              >
+   545→   545→                {/* Glassmorphism overlay on hover */}
+   546→   546→                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/60 dark:group-hover:bg-white/5 backdrop-blur-sm transition-all duration-300 rounded-2xl" />
+   547→   547→
+   548→   548→                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-1 ring-black/5">
+   549→   549→                  <img
+   550→   550→                    src={cat.image}
+   551→   551→                    alt={cat.name}
+   552→   552→                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+   553→   553→                    loading="lazy"
+   554→   554→                  />
+   555→   555→                </div>
+   556→   556→                <span className="relative text-sm font-semibold text-center group-hover:text-blue-600 transition-colors">
+   557→   557→                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+   558→   558→                  {cat.name}
+   559→   559→                </span>
+   560→   560→              </motion.button>
+   561→   561→            ))}
+   562→   562→          </div>
+   563→   563→        </section>
+   564→   564→      )}
+   565→   565→
+   566→   566→      {/* ═══════════════════════════════════════════════════════════
+   567→   567→          FLASH SALE — Dramatic gradient with countdown
+   568→   568→      ═══════════════════════════════════════════════════════════ */}
+   569→   569→      {showHero && saleProducts.length > 0 && (
+   570→   570→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+   571→   571→          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-3xl p-6 sm:p-8 lg:p-10">
+   572→   572→            {/* Particle effect dots */}
+   573→   573→            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+   574→   574→              <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-blue-400/20 blur-[80px] float-orb" />
+   575→   575→              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-300/15 blur-[70px] float-orb-delay" />
+   576→   576→              <div className="absolute top-1/3 left-1/4 h-2 w-2 rounded-full bg-white/40 animate-pulse" />
+   577→   577→              <div className="absolute top-1/2 right-1/3 h-1.5 w-1.5 rounded-full bg-white/30 animate-pulse delay-500" />
+   578→   578→              <div className="absolute bottom-1/4 left-1/2 h-2 w-2 rounded-full bg-white/20 animate-pulse delay-1000" />
+   579→   579→            </div>
+   580→   580→
+   581→   581→            <div className="relative">
+   582→   582→              {/* Header row */}
+   583→   583→              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+   584→   584→                <div className="flex items-center gap-3 sm:gap-4 text-white">
+   585→   585→                  <motion.div
+   586→   586→                    animate={{ rotate: [0, 10, -10, 0] }}
+   587→   587→                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+   588→   588→                  >
+   589→   589→                    <Zap className="h-7 w-7 sm:h-8 sm:w-8" />
+   590→   590→                  </motion.div>
+   591→   591→                  <div>
+   592→   592→                    <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold">Flash Sale</h2>
+   593→   593→                    <p className="text-blue-200 text-xs sm:text-sm">Grab deals before they&apos;re gone!</p>
+   594→   594→                  </div>
+   595→   595→                  <Badge className="bg-white/20 text-white backdrop-blur-sm border-white/10 hidden sm:inline-flex">
+   596→   596→                    Limited Time
+   597→   597→                  </Badge>
+   598→   598→                </div>
+   599→   599→
+   600→   600→                {/* Countdown timer */}
+   601→   601→                <div className="flex items-center gap-2 sm:gap-3">
+   602→   602→                  <div className="flex items-center gap-1.5 text-white">
+   603→   603→                    <Clock className="h-4 w-4 text-blue-200" />
+   604→   604→                    <span className="text-xs text-blue-200 font-medium">Ends in</span>
+   605→   605→                  </div>
+   606→   606→                  <div className="flex items-center gap-1 sm:gap-1.5">
+   607→   607→                    {[
+   608→   608→                      { val: countdown.hours, label: 'H' },
+   609→   609→                      { val: countdown.minutes, label: 'M' },
+   610→   610→                      { val: countdown.seconds, label: 'S' },
+   611→   611→                    ].map((unit, i) => (
+   612→   612→                      <div key={i} className="flex items-center gap-1 sm:gap-1.5">
+   613→   613→                        <div className="bg-white/15 backdrop-blur-sm rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 border border-white/10 min-w-[40px] sm:min-w-[48px] text-center">
+   614→   614→                          <span className="text-white font-bold text-base sm:text-xl font-mono">
+   615→   615→                            {String(unit.val).padStart(2, '0')}
+   616→   616→                          </span>
+   617→   617→                          <span className="block text-[8px] sm:text-[10px] text-blue-200 uppercase tracking-wider">
+   618→   618→                            {unit.label}
+   619→   619→                          </span>
+   620→   620→                        </div>
+   621→   621→                        {i < 2 && (
+   622→   622→                          <span className="text-white/50 font-bold text-lg sm:text-xl animate-pulse">:</span>
+   623→   623→                        )}
+   624→   624→                      </div>
+   625→   625→                    ))}
+   626→   626→                  </div>
+   627→   627→                </div>
+   628→   628→              </div>
+   629→   629→
+   630→   630→              {/* Product grid - horizontal scroll on mobile, grid on desktop */}
+   631→   631→              <div className="flex lg:grid lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto scrollbar-hide -mx-2 px-2 lg:mx-0 lg:px-0 pb-2 lg:pb-0">
+   632→   632→                {saleProducts.slice(0, 4).map((product, i) => (
+   633→   633→                  <motion.button
+   634→   634→                    key={product.id}
+   635→   635→                    initial={{ opacity: 0, y: 16 }}
+   636→   636→                    animate={{ opacity: 1, y: 0 }}
+   637→   637→                    transition={{ delay: i * 0.08 }}
+   638→   638→                    whileHover={{ scale: 1.03, y: -2 }}
+   639→   639→                    onClick={() => navigateToProduct(product.id)}
+   640→   640→                    className="flex-shrink-0 w-56 lg:w-auto flex items-center lg:flex-col lg:items-stretch gap-3 sm:gap-0 bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 hover:bg-white/20 transition-colors text-left text-white border border-white/10 group"
+   641→   641→                  >
+   642→   642→                    <div className="w-14 h-14 sm:w-full sm:h-32 sm:mb-3 rounded-xl overflow-hidden shrink-0 bg-white/20">
+   643→   643→                      <img
+   644→   644→                        src={product.images?.[0]}
+   645→   645→                        alt={product.name}
+   646→   646→                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+   647→   647→                        loading="lazy"
+   648→   648→                      />
+   649→   649→                    </div>
+   650→   650→                    <div className="flex-1 min-w-0">
+   651→   651→                      <p className="font-semibold text-xs sm:text-sm line-clamp-1 mb-1">{product.name}</p>
+   652→   652→                      <div className="flex items-baseline gap-1.5 sm:gap-2">
+   653→   653→                        <span className="font-bold text-sm sm:text-base">{formatINR(product.price)}</span>
+   654→   654→                        {product.originalPrice && (
+   655→   655→                          <span className="text-[10px] sm:text-xs line-through opacity-50">
+   656→   656→                            {formatINR(product.originalPrice)}
+   657→   657→                          </span>
+   658→   658→                        )}
+   659→   659→                      </div>
+   660→   660→                      {product.originalPrice && (
+   661→   661→                        <Badge className="mt-1.5 bg-emerald-500/80 text-white text-[9px] sm:text-xs border-0 px-1.5 sm:px-2">
+   662→   662→                          {calculateDiscount(product.price, product.originalPrice)}% OFF
+   663→   663→                        </Badge>
+   664→   664→                      )}
+   665→   665→                    </div>
+   666→   666→                  </motion.button>
+   667→   667→                ))}
+   668→   668→              </div>
+   669→   669→
+   670→   670→              {/* View all link */}
+   671→   671→              <div className="mt-5 text-center">
+   672→   672→                <Button
+   673→   673→                  variant="ghost"
+   674→   674→                  className="text-white hover:bg-white/15 rounded-xl gap-2"
+   675→   675→                  onClick={() => {
+   676→   676→                    setSelectedCategory(null);
+   677→   677→                    useShopStore.getState().setSearchQuery('');
+   678→   678→                  }}
+   679→   679→                >
+   680→   680→                  View All Deals <ArrowRight className="h-4 w-4" />
+   681→   681→                </Button>
+   682→   682→              </div>
+   683→   683→            </div>
+   684→   684→          </div>
+   685→   685→        </section>
+   686→   686→      )}
+   687→   687→
+   688→   688→      {/* ═══════════════════════════════════════════════════════════
+   689→   689→          TRENDING NOW
+   690→   690→      ═══════════════════════════════════════════════════════════ */}
+   691→   691→      {showHero && featuredProducts.length > 0 && (
+   692→   692→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+   693→   693→          <SectionHeader
+   694→   694→            icon={TrendingUp}
+   695→   695→            title="Trending Now"
+   696→   696→            color="blue"
+   697→   697→            onviewall={() => {
+   698→   698→              setSelectedCategory(null);
+   699→   699→              useShopStore.getState().setSearchQuery('');
+   700→   700→            }}
+   701→   701→          />
+   702→   702→          <motion.div
+   703→   703→            variants={container}
+   704→   704→            initial="hidden"
+   705→   705→            whileInView="show"
+   706→   706→            viewport={{ once: true, margin: '-30px' }}
+   707→   707→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   708→   708→          >
+   709→   709→            {featuredProducts.slice(0, 8).map((p, i) => (
+   710→   710→              <ProductCard key={p.id} product={p} index={i} />
+   711→   711→            ))}
+   712→   712→          </motion.div>
+   713→   713→        </section>
+   714→   714→      )}
+   715→   715→
+   716→   716→      {/* ═══════════════════════════════════════════════════════════
+   717→   717→          NEW ARRIVALS
+   718→   718→      ═══════════════════════════════════════════════════════════ */}
+   719→   719→      {showHero && newArrivals.length > 0 && (
+   720→   720→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   721→   721→          <SectionHeader
+   722→   722→            icon={Sparkles}
+   723→   723→            title="New Arrivals"
+   724→   724→            color="violet"
+   725→   725→            onviewall={() => {
+   726→   726→              setSelectedCategory(null);
+   727→   727→              useShopStore.getState().setSearchQuery('');
+   728→   728→            }}
+   729→   729→          />
+   730→   730→          <motion.div
+   731→   731→            variants={container}
+   732→   732→            initial="hidden"
+   733→   733→            whileInView="show"
+   734→   734→            viewport={{ once: true, margin: '-30px' }}
+   735→   735→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   736→   736→          >
+   737→   737→            {newArrivals.slice(0, 4).map((p, i) => (
+   738→   738→              <ProductCard key={p.id} product={p} index={i} />
+   739→   739→            ))}
+   740→   740→          </motion.div>
+   741→   741→        </section>
+   742→   742→      )}
+   743→   743→
+   744→   744→      {/* ═══════════════════════════════════════════════════════════
+   745→   745→          TOP RATED
+   746→   746→      ═══════════════════════════════════════════════════════════ */}
+   747→   747→      {showHero && topRated.length > 0 && (
+   748→   748→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   749→   749→          <SectionHeader
+   750→   750→            icon={Star}
+   751→   751→            title="Top Rated"
+   752→   752→            color="amber"
+   753→   753→            onviewall={() => {
+   754→   754→              setSelectedCategory(null);
+   755→   755→              useShopStore.getState().setSearchQuery('');
+   756→   756→            }}
+   757→   757→          />
+   758→   758→          <motion.div
+   759→   759→            variants={container}
+   760→   760→            initial="hidden"
+   761→   761→            whileInView="show"
+   762→   762→            viewport={{ once: true, margin: '-30px' }}
+   763→   763→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   764→   764→          >
+   765→   765→            {topRated.slice(0, 8).map((p, i) => (
+   766→   766→              <ProductCard key={p.id} product={p} index={i} />
+   767→   767→            ))}
+   768→   768→          </motion.div>
+   769→   769→        </section>
+   770→   770→      )}
+   771→   771→
+   772→   772→      {/* ═══════════════════════════════════════════════════════════
+   773→   773→          ALL PRODUCTS / FILTERED SECTION — Sticky sort bar
+   774→   774→      ═══════════════════════════════════════════════════════════ */}
+   775→   775→      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   776→   776→        {/* Sticky Sort Bar */}
+   777→   777→        <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-background/80 backdrop-blur-xl border-b border-border/30 -mt-3 sm:-mt-4 mb-6 sm:mb-8">
+   778→   778→          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+   779→   779→            <div>
+   780→   780→              <h2 className="font-heading text-lg sm:text-2xl lg:text-3xl font-bold">
+   781→   781→                {searchQuery
+   782→   782→                  ? `Results for "${searchQuery}"`
+   783→   783→                  : currentCategory
+   784→   784→                    ? currentCategory.name
+   785→   785→                    : 'All Products'}
+   786→   786→              </h2>
+   787→   787→              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+   788→   788→                {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+   789→   789→              </p>
+   790→   790→            </div>
+   791→   791→
+   792→   792→            {/* Sort Dropdown */}
+   793→   793→            <div className="relative" ref={sortRef}>
+   794→   794→              <Button
+   795→   795→                variant="outline"
+   796→   796→                onClick={() => setSortOpen(!sortOpen)}
+   797→   797→                className="flex items-center gap-2 rounded-xl px-4 focus:ring-2 focus:ring-blue-500/20"
+   798→   798→              >
+   799→   799→                <SlidersHorizontal className="h-4 w-4" />
+   800→   800→                <span className="text-sm">
+   801→   801→                  {sortOptions.find((o) => o.value === sortBy)?.label || 'Featured'}
+   802→   802→                </span>
+   803→   803→                <ChevronDown
+   804→   804→                  className={`h-3.5 w-3.5 transition-transform ${sortOpen ? 'rotate-180' : ''}`}
+   805→   805→                />
+   806→   806→              </Button>
+   807→   807→              <AnimatePresence>
+   808→   808→                {sortOpen && (
+   809→   809→                  <motion.div
+   810→   810→                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+   811→   811→                    animate={{ opacity: 1, y: 0, scale: 1 }}
+   812→   812→                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+   813→   813→                    transition={{ duration: 0.15 }}
+   814→   814→                    className="absolute right-0 top-full mt-2 z-50 min-w-[200px] rounded-xl bg-white dark:bg-slate-800 border border-border/50 overflow-hidden"
+   815→   815→                  >
+   816→   816→                    {sortOptions.map((opt) => (
+   817→   817→                      <button
+   818→   818→                        key={opt.value}
+   819→   819→                        onClick={() => {
+   820→   820→                          setSortBy(opt.value);
+   821→   821→                          setSortOpen(false);
+   822→   822→                        }}
+   823→   823→                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+   824→   824→                          sortBy === opt.value
+   825→   825→                            ? 'bg-blue-500/10 text-blue-600 font-medium'
+   826→   826→                            : 'text-foreground hover:bg-slate-50 dark:hover:bg-slate-700/50'
+   827→   827→                        }`}
+   828→   828→                      >
+   829→   829→                        {opt.label}
+   830→   830→                      </button>
+   831→   831→                    ))}
+   832→   832→                  </motion.div>
+   833→   833→                )}
+   834→   834→              </AnimatePresence>
+   835→   835→            </div>
+   836→   836→          </div>
+   837→   837→        </div>
+   838→   838→
+   839→   839→        {/* Empty state */}
+   840→   840→        {filteredProducts.length === 0 ? (
+   841→   841→          <motion.div
+   842→   842→            initial={{ opacity: 0, y: 20 }}
+   843→   843→            animate={{ opacity: 1, y: 0 }}
+   844→   844→            className="text-center py-16 sm:py-24"
+   845→   845→          >
+   846→   846→            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 mb-6">
+   847→   847→              <Search className="h-10 w-10 text-blue-500" />
+   848→   848→            </div>
+   849→   849→            <h3 className="text-xl sm:text-2xl font-bold mb-2">No products found</h3>
+   850→   850→            <p className="text-muted-foreground mb-8 max-w-sm mx-auto text-sm sm:text-base">
+   851→   851→              Try adjusting your search or browse a different category
+   852→   852→            </p>
+   853→   853→            <Button
+   854→   854→              variant="outline"
+   855→   855→              onClick={() => {
+   856→   856→                setSelectedCategory(null);
+   857→   857→                useShopStore.getState().setSearchQuery('');
+   858→   858→              }}
+   859→   859→              className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950 gap-2"
+   860→   860→            >
+   861→   861→              <RotateCcw className="h-4 w-4" />
+   862→   862→              Clear Filters
+   863→   863→            </Button>
+   864→   864→          </motion.div>
+   865→   865→        ) : (
+   866→   866→          <motion.div
+   867→   867→            variants={container}
+   868→   868→            initial="hidden"
+   869→   869→            animate="show"
+   870→   870→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   871→   871→          >
+   872→   872→            {filteredProducts.map((p, i) => (
+   873→   873→              <ProductCard key={p.id} product={p} index={i} />
+   874→   874→            ))}
+   875→   875→          </motion.div>
+   876→   876→        )}
+   877→   877→      </section>
+   878→   878→    </div>
+   879→   879→  );
+   880→   880→}
+   881→   881→

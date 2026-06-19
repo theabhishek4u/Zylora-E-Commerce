@@ -42,11 +42,11 @@ export function CartView() {
       <motion.div
         animate={{ y: [0, -12, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        className="mx-auto mb-6 sm:mb-8 w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-br from-blue-100 via-blue-50 to-sky-100 flex items-center justify-center"
+        className="mx-auto mb-6 sm:mb-8 w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-br from-blue-100 via-blue-50 to-sky-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center"
       >
         <ShoppingBag className="h-12 w-12 sm:h-16 sm:w-16 text-blue-500" strokeWidth={1.5} />
       </motion.div>
-      <h2 className="text-2xl sm:text-3xl font-bold font-heading mb-2 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Your cart is empty</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold font-heading mb-2 bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">Your cart is empty</h2>
       <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-xs mx-auto">Looks like you haven&apos;t added anything yet. Start shopping to find amazing deals!</p>
       <Button
         size="lg"
@@ -78,14 +78,14 @@ export function CartView() {
               const disc = calculateDiscount(item.price, item.originalPrice);
               return (
                 <motion.div key={item.id} layout initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20, height: 0 }}>
-                  <div className="group relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                  <div className="group relative rounded-2xl border border-white/40 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700/40 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                     {/* Subtle gradient shimmer on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 via-blue-50/40 to-blue-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 via-blue-50/40 to-blue-50/0 dark:from-blue-900/0 dark:via-blue-900/20 dark:to-blue-900/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     <div className="relative p-3 sm:p-5">
                       <div className="flex gap-3 sm:gap-5">
                         {/* Product Image */}
                         <div
-                          className="w-20 h-20 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 shrink-0 cursor-pointer ring-1 ring-black/5 group/img"
+                          className="w-20 h-20 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-700 shrink-0 cursor-pointer ring-1 ring-black/5 group/img"
                           onClick={() => useShopStore.getState().navigateToProduct(item.productId)}
                         >
                           <img
@@ -98,7 +98,7 @@ export function CartView() {
                         {/* Item Details */}
                         <div className="flex-1 min-w-0">
                           <h3
-                            className="font-semibold text-sm sm:text-base line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors"
+                            className="font-semibold text-sm sm:text-base line-clamp-2 cursor-pointer hover:text-blue-600 dark:text-slate-200 dark:hover:text-blue-400 transition-colors"
                             onClick={() => useShopStore.getState().navigateToProduct(item.productId)}
                           >
                             {item.productName}
@@ -106,11 +106,11 @@ export function CartView() {
 
                           {/* Price Section */}
                           <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mt-1 sm:mt-2">
-                            <span className="font-bold text-base sm:text-lg">{formatINR(item.price)}</span>
+                            <span className="font-bold text-base sm:text-lg dark:text-slate-100">{formatINR(item.price)}</span>
                             {item.originalPrice && item.originalPrice > item.price && (
                               <>
-                                <span className="text-xs sm:text-sm text-muted-foreground line-through">{formatINR(item.originalPrice)}</span>
-                                <span className="text-[10px] sm:text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">{disc}% OFF</span>
+                                <span className="text-xs sm:text-sm text-muted-foreground line-through dark:text-slate-500">{formatINR(item.originalPrice)}</span>
+                                <span className="text-[10px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/50 px-1.5 py-0.5 rounded-full">{disc}% OFF</span>
                               </>
                             )}
                           </div>
@@ -118,7 +118,7 @@ export function CartView() {
                           {/* Quantity & Remove */}
                           <div className="flex items-center justify-between mt-3 sm:mt-4">
                             {/* Quantity Controls - Pill Shape */}
-                            <div className="flex items-center rounded-full bg-slate-50/80 ring-1 ring-slate-200/60 p-0.5">
+                            <div className="flex items-center rounded-full bg-slate-50/80 dark:bg-slate-700/80 ring-1 ring-slate-200/60 dark:ring-slate-600/60 p-0.5">
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -143,7 +143,7 @@ export function CartView() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-slate-400 hover:text-red-600 hover:bg-red-50 h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm rounded-full transition-all duration-200"
+                              className="text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm rounded-full transition-all duration-200"
                               onClick={() => removeFromCart(item.id)}
                             >
                               <Trash2 className="h-3.5 sm:h-4 w-3.5 sm:w-4 mr-1 transition-colors" />
@@ -163,7 +163,7 @@ export function CartView() {
         {/* Desktop Order Summary */}
         <div className="hidden lg:block">
           <div className="sticky top-36">
-            <div className="relative rounded-2xl border border-white/40 bg-white/60 backdrop-blur-xl overflow-hidden">
+            <div className="relative rounded-2xl border border-white/40 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700/40 backdrop-blur-xl overflow-hidden">
               {/* Gradient Top Border */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-sky-500" />
 
@@ -173,7 +173,7 @@ export function CartView() {
                 {/* Coupon Section */}
                 <div className="mb-4">
                   {appliedCoupon ? (
-                    <div className="flex items-center justify-between bg-emerald-50/80 border border-emerald-200/60 rounded-xl p-3">
+                    <div className="flex items-center justify-between bg-emerald-50/80 dark:bg-emerald-950/80 border border-emerald-200/60 dark:border-emerald-800/60 rounded-xl p-3">
                       <div className="flex items-center gap-2">
                         <Tag className="h-4 w-4 text-emerald-600" />
                         <span className="text-sm font-semibold text-emerald-700">{appliedCoupon}</span>
@@ -186,7 +186,7 @@ export function CartView() {
                         placeholder="Enter coupon code"
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                        className="text-sm h-10 rounded-xl border-slate-200/80 bg-white/80 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
+                        className="text-sm h-10 rounded-xl border-slate-200/80 bg-white/80 dark:bg-slate-800/80 dark:border-slate-600/80 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all"
                       />
                       <Button
                         size="sm"
@@ -224,7 +224,7 @@ export function CartView() {
                   </div>
                 </div>
 
-                <Separator className="my-4" />
+                <Separator className="my-4 dark:bg-slate-700" />
 
                 {/* Total */}
                 <div className="flex justify-between font-bold text-xl mb-2">
@@ -234,7 +234,7 @@ export function CartView() {
 
                 {/* Savings Highlight */}
                 {(totalSavings > 0 || couponDiscount > 0) && (
-                  <div className="text-sm text-emerald-700 font-semibold text-center bg-gradient-to-r from-emerald-50 to-emerald-50/60 rounded-xl p-3 mb-4 ring-1 ring-emerald-200/50">
+                  <div className="text-sm text-emerald-700 dark:text-emerald-400 font-semibold text-center bg-gradient-to-r from-emerald-50 to-emerald-50/60 dark:from-emerald-950/80 dark:to-emerald-950/60 rounded-xl p-3 mb-4 ring-1 ring-emerald-200/50 dark:ring-emerald-800/60">
                     🎉 You save <span className="text-emerald-600 text-base">{formatINR(totalSavings + couponDiscount)}</span>!
                   </div>
                 )}
@@ -249,7 +249,7 @@ export function CartView() {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full mt-2 text-muted-foreground hover:text-foreground rounded-xl"
+                  className="w-full mt-2 text-muted-foreground dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 rounded-xl"
                   onClick={() => setCurrentView('home')}
                 >
                   Continue Shopping
@@ -261,12 +261,12 @@ export function CartView() {
       </div>
 
       {/* Mobile Sticky Bottom - Cart Summary */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/80 backdrop-blur-2xl border-t border-white/30 safe-area-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/80 dark:bg-slate-900/95 backdrop-blur-2xl border-t border-white/30 dark:border-slate-700/30 safe-area-bottom">
         <div className="px-4 py-3">
           {/* Savings Badge */}
           {(totalSavings > 0 || couponDiscount > 0) && (
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50/80 px-2 py-0.5 rounded-full">🎉 Save {formatINR(totalSavings + couponDiscount)}</span>
+              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 dark:bg-emerald-950/80 bg-emerald-50/80 px-2 py-0.5 rounded-full">🎉 Save {formatINR(totalSavings + couponDiscount)}</span>
               {deliveryCharge === 0 && <span className="text-xs text-emerald-600 font-semibold">Free Delivery</span>}
             </div>
           )}

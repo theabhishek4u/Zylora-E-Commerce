@@ -1,0 +1,888 @@
+     1→'use client';
+     2→
+     3→import { useShopStore } from '@/store/shop-store';
+     4→import { ProductCard } from './product-card';
+     5→import { formatINR, calculateDiscount } from '@/lib/format';
+     6→import {
+     7→  ArrowRight,
+     8→  TrendingUp,
+     9→  Truck,
+    10→  Shield,
+    11→  Percent,
+    12→  Zap,
+    13→  Sparkles,
+    14→  RotateCcw,
+    15→  Star,
+    16→  Search,
+    17→  SlidersHorizontal,
+    18→  ChevronDown,
+    19→  Clock,
+    20→  Package,
+    21→  Users,
+    22→  ChevronRight,
+    23→  ShoppingBag,
+    24→  Award,
+    25→} from 'lucide-react';
+    26→import { Button } from '@/components/ui/button';
+    27→import { Badge } from '@/components/ui/badge';
+    28→import { useMemo, useState, useEffect, useRef } from 'react';
+    29→import { motion, AnimatePresence } from 'framer-motion';
+    30→
+    31→const container = {
+    32→  hidden: {},
+    33→  show: { transition: { staggerChildren: 0.06 } },
+    34→};
+    35→
+    36→const fadeInUp = {
+    37→  hidden: { opacity: 0, y: 24 },
+    38→  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
+    39→};
+    40→
+    41→const staggerItem = {
+    42→  hidden: { opacity: 0, y: 20 },
+    43→  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
+    44→};
+    45→
+    46→/* ─── Animated counter hook ────────────────────────────────── */
+    47→function useAnimatedCounter(end: number, duration = 2000, startOnMount = true) {
+    48→  const [count, setCount] = useState(0);
+    49→  const [started, setStarted] = useState(false);
+    50→  const ref = useRef<HTMLElement>(null);
+    51→  useEffect(() => {
+    52→    if (!startOnMount) return;
+    53→    // Small delay to avoid showing "0" flash
+    54→    const startTimer = setTimeout(() => setStarted(true), 100);
+    55→    return () => clearTimeout(startTimer);
+    56→  }, [startOnMount]);
+    57→
+    58→  useEffect(() => {
+    59→    if (!started) return;
+    60→    let startTime: number | null = null;
+    61→    let raf: number;
+    62→    const step = (timestamp: number) => {
+    63→      if (!startTime) startTime = timestamp;
+    64→      const progress = Math.min((timestamp - startTime) / duration, 1);
+    65→      // Use easeOutCubic for smoother animation
+    66→      const eased = 1 - Math.pow(1 - progress, 3);
+    67→      setCount(Math.floor(eased * end));
+    68→      if (progress < 1) raf = requestAnimationFrame(step);
+    69→    };
+    70→    raf = requestAnimationFrame(step);
+    71→    return () => cancelAnimationFrame(raf);
+    72→  }, [end, duration, started]);
+    73→  return count;
+    74→}
+    75→
+    76→/* ─── Fake countdown timer ─────────────────────────────────── */
+    77→function useCountdown() {
+    78→  const [time, setTime] = useState({ hours: 5, minutes: 47, seconds: 32 });
+    79→  useEffect(() => {
+    80→    const interval = setInterval(() => {
+    81→      setTime((prev) => {
+    82→        let { hours, minutes, seconds } = prev;
+    83→        seconds--;
+    84→        if (seconds < 0) { seconds = 59; minutes--; }
+    85→        if (minutes < 0) { minutes = 59; hours--; }
+    86→        if (hours < 0) { hours = 23; minutes = 59; seconds = 59; }
+    87→        return { hours, minutes, seconds };
+    88→      });
+    89→    }, 1000);
+    90→    return () => clearInterval(interval);
+    91→  }, []);
+    92→  return time;
+    93→}
+    94→
+    95→/* ─── Section header component ─────────────────────────────── */
+    96→function SectionHeader({
+    97→  icon: Icon,
+    98→  title,
+    99→  color = 'blue',
+   100→  onviewall,
+   101→}: {
+   102→  icon: React.ElementType;
+   103→  title: string;
+   104→  color?: string;
+   105→  onviewall?: () => void;
+   106→}) {
+   107→  const colorMap: Record<string, { bg: string; text: string; underline: string; hover: string }> = {
+   108→    blue: { bg: 'bg-blue-500/10 dark:bg-blue-500/20', text: 'text-blue-600 dark:text-blue-400', underline: 'from-blue-500 to-blue-400', hover: 'hover:text-blue-600 dark:hover:text-blue-400' },
+   109→    violet: { bg: 'bg-violet-500/10 dark:bg-violet-500/20', text: 'text-violet-500 dark:text-violet-400', underline: 'from-violet-500 to-violet-400', hover: 'hover:text-violet-600 dark:hover:text-violet-400' },
+   110→    amber: { bg: 'bg-amber-500/10 dark:bg-amber-500/20', text: 'text-amber-500 dark:text-amber-400', underline: 'from-amber-500 to-amber-400', hover: 'hover:text-amber-600 dark:hover:text-amber-400' },
+   111→    emerald: { bg: 'bg-emerald-500/10 dark:bg-emerald-500/20', text: 'text-emerald-600 dark:text-emerald-400', underline: 'from-emerald-500 to-emerald-400', hover: 'hover:text-emerald-600 dark:hover:text-emerald-400' },
+   112→  };
+   113→  const c = colorMap[color] || colorMap.blue;
+   114→
+   115→  return (
+   116→    <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-50px' }}>
+   117→      <div className="flex items-center justify-between mb-6 sm:mb-8">
+   118→        <div className="flex items-center gap-2.5 sm:gap-3">
+   119→          <motion.div
+   120→            className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${c.bg}`}
+   121→            whileHover={{ rotate: 12, scale: 1.1 }}
+   122→            transition={{ type: 'spring', stiffness: 300 }}
+   123→          >
+   124→            <Icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 ${c.text}`} />
+   125→          </motion.div>
+   126→          <div>
+   127→            <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold leading-tight text-foreground">
+   128→              {title}
+   129→            </h2>
+   130→            <div className={`h-1 w-12 sm:w-16 rounded-full bg-gradient-to-r ${c.underline} mt-1`} />
+   131→          </div>
+   132→        </div>
+   133→        {onviewall && (
+   134→          <Button
+   135→            variant="ghost"
+   136→            className={`${c.hover} text-muted-foreground rounded-xl gap-1 text-sm font-medium`}
+   137→            onClick={onviewall}
+   138→          >
+   139→            View All <ChevronRight className="h-4 w-4" />
+   140→          </Button>
+   141→        )}
+   142→      </div>
+   143→    </motion.div>
+   144→  );
+   145→}
+   146→
+   147→/* ─── Category color map ───────────────────────────────────── */
+   148→const categoryGradients = [
+   149→  'from-blue-500/10 to-cyan-500/10 dark:from-blue-500/20 dark:to-cyan-500/20',
+   150→  'from-violet-500/10 to-pink-500/10 dark:from-violet-500/20 dark:to-pink-500/20',
+   151→  'from-amber-500/10 to-orange-500/10 dark:from-amber-500/20 dark:to-orange-500/20',
+   152→  'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20',
+   153→  'from-rose-500/10 to-red-500/10 dark:from-rose-500/20 dark:to-red-500/20',
+   154→  'from-indigo-500/10 to-sky-500/10 dark:from-indigo-500/20 dark:to-sky-500/20',
+   155→];
+   156→
+   157→/* ─── Countdown digit component ────────────────────────────── */
+   158→function CountdownDigit({ value, label }: { value: number; label: string }) {
+   159→  return (
+   160→    <div className="bg-white/15 dark:bg-white/10 backdrop-blur-sm rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 border border-white/15 min-w-[48px] sm:min-w-[56px] text-center">
+   161→      <span className="text-white font-bold text-lg sm:text-2xl font-mono block leading-none">
+   162→        {String(value).padStart(2, '0')}
+   163→      </span>
+   164→      <span className="block text-[9px] sm:text-[11px] text-blue-200 dark:text-blue-300 uppercase tracking-wider mt-1 font-semibold">
+   165→        {label}
+   166→      </span>
+   167→    </div>
+   168→  );
+   169→}
+   170→
+   171→/* ────────────────────────────────────────────────────────────── */
+   172→
+   173→export function HomeView() {
+   174→  const {
+   175→    products,
+   176→    categories,
+   177→    selectedCategory,
+   178→    setSelectedCategory,
+   179→    searchQuery,
+   180→    sortBy,
+   181→    setSortBy,
+   182→    navigateToProduct,
+   183→    wishlistIds,
+   184→  } = useShopStore();
+   185→
+   186→  const [sortOpen, setSortOpen] = useState(false);
+   187→  const sortRef = useRef<HTMLDivElement>(null);
+   188→
+   189→  const featuredProducts = useMemo(() => products.filter((p) => p.featured), [products]);
+   190→  const saleProducts = useMemo(() => products.filter((p) => p.onSale), [products]);
+   191→  const newArrivals = useMemo(() => products.filter((p) => p.newArrival), [products]);
+   192→  const topRated = useMemo(
+   193→    () => [...products].sort((a, b) => b.rating - a.rating).slice(0, 8),
+   194→    [products]
+   195→  );
+   196→
+   197→  const filteredProducts = useMemo(() => {
+   198→    let filtered = [...products];
+   199→    if (selectedCategory)
+   200→      filtered = filtered.filter(
+   201→        (p) => categories.find((c) => c.id === p.categoryId)?.slug === selectedCategory
+   202→      );
+   203→    if (searchQuery) {
+   204→      const q = searchQuery.toLowerCase();
+   205→      filtered = filtered.filter(
+   206→        (p) =>
+   207→          p.name.toLowerCase().includes(q) ||
+   208→          p.description.toLowerCase().includes(q) ||
+   209→          p.brand?.toLowerCase().includes(q)
+   210→      );
+   211→    }
+   212→    switch (sortBy) {
+   213→      case 'price-low':
+   214→        filtered.sort((a, b) => a.price - b.price);
+   215→        break;
+   216→      case 'price-high':
+   217→        filtered.sort((a, b) => b.price - a.price);
+   218→        break;
+   219→      case 'rating':
+   220→        filtered.sort((a, b) => b.rating - a.rating);
+   221→        break;
+   222→      case 'newest':
+   223→        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+   224→        break;
+   225→      default:
+   226→        filtered.sort(
+   227→          (a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || b.rating - a.rating
+   228→        );
+   229→    }
+   230→    return filtered;
+   231→  }, [products, selectedCategory, searchQuery, sortBy, categories]);
+   232→
+   233→  const currentCategory = categories.find((c) => c.slug === selectedCategory);
+   234→  const showHero = !searchQuery && !selectedCategory;
+   235→
+   236→  const sortOptions = [
+   237→    { value: 'featured', label: 'Featured' },
+   238→    { value: 'price-low', label: 'Price: Low → High' },
+   239→    { value: 'price-high', label: 'Price: High → Low' },
+   240→    { value: 'rating', label: 'Top Rated' },
+   241→    { value: 'newest', label: 'Newest' },
+   242→  ];
+   243→
+   244→  // Animated counters — with "K" suffix for thousands
+   245→  const productsCount = useAnimatedCounter(10, 2000);
+   246→  const customersCount = useAnimatedCounter(50, 2500);
+   247→  const discountPercent = useAnimatedCounter(70, 1800);
+   248→
+   249→  // Countdown timer for flash sale
+   250→  const countdown = useCountdown();
+   251→
+   252→  // Featured product for hero showcase
+   253→  const heroFeaturedProduct = useMemo(() => {
+   254→    if (featuredProducts.length > 0) return featuredProducts[0];
+   255→    if (products.length > 0) return products[0];
+   256→    return null;
+   257→  }, [featuredProducts, products]);
+   258→
+   259→  // Close sort dropdown on outside click
+   260→  useEffect(() => {
+   261→    const handleClickOutside = (e: MouseEvent) => {
+   262→      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+   263→        setSortOpen(false);
+   264→      }
+   265→    };
+   266→    document.addEventListener('mousedown', handleClickOutside);
+   267→    return () => document.removeEventListener('mousedown', handleClickOutside);
+   268→  }, []);
+   269→
+   270→  const marqueeText = '🔥 Flash Sale Live Now · ⚡ Up to 70% OFF · 🚚 Free Delivery ₹499+ · ⭐ 50K+ Happy Customers · 💳 Secure Payments · 🎁 New Arrivals Daily · ✨ Best Prices Guaranteed';
+   271→
+   272→  return (
+   273→    <div className="min-h-screen">
+   274→      {/* ═══════════════════════════════════════════════════════════
+   275→          HERO SECTION — Premium animated gradient with floating orbs
+   276→      ═══════════════════════════════════════════════════════════ */}
+   277→      {showHero && (
+   278→        <section className="relative overflow-hidden gradient-shift bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
+   279→          {/* Floating decorative orbs — smoother animation */}
+   280→          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+   281→            <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-blue-500/20 dark:bg-blue-500/15 blur-[120px] animate-[float_8s_ease-in-out_infinite]" />
+   282→            <div className="absolute top-1/4 right-0 h-64 w-64 rounded-full bg-indigo-400/15 dark:bg-indigo-400/10 blur-[100px] animate-[float_9s_ease-in-out_1.5s_infinite]" />
+   283→            <div className="absolute -bottom-16 left-1/3 h-72 w-72 rounded-full bg-cyan-400/10 dark:bg-cyan-400/8 blur-[110px] animate-[float_11s_ease-in-out_3s_infinite]" />
+   284→            <div className="absolute top-1/2 left-1/2 h-48 w-48 rounded-full bg-violet-400/8 dark:bg-violet-400/5 blur-[90px] animate-[float_10s_ease-in-out_2s_infinite]" />
+   285→            {/* Small sparkle dots */}
+   286→            <div className="absolute top-[15%] left-[20%] h-1.5 w-1.5 rounded-full bg-blue-400/60 animate-pulse" />
+   287→            <div className="absolute top-[35%] right-[15%] h-1 w-1 rounded-full bg-cyan-400/50 animate-pulse delay-700" />
+   288→            <div className="absolute top-[60%] left-[10%] h-1.5 w-1.5 rounded-full bg-indigo-400/40 animate-pulse delay-1000" />
+   289→            <div className="absolute top-[25%] right-[35%] h-1 w-1 rounded-full bg-blue-300/50 animate-pulse delay-500" />
+   290→            <div className="absolute top-[75%] right-[25%] h-1.5 w-1.5 rounded-full bg-violet-400/40 animate-pulse delay-300" />
+   291→          </div>
+   292→
+   293→          {/* Background image overlay */}
+   294→          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&h=600&fit=crop')] bg-cover bg-center opacity-[0.05] dark:opacity-[0.03]" />
+   295→
+   296→          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:py-28">
+   297→            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+   298→              {/* Left side: Text content */}
+   299→              <motion.div
+   300→                initial={{ opacity: 0, x: -50 }}
+   301→                animate={{ opacity: 1, x: 0 }}
+   302→                transition={{ duration: 0.8, ease: 'easeOut' }}
+   303→                className="flex-1 max-w-2xl text-center lg:text-left"
+   304→              >
+   305→                {/* Badge */}
+   306→                <motion.div
+   307→                  initial={{ opacity: 0, y: 12 }}
+   308→                  animate={{ opacity: 1, y: 0 }}
+   309→                  transition={{ delay: 0.15, duration: 0.5 }}
+   310→                  className="flex justify-center lg:justify-start"
+   311→                >
+   312→                  <Badge className="mb-4 sm:mb-6 bg-blue-500/15 dark:bg-blue-500/20 text-blue-300 dark:text-blue-200 border border-blue-400/25 dark:border-blue-400/30 backdrop-blur-md px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium gap-1.5">
+   313→                    <Sparkles className="h-3.5 w-3.5" />
+   314→                    New Collection 2025
+   315→                  </Badge>
+   316→                </motion.div>
+   317→
+   318→                {/* Heading */}
+   319→                <motion.h1
+   320→                  initial={{ opacity: 0, y: 20 }}
+   321→                  animate={{ opacity: 1, y: 0 }}
+   322→                  transition={{ delay: 0.25, duration: 0.6 }}
+   323→                  className="font-heading text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white mb-4 sm:mb-6 leading-[1.08] tracking-tight"
+   324→                >
+   325→                  Shop Smarter{' '}
+   326→                  <span className="gradient-text">with Zylora</span>
+   327→                </motion.h1>
+   328→
+   329→                {/* Subtitle */}
+   330→                <motion.p
+   331→                  initial={{ opacity: 0, y: 16 }}
+   332→                  animate={{ opacity: 1, y: 0 }}
+   333→                  transition={{ delay: 0.4, duration: 0.5 }}
+   334→                  className="text-slate-300 dark:text-slate-400 text-sm sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed"
+   335→                >
+   336→                  Premium shopping experience. Up to 70% off on electronics, fashion, home &amp; more.
+   337→                </motion.p>
+   338→
+   339→                {/* CTAs */}
+   340→                <motion.div
+   341→                  initial={{ opacity: 0, y: 16 }}
+   342→                  animate={{ opacity: 1, y: 0 }}
+   343→                  transition={{ delay: 0.55, duration: 0.5 }}
+   344→                  className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
+   345→                >
+   346→                  <Button
+   347→                    size="lg"
+   348→                    onClick={() => setSelectedCategory(null)}
+   349→                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-400 dark:hover:to-blue-500 text-white font-semibold rounded-xl px-7 sm:px-9 h-12 sm:h-13 text-sm sm:text-base group"
+   350→                  >
+   351→                    Shop Now
+   352→                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+   353→                  </Button>
+   354→                  <Button
+   355→                    size="lg"
+   356→                    variant="outline"
+   357→                    onClick={() => setSortBy('rating')}
+   358→                    className="border-white/20 dark:border-white/15 text-white hover:bg-white/10 dark:hover:bg-white/5 backdrop-blur-sm rounded-xl px-7 sm:px-9 h-12 sm:h-13 text-sm sm:text-base group"
+   359→                  >
+   360→                    Explore Deals
+   361→                    <Star className="ml-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
+   362→                  </Button>
+   363→                </motion.div>
+   364→
+   365→                {/* Animated counter stats — using K suffix for thousands */}
+   366→                <motion.div
+   367→                  initial={{ opacity: 0, y: 16 }}
+   368→                  animate={{ opacity: 1, y: 0 }}
+   369→                  transition={{ delay: 0.7, duration: 0.6 }}
+   370→                  className="flex items-center gap-6 sm:gap-10 mt-8 sm:mt-10 justify-center lg:justify-start"
+   371→                >
+   372→                  {[
+   373→                    { value: productsCount + 'K+', label: 'Products', icon: Package },
+   374→                    { value: customersCount + 'K+', label: 'Customers', icon: Users },
+   375→                    { value: discountPercent + '%', label: 'Max Off', icon: Percent },
+   376→                  ].map((stat, i) => (
+   377→                    <div key={i} className="text-center">
+   378→                      <p className="text-2xl sm:text-3xl font-bold count-shimmer">{stat.value}</p>
+   379→                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1 justify-center">
+   380→                        <stat.icon className="h-3 w-3" />
+   381→                        {stat.label}
+   382→                      </p>
+   383→                    </div>
+   384→                  ))}
+   385→                </motion.div>
+   386→              </motion.div>
+   387→
+   388→              {/* Right side: Featured Product showcase card (desktop) */}
+   389→              {heroFeaturedProduct && (
+   390→                <motion.div
+   391→                  initial={{ opacity: 0, x: 60, y: 20 }}
+   392→                  animate={{ opacity: 1, x: 0, y: 0 }}
+   393→                  transition={{ delay: 0.8, duration: 0.9, ease: 'easeOut' }}
+   394→                  className="hidden lg:block relative flex-shrink-0"
+   395→                >
+   396→                  <motion.div
+   397→                    whileHover={{ y: -6 }}
+   398→                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+   399→                    onClick={() => navigateToProduct(heroFeaturedProduct.id)}
+   400→                    className="cursor-pointer relative w-72 xl:w-80 rounded-3xl overflow-hidden border border-white/15 dark:border-white/10 group"
+   401→                  >
+   402→                    {/* Product image */}
+   403→                    <div className="relative h-64 xl:h-72 overflow-hidden">
+   404→                      <img
+   405→                        src={heroFeaturedProduct.images?.[0]}
+   406→                        alt={heroFeaturedProduct.name}
+   407→                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+   408→                      />
+   409→                      {/* Glassmorphism overlay */}
+   410→                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 dark:from-slate-950/90 via-slate-900/20 to-transparent" />
+   411→                      {/* Featured badge */}
+   412→                      <div className="absolute top-4 left-4">
+   413→                        <Badge className="bg-blue-500/90 dark:bg-blue-600/90 text-white backdrop-blur-md border-blue-400/30 px-3 py-1 text-xs font-bold">
+   414→                          <Award className="h-3 w-3 mr-1" />
+   415→                          Featured
+   416→                        </Badge>
+   417→                      </div>
+   418→                    </div>
+   419→                    {/* Product info on glass */}
+   420→                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-white/10 dark:bg-white/5 backdrop-blur-xl border-t border-white/10 dark:border-white/5">
+   421→                      <p className="text-white/60 dark:text-white/50 text-xs font-medium uppercase tracking-wider mb-1">
+   422→                        {heroFeaturedProduct.brand || 'Premium'}
+   423→                      </p>
+   424→                      <h3 className="text-white font-bold text-lg leading-snug line-clamp-1 mb-2">
+   425→                        {heroFeaturedProduct.name}
+   426→                      </h3>
+   427→                      <div className="flex items-center gap-2">
+   428→                        <span className="text-white font-bold text-xl">
+   429→                          {formatINR(heroFeaturedProduct.price)}
+   430→                        </span>
+   431→                        {heroFeaturedProduct.originalPrice && (
+   432→                          <span className="text-white/50 dark:text-white/40 text-sm line-through">
+   433→                            {formatINR(heroFeaturedProduct.originalPrice)}
+   434→                          </span>
+   435→                        )}
+   436→                        {heroFeaturedProduct.originalPrice && (
+   437→                          <Badge className="bg-emerald-500/90 dark:bg-emerald-600/90 text-white text-[10px] px-1.5 py-0.5 border-0 ml-auto">
+   438→                            {calculateDiscount(heroFeaturedProduct.price, heroFeaturedProduct.originalPrice)}% OFF
+   439→                          </Badge>
+   440→                        )}
+   441→                      </div>
+   442→                    </div>
+   443→                  </motion.div>
+   444→                </motion.div>
+   445→              )}
+   446→            </div>
+   447→          </div>
+   448→
+   449→          {/* Bottom fade to background */}
+   450→          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
+   451→        </section>
+   452→      )}
+   453→
+   454→      {/* ═══════════════════════════════════════════════════════════
+   455→          DEAL TICKER / MARQUEE
+   456→      ═══════════════════════════════════════════════════════════ */}
+   457→      {showHero && (
+   458→        <section className="relative bg-slate-900 dark:bg-slate-950 border-y border-blue-500/20 dark:border-blue-500/15 overflow-hidden">
+   459→          <div className="py-2.5 sm:py-3 flex">
+   460→            <div className="marquee-scroll flex items-center whitespace-nowrap">
+   461→              {[0, 1].map((copy) => (
+   462→                <span key={copy} className="flex items-center text-sm sm:text-base font-medium text-blue-300 dark:text-blue-400 mr-8">
+   463→                  {marqueeText}
+   464→                  <span className="ml-8 text-blue-500/30 dark:text-blue-400/20">●</span>
+   465→                </span>
+   466→              ))}
+   467→            </div>
+   468→          </div>
+   469→          {/* Left/right fade edges */}
+   470→          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-900 dark:from-slate-950 to-transparent z-10" />
+   471→          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-900 dark:from-slate-950 to-transparent z-10" />
+   472→        </section>
+   473→      )}
+   474→
+   475→      {/* ═══════════════════════════════════════════════════════════
+   476→          TRUST BADGES BAR — Enhanced with pulse glow
+   477→      ═══════════════════════════════════════════════════════════ */}
+   478→      {showHero && (
+   479→        <section className="bg-gradient-to-b from-slate-50 to-background dark:from-slate-800/50 dark:to-background border-b border-border/30 dark:border-slate-700/30">
+   480→          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+   481→            <div className="grid grid-cols-4 gap-3 sm:gap-8">
+   482→              {[
+   483→                { icon: Truck, text: 'Free Delivery', subtext: 'Orders ₹499+', color: 'bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400' },
+   484→                { icon: Shield, text: 'Secure', subtext: 'Payments', color: 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400' },
+   485→                { icon: Percent, text: 'Best', subtext: 'Prices', color: 'bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' },
+   486→                { icon: RotateCcw, text: '7-Day', subtext: 'Returns', color: 'bg-violet-500/10 text-violet-600 dark:bg-violet-500/20 dark:text-violet-400' },
+   487→              ].map((item, i) => (
+   488→                <motion.div
+   489→                  key={i}
+   490→                  initial={{ opacity: 0, y: 10 }}
+   491→                  animate={{ opacity: 1, y: 0 }}
+   492→                  transition={{ delay: 0.1 + i * 0.1 }}
+   493→                  className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left"
+   494→                >
+   495→                  <div className={`pulse-glow flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl ${item.color}`}>
+   496→                    <item.icon className="h-5 w-5 sm:h-5.5 sm:w-5.5" />
+   497→                  </div>
+   498→                  <div>
+   499→                    <span className="text-xs sm:text-sm font-semibold block leading-tight text-foreground dark:text-slate-200">{item.text}</span>
+   500→                    <span className="text-[10px] sm:text-xs text-muted-foreground dark:text-slate-400 font-medium leading-tight block">{item.subtext}</span>
+   501→                  </div>
+   502→                </motion.div>
+   503→              ))}
+   504→            </div>
+   505→          </div>
+   506→        </section>
+   507→      )}
+   508→
+   509→      {/* ═══════════════════════════════════════════════════════════
+   510→          SHOP BY CATEGORY — Premium cards with glassmorphism
+   511→      ═══════════════════════════════════════════════════════════ */}
+   512→      {/* Mobile Category Chips — horizontal scrollable */}
+   513→      {showHero && categories.length > 0 && (
+   514→        <section className="md:hidden">
+   515→          <div className="overflow-x-auto scrollbar-hide px-4 py-3">
+   516→            <div className="flex items-center gap-2 whitespace-nowrap">
+   517→              <motion.button
+   518→                onClick={() => setSelectedCategory(null)}
+   519→                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+   520→                  !selectedCategory
+   521→                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   522→                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+   523→                }`}
+   524→                whileTap={{ scale: 0.95 }}
+   525→              >
+   526→                All
+   527→              </motion.button>
+   528→              {categories.map((cat) => (
+   529→                <motion.button
+   530→                  key={cat.id}
+   531→                  onClick={() => setSelectedCategory(cat.slug)}
+   532→                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shrink-0 ${
+   533→                    selectedCategory === cat.slug
+   534→                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   535→                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+   536→                  }`}
+   537→                  whileTap={{ scale: 0.95 }}
+   538→                >
+   539→                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+   540→                  {cat.name}
+   541→                </motion.button>
+   542→              ))}
+   543→            </div>
+   544→          </div>
+   545→        </section>
+   546→      )}
+   547→
+   548→      {/* Desktop Category Grid — Premium cards */}
+   549→      {showHero && categories.length > 0 && (
+   550→        <section className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+   551→          <SectionHeader icon={ShoppingBag} title="Shop by Category" color="blue" />
+   552→
+   553→          <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
+   554→            {categories.map((cat, i) => (
+   555→              <motion.button
+   556→                key={cat.id}
+   557→                variants={staggerItem}
+   558→                initial="hidden"
+   559→                whileInView="show"
+   560→                viewport={{ once: true }}
+   561→                transition={{ delay: i * 0.05 }}
+   562→                whileHover={{ scale: 1.05, y: -4 }}
+   563→                onClick={() => setSelectedCategory(cat.slug)}
+   564→                className={`group relative overflow-hidden flex flex-col items-center gap-3 p-4 sm:p-5 rounded-2xl border border-border/30 dark:border-slate-700/50 hover:border-blue-400/50 dark:hover:border-blue-400/40 transition-all duration-300 bg-gradient-to-br ${categoryGradients[i % categoryGradients.length]}`}
+   565→              >
+   566→                {/* Glassmorphism overlay on hover */}
+   567→                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/60 dark:group-hover:bg-white/5 backdrop-blur-sm transition-all duration-300 rounded-2xl" />
+   568→
+   569→                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10">
+   570→                  <img
+   571→                    src={cat.image}
+   572→                    alt={cat.name}
+   573→                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+   574→                    loading="lazy"
+   575→                  />
+   576→                </div>
+   577→                <span className="relative text-sm font-semibold text-center group-hover:text-blue-600 dark:text-slate-200 dark:group-hover:text-blue-400 transition-colors">
+   578→                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+   579→                  {cat.name}
+   580→                </span>
+   581→              </motion.button>
+   582→            ))}
+   583→          </div>
+   584→        </section>
+   585→      )}
+   586→
+   587→      {/* ═══════════════════════════════════════════════════════════
+   588→          FLASH SALE — Dramatic gradient with countdown
+   589→      ═══════════════════════════════════════════════════════════ */}
+   590→      {showHero && saleProducts.length > 0 && (
+   591→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+   592→          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 dark:from-blue-700 dark:via-blue-800 dark:to-indigo-900 rounded-3xl p-6 sm:p-8 lg:p-10">
+   593→            {/* Particle effect dots */}
+   594→            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+   595→              <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-blue-400/20 dark:bg-blue-400/10 blur-[80px] animate-[float_8s_ease-in-out_infinite]" />
+   596→              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-300/15 dark:bg-indigo-300/8 blur-[70px] animate-[float_9s_ease-in-out_1s_infinite]" />
+   597→              <div className="absolute top-1/3 left-1/4 h-2 w-2 rounded-full bg-white/40 animate-pulse" />
+   598→              <div className="absolute top-1/2 right-1/3 h-1.5 w-1.5 rounded-full bg-white/30 animate-pulse delay-500" />
+   599→              <div className="absolute bottom-1/4 left-1/2 h-2 w-2 rounded-full bg-white/20 animate-pulse delay-1000" />
+   600→            </div>
+   601→
+   602→            <div className="relative">
+   603→              {/* Header row with prominent countdown */}
+   604→              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+   605→                <div className="flex items-center gap-3 sm:gap-4 text-white">
+   606→                  <motion.div
+   607→                    animate={{ rotate: [0, 10, -10, 0] }}
+   608→                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+   609→                  >
+   610→                    <Zap className="h-7 w-7 sm:h-8 sm:w-8" />
+   611→                  </motion.div>
+   612→                  <div>
+   613→                    <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold">Flash Sale</h2>
+   614→                    <p className="text-blue-200 dark:text-blue-300 text-xs sm:text-sm">Grab deals before they&apos;re gone!</p>
+   615→                  </div>
+   616→                  <Badge className="bg-white/20 dark:bg-white/15 text-white backdrop-blur-sm border-white/10 hidden sm:inline-flex">
+   617→                    Limited Time
+   618→                  </Badge>
+   619→                </div>
+   620→
+   621→                {/* Prominent Countdown timer */}
+   622→                <div className="flex items-center gap-2 sm:gap-3 bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-2xl px-3 sm:px-5 py-2 sm:py-3 border border-white/10 dark:border-white/5">
+   623→                  <div className="flex items-center gap-1.5 text-white mr-1 sm:mr-2">
+   624→                    <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-300 dark:text-amber-200" />
+   625→                    <span className="text-[10px] sm:text-xs text-amber-200 dark:text-amber-300 font-semibold uppercase tracking-wider">Ends in</span>
+   626→                  </div>
+   627→                  <div className="flex items-center gap-1 sm:gap-1.5">
+   628→                    <CountdownDigit value={countdown.hours} label="Hrs" />
+   629→                    <span className="text-white/60 font-bold text-lg sm:text-2xl animate-pulse px-0.5">:</span>
+   630→                    <CountdownDigit value={countdown.minutes} label="Min" />
+   631→                    <span className="text-white/60 font-bold text-lg sm:text-2xl animate-pulse px-0.5">:</span>
+   632→                    <CountdownDigit value={countdown.seconds} label="Sec" />
+   633→                  </div>
+   634→                </div>
+   635→              </div>
+   636→
+   637→              {/* Product grid - horizontal scroll on mobile, grid on desktop */}
+   638→              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+   639→                {saleProducts.slice(0, 4).map((product, i) => (
+   640→                  <motion.button
+   641→                    key={product.id}
+   642→                    initial={{ opacity: 0, y: 16 }}
+   643→                    animate={{ opacity: 1, y: 0 }}
+   644→                    transition={{ delay: i * 0.08 }}
+   645→                    whileHover={{ scale: 1.03, y: -2 }}
+   646→                    onClick={() => navigateToProduct(product.id)}
+   647→                    className="flex flex-col bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden hover:bg-white/20 dark:hover:bg-white/10 transition-colors text-left text-white border border-white/10 dark:border-white/5 group"
+   648→                  >
+   649→                    <div className="w-full h-32 sm:h-40 overflow-hidden">
+   650→                      <img
+   651→                        src={product.images?.[0]}
+   652→                        alt={product.name}
+   653→                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+   654→                        loading="lazy"
+   655→                      />
+   656→                    </div>
+   657→                    <div className="p-3 sm:p-4">
+   658→                      <p className="font-semibold text-xs sm:text-sm line-clamp-1 mb-1.5">{product.name}</p>
+   659→                      <div className="flex items-baseline gap-1.5 sm:gap-2">
+   660→                        <span className="font-bold text-sm sm:text-base">{formatINR(product.price)}</span>
+   661→                        {product.originalPrice && (
+   662→                          <span className="text-[10px] sm:text-xs line-through opacity-50 dark:opacity-40">
+   663→                            {formatINR(product.originalPrice)}
+   664→                          </span>
+   665→                        )}
+   666→                      </div>
+   667→                      {product.originalPrice && (
+   668→                        <Badge className="mt-1.5 bg-emerald-500/80 dark:bg-emerald-600/80 text-white text-[9px] sm:text-xs border-0 px-1.5 sm:px-2">
+   669→                          {calculateDiscount(product.price, product.originalPrice)}% OFF
+   670→                        </Badge>
+   671→                      )}
+   672→                    </div>
+   673→                  </motion.button>
+   674→                ))}
+   675→              </div>
+   676→
+   677→              {/* View all link */}
+   678→              <div className="mt-5 text-center">
+   679→                <Button
+   680→                  variant="ghost"
+   681→                  className="text-white hover:bg-white/15 dark:hover:bg-white/10 rounded-xl gap-2"
+   682→                  onClick={() => {
+   683→                    setSelectedCategory(null);
+   684→                    useShopStore.getState().setSearchQuery('');
+   685→                  }}
+   686→                >
+   687→                  View All Deals <ArrowRight className="h-4 w-4" />
+   688→                </Button>
+   689→              </div>
+   690→            </div>
+   691→          </div>
+   692→        </section>
+   693→      )}
+   694→
+   695→      {/* ═══════════════════════════════════════════════════════════
+   696→          TRENDING NOW
+   697→      ═══════════════════════════════════════════════════════════ */}
+   698→      {showHero && featuredProducts.length > 0 && (
+   699→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+   700→          <SectionHeader
+   701→            icon={TrendingUp}
+   702→            title="Trending Now"
+   703→            color="blue"
+   704→            onviewall={() => {
+   705→              setSelectedCategory(null);
+   706→              useShopStore.getState().setSearchQuery('');
+   707→            }}
+   708→          />
+   709→          <motion.div
+   710→            variants={container}
+   711→            initial="hidden"
+   712→            whileInView="show"
+   713→            viewport={{ once: true, margin: '-30px' }}
+   714→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   715→          >
+   716→            {featuredProducts.slice(0, 8).map((p, i) => (
+   717→              <ProductCard key={p.id} product={p} index={i} />
+   718→            ))}
+   719→          </motion.div>
+   720→        </section>
+   721→      )}
+   722→
+   723→      {/* ═══════════════════════════════════════════════════════════
+   724→          NEW ARRIVALS
+   725→      ═══════════════════════════════════════════════════════════ */}
+   726→      {showHero && newArrivals.length > 0 && (
+   727→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   728→          <SectionHeader
+   729→            icon={Sparkles}
+   730→            title="New Arrivals"
+   731→            color="violet"
+   732→            onviewall={() => {
+   733→              setSelectedCategory(null);
+   734→              useShopStore.getState().setSearchQuery('');
+   735→            }}
+   736→          />
+   737→          <motion.div
+   738→            variants={container}
+   739→            initial="hidden"
+   740→            whileInView="show"
+   741→            viewport={{ once: true, margin: '-30px' }}
+   742→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   743→          >
+   744→            {newArrivals.slice(0, 4).map((p, i) => (
+   745→              <ProductCard key={p.id} product={p} index={i} />
+   746→            ))}
+   747→          </motion.div>
+   748→        </section>
+   749→      )}
+   750→
+   751→      {/* ═══════════════════════════════════════════════════════════
+   752→          TOP RATED
+   753→      ═══════════════════════════════════════════════════════════ */}
+   754→      {showHero && topRated.length > 0 && (
+   755→        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   756→          <SectionHeader
+   757→            icon={Star}
+   758→            title="Top Rated"
+   759→            color="amber"
+   760→            onviewall={() => {
+   761→              setSelectedCategory(null);
+   762→              useShopStore.getState().setSearchQuery('');
+   763→            }}
+   764→          />
+   765→          <motion.div
+   766→            variants={container}
+   767→            initial="hidden"
+   768→            whileInView="show"
+   769→            viewport={{ once: true, margin: '-30px' }}
+   770→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   771→          >
+   772→            {topRated.slice(0, 8).map((p, i) => (
+   773→              <ProductCard key={p.id} product={p} index={i} />
+   774→            ))}
+   775→          </motion.div>
+   776→        </section>
+   777→      )}
+   778→
+   779→      {/* ═══════════════════════════════════════════════════════════
+   780→          ALL PRODUCTS / FILTERED SECTION — Sticky sort bar
+   781→      ═══════════════════════════════════════════════════════════ */}
+   782→      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+   783→        {/* Sticky Sort Bar */}
+   784→        <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-background/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-border/30 dark:border-slate-700/30 -mt-3 sm:-mt-4 mb-6 sm:mb-8">
+   785→          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+   786→            <div>
+   787→              <h2 className="font-heading text-lg sm:text-2xl lg:text-3xl font-bold text-foreground">
+   788→                {searchQuery
+   789→                  ? `Results for "${searchQuery}"`
+   790→                  : currentCategory
+   791→                    ? currentCategory.name
+   792→                    : 'All Products'}
+   793→              </h2>
+   794→              <p className="text-xs sm:text-sm text-muted-foreground dark:text-slate-400 mt-0.5">
+   795→                {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+   796→              </p>
+   797→            </div>
+   798→
+   799→            {/* Sort Dropdown */}
+   800→            <div className="relative" ref={sortRef}>
+   801→              <Button
+   802→                variant="outline"
+   803→                onClick={() => setSortOpen(!sortOpen)}
+   804→                className="flex items-center gap-2 rounded-xl px-4 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+   805→              >
+   806→                <SlidersHorizontal className="h-4 w-4" />
+   807→                <span className="text-sm">
+   808→                  {sortOptions.find((o) => o.value === sortBy)?.label || 'Featured'}
+   809→                </span>
+   810→                <ChevronDown
+   811→                  className={`h-3.5 w-3.5 transition-transform ${sortOpen ? 'rotate-180' : ''}`}
+   812→                />
+   813→              </Button>
+   814→              <AnimatePresence>
+   815→                {sortOpen && (
+   816→                  <motion.div
+   817→                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+   818→                    animate={{ opacity: 1, y: 0, scale: 1 }}
+   819→                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+   820→                    transition={{ duration: 0.15 }}
+   821→                    className="absolute right-0 top-full mt-2 z-50 min-w-[200px] rounded-xl bg-white dark:bg-slate-800 border border-border/50 dark:border-slate-700 overflow-hidden"
+   822→                  >
+   823→                    {sortOptions.map((opt) => (
+   824→                      <button
+   825→                        key={opt.value}
+   826→                        onClick={() => {
+   827→                          setSortBy(opt.value);
+   828→                          setSortOpen(false);
+   829→                        }}
+   830→                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+   831→                          sortBy === opt.value
+   832→                            ? 'bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-medium'
+   833→                            : 'text-foreground dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+   834→                        }`}
+   835→                      >
+   836→                        {opt.label}
+   837→                      </button>
+   838→                    ))}
+   839→                  </motion.div>
+   840→                )}
+   841→              </AnimatePresence>
+   842→            </div>
+   843→          </div>
+   844→        </div>
+   845→
+   846→        {/* Empty state */}
+   847→        {filteredProducts.length === 0 ? (
+   848→          <motion.div
+   849→            initial={{ opacity: 0, y: 20 }}
+   850→            animate={{ opacity: 1, y: 0 }}
+   851→            className="text-center py-16 sm:py-24"
+   852→          >
+   853→            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-blue-500/20 dark:to-indigo-500/20 mb-6">
+   854→              <Search className="h-10 w-10 text-blue-500 dark:text-blue-400" />
+   855→            </div>
+   856→            <h3 className="text-xl sm:text-2xl font-bold mb-2 text-foreground dark:text-slate-100">No products found</h3>
+   857→            <p className="text-muted-foreground dark:text-slate-400 mb-8 max-w-sm mx-auto text-sm sm:text-base">
+   858→              Try adjusting your search or browse a different category
+   859→            </p>
+   860→            <Button
+   861→              variant="outline"
+   862→              onClick={() => {
+   863→                setSelectedCategory(null);
+   864→                useShopStore.getState().setSearchQuery('');
+   865→              }}
+   866→              className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950 gap-2"
+   867→            >
+   868→              <RotateCcw className="h-4 w-4" />
+   869→              Clear Filters
+   870→            </Button>
+   871→          </motion.div>
+   872→        ) : (
+   873→          <motion.div
+   874→            variants={container}
+   875→            initial="hidden"
+   876→            animate="show"
+   877→            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+   878→          >
+   879→            {filteredProducts.map((p, i) => (
+   880→              <ProductCard key={p.id} product={p} index={i} />
+   881→            ))}
+   882→          </motion.div>
+   883→        )}
+   884→      </section>
+   885→    </div>
+   886→  );
+   887→}
+   888→

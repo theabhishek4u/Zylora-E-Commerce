@@ -1,0 +1,583 @@
+     1→     1→'use client';
+     2→     2→
+     3→     3→import { useShopStore } from '@/store/shop-store';
+     4→     4→import { Search, ShoppingCart, Menu, Package, Heart, User, ChevronDown, Bell, X, LayoutDashboard, LogIn, LogOut, Settings, Truck, ShieldCheck, Sparkles } from 'lucide-react';
+     5→     5→import { Button } from '@/components/ui/button';
+     6→     6→import { Badge } from '@/components/ui/badge';
+     7→     7→import { Input } from '@/components/ui/input';
+     8→     8→import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+     9→     9→import { Separator } from '@/components/ui/separator';
+    10→    10→import { useState, useEffect, useRef, useCallback } from 'react';
+    11→    11→import { motion, AnimatePresence } from 'framer-motion';
+    12→    12→import { signOut, useSession } from 'next-auth/react';
+    13→    13→import { toast } from 'sonner';
+    14→    14→import Image from 'next/image';
+    15→    15→
+    16→    16→export function Header() {
+    17→    17→  const {
+    18→    18→    searchQuery, setSearchQuery, selectedCategory, setSelectedCategory,
+    19→    19→    categories, currentView, setCurrentView, getCartCount, goHome,
+    20→    20→    user, wishlistIds, sortBy, setSortBy,
+    21→    21→  } = useShopStore();
+    22→    22→  const { data: session } = useSession();
+    23→    23→
+    24→    24→  const [localSearch, setLocalSearch] = useState(searchQuery);
+    25→    25→  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    26→    26→  const [showSearch, setShowSearch] = useState(false);
+    27→    27→  const [showUserMenu, setShowUserMenu] = useState(false);
+    28→    28→  const [showNotifications, setShowNotifications] = useState(false);
+    29→    29→  const [searchFocused, setSearchFocused] = useState(false);
+    30→    30→  const [scrolled, setScrolled] = useState(false);
+    31→    31→  const cartCount = getCartCount();
+    32→    32→  const userMenuRef = useRef<HTMLDivElement>(null);
+    33→    33→  const notifRef = useRef<HTMLDivElement>(null);
+    34→    34→  const searchInputRef = useRef<HTMLInputElement>(null);
+    35→    35→
+    36→    36→  useEffect(() => { setLocalSearch(searchQuery); }, [searchQuery]);
+    37→    37→
+    38→    38→  useEffect(() => {
+    39→    39→    const handleScroll = () => setScrolled(window.scrollY > 10);
+    40→    40→    window.addEventListener('scroll', handleScroll, { passive: true });
+    41→    41→    return () => window.removeEventListener('scroll', handleScroll);
+    42→    42→  }, []);
+    43→    43→
+    44→    44→  useEffect(() => {
+    45→    45→    const handler = (e: MouseEvent) => {
+    46→    46→      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setShowUserMenu(false);
+    47→    47→      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setShowNotifications(false);
+    48→    48→    };
+    49→    49→    document.addEventListener('mousedown', handler);
+    50→    50→    return () => document.removeEventListener('mousedown', handler);
+    51→    51→  }, []);
+    52→    52→
+    53→    53→  // Listen for mobile bottom nav search focus event
+    54→    54→  useEffect(() => {
+    55→    55→    const handleSearchFocus = () => {
+    56→    56→      setShowSearch(true);
+    57→    57→      setTimeout(() => searchInputRef.current?.focus(), 150);
+    58→    58→    };
+    59→    59→    window.addEventListener('zylora-focus-search', handleSearchFocus);
+    60→    60→    return () => window.removeEventListener('zylora-focus-search', handleSearchFocus);
+    61→    61→  }, []);
+    62→    62→
+    63→    63→  const handleSearch = useCallback((e: React.FormEvent) => {
+    64→    64→    e.preventDefault();
+    65→    65→    setSearchQuery(localSearch);
+    66→    66→    if (currentView !== 'home') setCurrentView('home');
+    67→    67→    setShowSearch(false);
+    68→    68→    if (searchInputRef.current) searchInputRef.current?.blur();
+    69→    69→  }, [localSearch, setSearchQuery, currentView, setCurrentView]);
+    70→    70→
+    71→    71→  const handleSignOut = useCallback(async () => {
+    72→    72→    try {
+    73→    73→      useShopStore.getState().setUser(null);
+    74→    74→      setShowUserMenu(false);
+    75→    75→      setCurrentView('home');
+    76→    76→      await signOut({ redirect: false });
+    77→    77→      toast.success('Signed out successfully');
+    78→    78→    } catch {
+    79→    79→      toast.error('Failed to sign out');
+    80→    80→    }
+    81→    81→  }, [setCurrentView]);
+    82→    82→
+    83→    83→  const currentUser = user || (session?.user ? {
+    84→    84→    id: (session.user as { id: string }).id,
+    85→    85→    name: session.user.name || '',
+    86→    86→    email: session.user.email || '',
+    87→    87→    role: (session.user as { role: string }).role || 'user',
+    88→    88→  } : null);
+    89→    89→  const isAdmin = currentUser?.role === 'admin';
+    90→    90→
+    91→    91→  return (
+    92→    92→    <header className="sticky top-0 z-50">
+    93→    93→      {/* ── Top Announcement Bar ── */}
+    94→    94→      <div className="bg-[#0F172A] text-white overflow-hidden relative">
+    95→    95→        <div className="shimmer-overlay" />
+    96→    96→        <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs relative z-10">
+    97→    97→          <div className="flex items-center gap-2">
+    98→    98→            <Truck className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+    99→    99→            <span className="hidden sm:inline font-medium tracking-wide">
+   100→   100→              Free delivery on orders above <span className="text-blue-300 font-semibold">₹499</span>
+   101→   101→            </span>
+   102→   102→            <span className="sm:hidden font-medium tracking-wide">
+   103→   103→              Free delivery <span className="text-blue-300 font-semibold">₹499+</span>
+   104→   104→            </span>
+   105→   105→          </div>
+   106→   106→          <div className="flex items-center gap-4">
+   107→   107→            <button
+   108→   108→              onClick={() => setCurrentView('orders')}
+   109→   109→              className="hover:text-blue-300 transition-colors flex items-center gap-1.5 font-medium"
+   110→   110→            >
+   111→   111→              <Package className="h-3.5 w-3.5" />
+   112→   112→              <span className="hidden sm:inline">My Orders</span>
+   113→   113→            </button>
+   114→   114→            <div className="hidden md:flex items-center gap-1.5 text-slate-400">
+   115→   115→              <ShieldCheck className="h-3.5 w-3.5" />
+   116→   116→              <span>100% Secure</span>
+   117→   117→            </div>
+   118→   118→          </div>
+   119→   119→        </div>
+   120→   120→      </div>
+   121→   121→
+   122→   122→      {/* ── Main Navbar ── */}
+   123→   123→      <div className={`glass-strong transition-all duration-300`}>
+   124→   124→        <div className="max-w-7xl mx-auto px-4">
+   125→   125→          <div className="flex items-center gap-3 h-16">
+   126→   126→            {/* Mobile Hamburger */}
+   127→   127→            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+   128→   128→              <SheetTrigger asChild className="lg:hidden">
+   129→   129→                <Button variant="ghost" size="icon" className="shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30">
+   130→   130→                  <Menu className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   131→   131→                </Button>
+   132→   132→              </SheetTrigger>
+   133→   133→              <SheetContent side="left" className="w-80 p-0 glass-strong border-r-0">
+   134→   134→                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+   135→   135→                {/* Mobile Menu Header */}
+   136→   136→                <div className="p-5 border-b border-border/50">
+   137→   137→                  <div className="flex items-center gap-3">
+   138→   138→                    <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+   139→   139→                      <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1" />
+   140→   140→                    </div>
+   141→   141→                    <div>
+   142→   142→                      <h2 className="font-heading font-bold text-lg gradient-text">Zylora</h2>
+   143→   143→                      <p className="text-[10px] text-muted-foreground tracking-widest uppercase">Premium Store</p>
+   144→   144→                    </div>
+   145→   145→                  </div>
+   146→   146→                </div>
+   147→   147→
+   148→   148→                {/* Mobile User Info */}
+   149→   149→                {currentUser && (
+   150→   150→                  <div className="p-4 border-b border-border/50 bg-blue-50/50 dark:bg-blue-950/20">
+   151→   151→                    <div className="flex items-center gap-3">
+   152→   152→                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
+   153→   153→                        {currentUser.name?.charAt(0).toUpperCase()}
+   154→   154→                      </div>
+   155→   155→                      <div className="min-w-0">
+   156→   156→                        <p className="font-semibold text-sm truncate">{currentUser.name}</p>
+   157→   157→                        <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+   158→   158→                      </div>
+   159→   159→                    </div>
+   160→   160→                  </div>
+   161→   161→                )}
+   162→   162→
+   163→   163→                {/* Mobile Categories */}
+   164→   164→                <div className="p-3">
+   165→   165→                  <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">Categories</p>
+   166→   166→                  <button
+   167→   167→                    onClick={() => { setSelectedCategory(null); setCurrentView('home'); setMobileMenuOpen(false); }}
+   168→   168→                    className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-3 ${
+   169→   169→                      !selectedCategory
+   170→   170→                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   171→   171→                        : 'hover:bg-blue-50 dark:hover:bg-blue-950/30 text-foreground'
+   172→   172→                    }`}
+   173→   173→                  >
+   174→   174→                    <Sparkles className="h-4 w-4" /> All Categories
+   175→   175→                  </button>
+   176→   176→                  {categories.map((cat) => (
+   177→   177→                    <button
+   178→   178→                      key={cat.id}
+   179→   179→                      onClick={() => { setSelectedCategory(cat.slug); setCurrentView('home'); setMobileMenuOpen(false); }}
+   180→   180→                      className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-3 ${
+   181→   181→                        selectedCategory === cat.slug
+   182→   182→                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   183→   183→                          : 'hover:bg-blue-50 dark:hover:bg-blue-950/30 text-foreground'
+   184→   184→                      }`}
+   185→   185→                    >
+   186→   186→                      {cat.icon && <span className="text-base">{cat.icon}</span>}
+   187→   187→                      {cat.name}
+   188→   188→                    </button>
+   189→   189→                  ))}
+   190→   190→                </div>
+   191→   191→
+   192→   192→                <Separator className="mx-3" />
+   193→   193→
+   194→   194→                {/* Mobile Quick Links */}
+   195→   195→                <div className="p-3 space-y-1">
+   196→   196→                  <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">Quick Links</p>
+   197→   197→                  <button
+   198→   198→                    onClick={() => { setCurrentView('wishlist'); setMobileMenuOpen(false); }}
+   199→   199→                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   200→   200→                  >
+   201→   201→                    <Heart className="h-4 w-4 text-blue-600" /> Wishlist
+   202→   202→                    {wishlistIds.length > 0 && (
+   203→   203→                      <Badge className="ml-auto bg-blue-500 text-white text-xs h-5 min-w-[20px] flex items-center justify-center">
+   204→   204→                        {wishlistIds.length}
+   205→   205→                      </Badge>
+   206→   206→                    )}
+   207→   207→                  </button>
+   208→   208→                  <button
+   209→   209→                    onClick={() => { setCurrentView('orders'); setMobileMenuOpen(false); }}
+   210→   210→                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   211→   211→                  >
+   212→   212→                    <Package className="h-4 w-4 text-blue-600" /> My Orders
+   213→   213→                  </button>
+   214→   214→                  {currentUser && (
+   215→   215→                    <button
+   216→   216→                      onClick={() => { setCurrentView('user-dashboard'); setMobileMenuOpen(false); }}
+   217→   217→                      className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   218→   218→                    >
+   219→   219→                      <Settings className="h-4 w-4 text-blue-600" /> My Dashboard
+   220→   220→                    </button>
+   221→   221→                  )}
+   222→   222→                  {isAdmin && (
+   223→   223→                    <button
+   224→   224→                      onClick={() => { setCurrentView('admin'); setMobileMenuOpen(false); }}
+   225→   225→                      className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   226→   226→                    >
+   227→   227→                      <LayoutDashboard className="h-4 w-4 text-blue-600" /> Admin Panel
+   228→   228→                    </button>
+   229→   229→                  )}
+   230→   230→                </div>
+   231→   231→
+   232→   232→                {/* Mobile Auth */}
+   233→   233→                <div className="mt-auto p-4 border-t border-border/50">
+   234→   234→                  {currentUser ? (
+   235→   235→                    <Button
+   236→   236→                      onClick={handleSignOut}
+   237→   237→                      variant="outline"
+   238→   238→                      className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/50 dark:hover:bg-red-950/30"
+   239→   239→                    >
+   240→   240→                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+   241→   241→                    </Button>
+   242→   242→                  ) : (
+   243→   243→                    <Button
+   244→   244→                      onClick={() => { setCurrentView('auth'); setMobileMenuOpen(false); }}
+   245→   245→                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+   246→   246→                    >
+   247→   247→                      <LogIn className="h-4 w-4 mr-2" /> Sign In
+   248→   248→                    </Button>
+   249→   249→                  )}
+   250→   250→                </div>
+   251→   251→              </SheetContent>
+   252→   252→            </Sheet>
+   253→   253→
+   254→   254→            {/* Logo */}
+   255→   255→            <motion.button
+   256→   256→              onClick={goHome}
+   257→   257→              className="flex items-center gap-2.5 shrink-0 group"
+   258→   258→              whileTap={{ scale: 0.97 }}
+   259→   259→              whileHover={{ scale: 1.02 }}
+   260→   260→            >
+   261→   261→              <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center transition-shadow duration-300">
+   262→   262→                <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1.5" />
+   263→   263→              </div>
+   264→   264→              <span className="font-heading text-xl font-bold tracking-tight hidden sm:inline">
+   265→   265→                <span className="gradient-text">Zylora</span>
+   266→   266→              </span>
+   267→   267→            </motion.button>
+   268→   268→
+   269→   269→            {/* Search - Desktop */}
+   270→   270→            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl mx-4">
+   271→   271→              <motion.div
+   272→   272→                className="relative flex w-full"
+   273→   273→                animate={searchFocused ? { scale: 1.01 } : { scale: 1 }}
+   274→   274→                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+   275→   275→              >
+   276→   276→                <div className={`relative flex w-full rounded-xl transition-all duration-300 ${
+   277→   277→                  searchFocused
+   278→   278→                    ? 'ring-2 ring-blue-500/40'
+   279→   279→                    : 'ring-1 ring-slate-200 dark:ring-slate-700'
+   280→   280→                }`}>
+   281→   281→                  <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
+   282→   282→                    searchFocused ? 'text-blue-600' : 'text-slate-400'
+   283→   283→                  }`} />
+   284→   284→                  <Input
+   285→   285→                    ref={searchInputRef}
+   286→   286→                    type="text"
+   287→   287→                    placeholder="Search products, brands and more..."
+   288→   288→                    value={localSearch}
+   289→   289→                    onChange={(e) => setLocalSearch(e.target.value)}
+   290→   290→                    onFocus={() => setSearchFocused(true)}
+   291→   291→                    onBlur={() => setSearchFocused(false)}
+   292→   292→                    className="w-full h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400"
+   293→   293→                  />
+   294→   294→                  <Button
+   295→   295→                    type="submit"
+   296→   296→                    className="h-10 rounded-l-none rounded-r-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-5 shadow-none border-0 transition-all duration-200"
+   297→   297→                  >
+   298→   298→                    <Search className="h-4 w-4" />
+   299→   299→                  </Button>
+   300→   300→                </div>
+   301→   301→              </motion.div>
+   302→   302→            </form>
+   303→   303→
+   304→   304→            {/* Search - Mobile toggle */}
+   305→   305→            <Button
+   306→   306→              variant="ghost"
+   307→   307→              size="icon"
+   308→   308→              className="md:hidden shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+   309→   309→              onClick={() => {
+   310→   310→                setShowSearch(!showSearch);
+   311→   311→                if (!showSearch) {
+   312→   312→                  setTimeout(() => searchInputRef.current?.focus(), 100);
+   313→   313→                }
+   314→   314→              }}
+   315→   315→            >
+   316→   316→              <Search className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   317→   317→            </Button>
+   318→   318→
+   319→   319→            {/* Right Actions */}
+   320→   320→            <div className="flex items-center gap-0.5 shrink-0">
+   321→   321→              {/* Wishlist */}
+   322→   322→              <Button
+   323→   323→                variant="ghost"
+   324→   324→                size="icon"
+   325→   325→                className="hidden sm:flex relative hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   326→   326→                onClick={() => setCurrentView('wishlist')}
+   327→   327→              >
+   328→   328→                <Heart className="h-5 w-5 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors" />
+   329→   329→                {wishlistIds.length > 0 && (
+   330→   330→                  <motion.div
+   331→   331→                    key={wishlistIds.length}
+   332→   332→                    initial={{ scale: 0 }}
+   333→   333→                    animate={{ scale: 1 }}
+   334→   334→                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+   335→   335→                  >
+   336→   336→                    <Badge className="absolute -top-1 -right-1 h-4.5 w-4.5 flex items-center justify-center p-0 bg-blue-500 text-white text-[10px] font-bold min-w-[18px]">
+   337→   337→                      {wishlistIds.length}
+   338→   338→                    </Badge>
+   339→   339→                  </motion.div>
+   340→   340→                )}
+   341→   341→              </Button>
+   342→   342→
+   343→   343→              {/* Notifications */}
+   344→   344→              <div className="relative hidden sm:block" ref={notifRef}>
+   345→   345→                <Button
+   346→   346→                  variant="ghost"
+   347→   347→                  size="icon"
+   348→   348→                  className="hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   349→   349→                  onClick={() => setShowNotifications(!showNotifications)}
+   350→   350→                >
+   351→   351→                  <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   352→   352→                </Button>
+   353→   353→                <AnimatePresence>
+   354→   354→                  {showNotifications && (
+   355→   355→                    <motion.div
+   356→   356→                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+   357→   357→                      animate={{ opacity: 1, y: 0, scale: 1 }}
+   358→   358→                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+   359→   359→                      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+   360→   360→                      className="absolute right-0 top-full mt-2 w-80 glass-strong rounded-xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
+   361→   361→                    >
+   362→   362→                      <div className="p-4 border-b border-border/50">
+   363→   363→                        <h3 className="font-heading font-semibold text-sm">Notifications</h3>
+   364→   364→                      </div>
+   365→   365→                      <div className="p-8 text-center">
+   366→   366→                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center mx-auto mb-3">
+   367→   367→                          <Bell className="h-5 w-5 text-blue-500" />
+   368→   368→                        </div>
+   369→   369→                        <p className="text-sm text-muted-foreground">No new notifications</p>
+   370→   370→                        <p className="text-xs text-muted-foreground mt-1">We&apos;ll let you know when something arrives</p>
+   371→   371→                      </div>
+   372→   372→                    </motion.div>
+   373→   373→                  )}
+   374→   374→                </AnimatePresence>
+   375→   375→              </div>
+   376→   376→
+   377→   377→              {/* Cart */}
+   378→   378→              <Button
+   379→   379→                variant="ghost"
+   380→   380→                className="relative shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors gap-1.5"
+   381→   381→                onClick={() => setCurrentView('cart')}
+   382→   382→              >
+   383→   383→                <ShoppingCart className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   384→   384→                {cartCount > 0 && (
+   385→   385→                  <motion.div
+   386→   386→                    key={cartCount}
+   387→   387→                    initial={{ scale: 0 }}
+   388→   388→                    animate={{ scale: 1 }}
+   389→   389→                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+   390→   390→                  >
+   391→   391→                    <Badge className="absolute -top-1 -right-1 h-5 min-w-[20px] flex items-center justify-center p-0 bg-blue-500 text-white text-xs font-bold">
+   392→   392→                      {cartCount > 99 ? '99+' : cartCount}
+   393→   393→                    </Badge>
+   394→   394→                  </motion.div>
+   395→   395→                )}
+   396→   396→                <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">Cart</span>
+   397→   397→              </Button>
+   398→   398→
+   399→   399→              {/* User */}
+   400→   400→              <div className="relative" ref={userMenuRef}>
+   401→   401→                {currentUser ? (
+   402→   402→                  <Button
+   403→   403→                    variant="ghost"
+   404→   404→                    className="gap-1.5 shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   405→   405→                    onClick={() => setShowUserMenu(!showUserMenu)}
+   406→   406→                  >
+   407→   407→                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold">
+   408→   408→                      {currentUser.name?.charAt(0).toUpperCase()}
+   409→   409→                    </div>
+   410→   410→                    <ChevronDown className={`h-3 w-3 text-slate-500 transition-transform duration-200 hidden sm:inline ${showUserMenu ? 'rotate-180' : ''}`} />
+   411→   411→                  </Button>
+   412→   412→                ) : (
+   413→   413→                  <Button
+   414→   414→                    variant="ghost"
+   415→   415→                    className="gap-1.5 shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   416→   416→                    onClick={() => setCurrentView('auth')}
+   417→   417→                  >
+   418→   418→                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+   419→   419→                      <User className="h-4 w-4 text-slate-500" />
+   420→   420→                    </div>
+   421→   421→                    <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">Login</span>
+   422→   422→                  </Button>
+   423→   423→                )}
+   424→   424→
+   425→   425→                {/* User Dropdown */}
+   426→   426→                <AnimatePresence>
+   427→   427→                  {showUserMenu && currentUser && (
+   428→   428→                    <motion.div
+   429→   429→                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+   430→   430→                      animate={{ opacity: 1, y: 0, scale: 1 }}
+   431→   431→                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+   432→   432→                      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+   433→   433→                      className="absolute right-0 top-full mt-2 w-64 glass-strong rounded-xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
+   434→   434→                    >
+   435→   435→                      {/* User Info Header */}
+   436→   436→                      <div className="p-4 border-b border-border/50 bg-gradient-to-r from-blue-600/5 to-blue-700/5 dark:from-blue-600/10 dark:to-blue-700/10">
+   437→   437→                        <div className="flex items-center gap-3">
+   438→   438→                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold">
+   439→   439→                            {currentUser.name?.charAt(0).toUpperCase()}
+   440→   440→                          </div>
+   441→   441→                          <div className="min-w-0">
+   442→   442→                            <p className="font-semibold text-sm truncate">{currentUser.name}</p>
+   443→   443→                            <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+   444→   444→                          </div>
+   445→   445→                        </div>
+   446→   446→                      </div>
+   447→   447→
+   448→   448→                      {/* Menu Items */}
+   449→   449→                      <div className="p-1.5">
+   450→   450→                        <button
+   451→   451→                          onClick={() => { setCurrentView('user-dashboard'); setShowUserMenu(false); }}
+   452→   452→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   453→   453→                        >
+   454→   454→                          <Settings className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   455→   455→                          <span>My Dashboard</span>
+   456→   456→                        </button>
+   457→   457→                        <button
+   458→   458→                          onClick={() => { setCurrentView('orders'); setShowUserMenu(false); }}
+   459→   459→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   460→   460→                        >
+   461→   461→                          <Package className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   462→   462→                          <span>My Orders</span>
+   463→   463→                        </button>
+   464→   464→                        <button
+   465→   465→                          onClick={() => { setCurrentView('wishlist'); setShowUserMenu(false); }}
+   466→   466→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   467→   467→                        >
+   468→   468→                          <Heart className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   469→   469→                          <span>Wishlist</span>
+   470→   470→                          {wishlistIds.length > 0 && (
+   471→   471→                            <Badge className="ml-auto bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-xs h-5">
+   472→   472→                              {wishlistIds.length}
+   473→   473→                            </Badge>
+   474→   474→                          )}
+   475→   475→                        </button>
+   476→   476→                        {isAdmin && (
+   477→   477→                          <button
+   478→   478→                            onClick={() => { setCurrentView('admin'); setShowUserMenu(false); }}
+   479→   479→                            className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   480→   480→                          >
+   481→   481→                            <LayoutDashboard className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   482→   482→                            <span>Admin Panel</span>
+   483→   483→                          </button>
+   484→   484→                        )}
+   485→   485→                      </div>
+   486→   486→
+   487→   487→                      <Separator className="mx-2" />
+   488→   488→
+   489→   489→                      {/* Sign Out */}
+   490→   490→                      <div className="p-1.5">
+   491→   491→                        <button
+   492→   492→                          onClick={handleSignOut}
+   493→   493→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center gap-3 transition-colors group"
+   494→   494→                        >
+   495→   495→                          <LogOut className="h-4 w-4 group-hover:text-red-600 transition-colors" />
+   496→   496→                          <span>Sign Out</span>
+   497→   497→                        </button>
+   498→   498→                      </div>
+   499→   499→                    </motion.div>
+   500→   500→                  )}
+   501→   501→                </AnimatePresence>
+   502→   502→              </div>
+   503→   503→            </div>
+   504→   504→          </div>
+   505→   505→
+   506→   506→          {/* Mobile Search Bar */}
+   507→   507→          <AnimatePresence>
+   508→   508→            {showSearch && (
+   509→   509→              <motion.form
+   510→   510→                initial={{ height: 0, opacity: 0 }}
+   511→   511→                animate={{ height: 'auto', opacity: 1 }}
+   512→   512→                exit={{ height: 0, opacity: 0 }}
+   513→   513→                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+   514→   514→                onSubmit={handleSearch}
+   515→   515→                className="md:hidden overflow-hidden"
+   516→   516→              >
+   517→   517→                <div className="pb-3 flex">
+   518→   518→                  <div className={`relative flex w-full rounded-xl transition-all duration-300 ring-1 ${
+   519→   519→                    searchFocused ? 'ring-blue-500/40' : 'ring-slate-200 dark:ring-slate-700'
+   520→   520→                  }`}>
+   521→   521→                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+   522→   522→                    <Input
+   523→   523→                      ref={searchInputRef}
+   524→   524→                      type="text"
+   525→   525→                      placeholder="Search products..."
+   526→   526→                      value={localSearch}
+   527→   527→                      onChange={(e) => setLocalSearch(e.target.value)}
+   528→   528→                      onFocus={() => setSearchFocused(true)}
+   529→   529→                      onBlur={() => setSearchFocused(false)}
+   530→   530→                      className="flex-1 h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0"
+   531→   531→                      autoFocus
+   532→   532→                    />
+   533→   533→                    <Button
+   534→   534→                      type="submit"
+   535→   535→                      className="h-10 rounded-l-none rounded-r-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-4 shadow-none border-0"
+   536→   536→                    >
+   537→   537→                      <Search className="h-4 w-4" />
+   538→   538→                    </Button>
+   539→   539→                  </div>
+   540→   540→                </div>
+   541→   541→              </motion.form>
+   542→   542→            )}
+   543→   543→          </AnimatePresence>
+   544→   544→        </div>
+   545→   545→      </div>
+   546→   546→
+   547→   547→      {/* ── Category Navigation Bar (hidden on mobile, shown on md+) ── */}
+   548→   548→      <div className="hidden md:block glass overflow-x-auto scrollbar-hide border-b border-border/30">
+   549→   549→        <div className="max-w-7xl mx-auto px-4">
+   550→   550→          <div className="flex items-center gap-1.5 py-2.5 whitespace-nowrap">
+   551→   551→            <motion.button
+   552→   552→              onClick={() => { setSelectedCategory(null); if (currentView !== 'home') setCurrentView('home'); }}
+   553→   553→              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+   554→   554→                !selectedCategory
+   555→   555→                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   556→   556→                  : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600'
+   557→   557→              }`}
+   558→   558→              whileTap={{ scale: 0.95 }}
+   559→   559→            >
+   560→   560→              All
+   561→   561→            </motion.button>
+   562→   562→            {categories.map((cat) => (
+   563→   563→              <motion.button
+   564→   564→                key={cat.id}
+   565→   565→                onClick={() => { setSelectedCategory(cat.slug); if (currentView !== 'home') setCurrentView('home'); }}
+   566→   566→                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+   567→   567→                  selectedCategory === cat.slug
+   568→   568→                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   569→   569→                    : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600'
+   570→   570→                }`}
+   571→   571→                whileTap={{ scale: 0.95 }}
+   572→   572→              >
+   573→   573→                {cat.icon && <span className="mr-1.5">{cat.icon}</span>}
+   574→   574→                {cat.name}
+   575→   575→              </motion.button>
+   576→   576→            ))}
+   577→   577→          </div>
+   578→   578→        </div>
+   579→   579→      </div>
+   580→   580→    </header>
+   581→   581→  );
+   582→   582→}
+   583→   583→

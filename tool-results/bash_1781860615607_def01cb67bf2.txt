@@ -1,0 +1,930 @@
+- banner
+  - generic
+    - generic
+      - button "My Orders" [ref=e93]
+  - button "Zylora Zylora" [ref=e2]
+    - image "Zylora"
+    - StaticText "Zylora"
+  - form
+    - generic
+      - textbox "Search products, brands and more..." [ref=e166]
+      - button [ref=e167]
+  - button [ref=e3]
+  - button [ref=e26]
+  - button "Cart" [ref=e4]
+  - button "Login" [ref=e27]
+  - button "All" [ref=e5]
+  - button "✨Beauty & Personal Care" [ref=e6]
+  - button "📚Books" [ref=e7]
+  - button "💻Electronics" [ref=e8]
+  - button "👗Fashion" [ref=e9]
+  - button "🏠Home & Kitchen" [ref=e10]
+  - button "🏋️Sports & Fitness" [ref=e11]
+- main
+  - generic
+    - generic
+    - StaticText "New Collection 2025"
+    - heading "Shop Smarterwith Zylora" [level=1, ref=e94]
+      - StaticText "Shop Smarterwith Zylora"
+    - paragraph
+      - StaticText "Premium shopping experience. Up to 70% off on electronics, fashion, home & more."
+    - button "Shop Now" [ref=e95]
+    - button "Explore Deals" [ref=e96]
+    - paragraph
+      - StaticText "10K+"
+    - StaticText "Products"
+    - paragraph
+      - StaticText "49K+"
+    - StaticText "Customers"
+    - paragraph
+      - StaticText "70%"
+    - StaticText "Max Off"
+    - generic [ref=e168] clickable [cursor:pointer, onclick]
+      - generic
+      - generic
+        - heading "Apple MacBook Air M3" [level=3, ref=e278]
+  - generic
+    - StaticText "🔥 Flash Sale Live Now · ⚡ Up to 70% OFF · 🚚 Free Delivery ₹499+ · ⭐ 50K+ Happy Customers · 💳 Secure Payments · 🎁 New Arrivals Daily · ✨ Best Prices Guaranteed"
+    - StaticText "●"
+    - StaticText "🔥 Flash Sale Live Now · ⚡ Up to 70% OFF · 🚚 Free Delivery ₹499+ · ⭐ 50K+ Happy Customers · 💳 Secure Payments · 🎁 New Arrivals Daily · ✨ Best Prices Guaranteed"
+    - StaticText "●"
+  - StaticText "Free Delivery"
+  - StaticText "Orders ₹499+"
+  - StaticText "Secure"
+  - StaticText "Payments"
+  - StaticText "Best"
+  - StaticText "Prices"
+  - StaticText "7-Day"
+  - StaticText "Returns"
+  - generic
+    - heading "Shop by Category" [level=2, ref=e28]
+    - button "Beauty & Personal Care ✨Beauty & Personal Care" [ref=e29]
+      - image "Beauty & Personal Care"
+      - StaticText "✨"
+      - StaticText "Beauty & Personal Care"
+    - button "Books 📚Books" [ref=e30]
+      - image "Books"
+      - StaticText "📚"
+      - StaticText "Books"
+    - button "Electronics 💻Electronics" [ref=e31]
+      - image "Electronics"
+      - StaticText "💻"
+      - StaticText "Electronics"
+    - button "Fashion 👗Fashion" [ref=e32]
+      - image "Fashion"
+      - StaticText "👗"
+      - StaticText "Fashion"
+    - button "Home & Kitchen 🏠Home & Kitchen" [ref=e33]
+      - image "Home & Kitchen"
+      - StaticText "🏠"
+      - StaticText "Home & Kitchen"
+    - button "Sports & Fitness 🏋️Sports & Fitness" [ref=e34]
+      - image "Sports & Fitness"
+      - StaticText "🏋️"
+      - StaticText "Sports & Fitness"
+  - generic
+    - generic
+    - generic
+      - heading "Flash Sale" [level=2, ref=e169]
+      - paragraph
+      - StaticText "Limited Time"
+      - StaticText "ENDS IN"
+      - StaticText "05"
+      - StaticText "HRS"
+      - StaticText ":"
+      - StaticText "47"
+      - StaticText "MIN"
+      - StaticText ":"
+      - StaticText "30"
+      - StaticText "SEC"
+      - button "The Psychology of Money by Morgan Housel The Psychology of Money by Morgan Housel ₹299 ₹499 40% OFF" [ref=e170]
+      - button "Samsung Galaxy S24 Ultra Samsung Galaxy S24 Ultra ₹1,29,999 ₹1,49,999 13% OFF" [ref=e171]
+      - button "Adidas Ultraboost Light Running Shoes Adidas Ultraboost Light Running Shoes ₹13,999 ₹18,999 26% OFF" [ref=e172]
+      - button "Nike Air Max 270 Running Shoes Nike Air Max 270 Running Shoes ₹11,995 ₹14,995 20% OFF" [ref=e173]
+      - button "View All Deals" [ref=e226]
+  - generic
+    - heading "Trending Now" [level=2, ref=e35]
+    - button "View All" [ref=e36]
+    - generic [ref=e37] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e174]
+        - button "Add to cart" [ref=e227]
+      - paragraph
+      - heading "Apple MacBook Air M3" [level=3, ref=e97]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "218"
+      - StaticText ")"
+      - StaticText "₹1,14,900"
+      - StaticText "₹1,19,900"
+      - StaticText "4"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e38] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e175]
+        - button "Add to cart" [ref=e228]
+      - paragraph
+      - heading "The Psychology of Money by Morgan Housel" [level=3, ref=e98]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "12,456"
+      - StaticText ")"
+      - StaticText "₹299"
+      - StaticText "₹499"
+      - StaticText "40"
+      - StaticText "% off"
+    - generic [ref=e39] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e176]
+        - button "Add to cart" [ref=e229]
+      - paragraph
+      - heading "Samsung Galaxy S24 Ultra" [level=3, ref=e99]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "342"
+      - StaticText ")"
+      - StaticText "₹1,29,999"
+      - StaticText "₹1,49,999"
+      - StaticText "13"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e40] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e177]
+        - button "Add to cart" [ref=e230]
+      - paragraph
+      - heading "Dyson V15 Detect Cordless Vacuum Cleaner" [level=3, ref=e100]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "187"
+      - StaticText ")"
+      - StaticText "₹52,900"
+      - StaticText "₹62,900"
+      - StaticText "16"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e41] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e178]
+        - button "Add to cart" [ref=e231]
+      - paragraph
+      - heading "Adidas Ultraboost Light Running Shoes" [level=3, ref=e101]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "876"
+      - StaticText ")"
+      - StaticText "₹13,999"
+      - StaticText "₹18,999"
+      - StaticText "26"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e42] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e179]
+        - button "Add to cart" [ref=e232]
+      - paragraph
+      - heading "Nike Air Max 270 Running Shoes" [level=3, ref=e102]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "1,024"
+      - StaticText ")"
+      - StaticText "₹11,995"
+      - StaticText "₹14,995"
+      - StaticText "20"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e43] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e180]
+        - button "Add to cart" [ref=e233]
+      - paragraph
+      - heading "Wakefit Orthopedic Memory Foam Mattress" [level=3, ref=e103]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "8,934"
+      - StaticText ")"
+      - StaticText "₹11,999"
+      - StaticText "₹21,999"
+      - StaticText "45"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e44] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e181]
+        - button "Add to cart" [ref=e234]
+      - paragraph
+      - heading "Rich Dad Poor Dad by Robert Kiyosaki" [level=3, ref=e104]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "23,456"
+      - StaticText ")"
+      - StaticText "₹399"
+      - StaticText "₹599"
+      - StaticText "33"
+      - StaticText "% off"
+  - generic
+    - heading "New Arrivals" [level=2, ref=e45]
+    - button "View All" [ref=e46]
+    - generic [ref=e47] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e182]
+        - button "Add to cart" [ref=e235]
+      - paragraph
+      - heading "Apple MacBook Air M3" [level=3, ref=e105]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "218"
+      - StaticText ")"
+      - StaticText "₹1,14,900"
+      - StaticText "₹1,19,900"
+      - StaticText "4"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e48] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e183]
+        - button "Add to cart" [ref=e236]
+      - paragraph
+      - heading "Dyson V15 Detect Cordless Vacuum Cleaner" [level=3, ref=e106]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "187"
+      - StaticText ")"
+      - StaticText "₹52,900"
+      - StaticText "₹62,900"
+      - StaticText "16"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e49] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e184]
+        - button "Add to cart" [ref=e237]
+      - paragraph
+      - heading "Adidas Ultraboost Light Running Shoes" [level=3, ref=e107]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "876"
+      - StaticText ")"
+      - StaticText "₹13,999"
+      - StaticText "₹18,999"
+      - StaticText "26"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e50] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e185]
+        - button "Add to cart" [ref=e238]
+      - paragraph
+      - heading "Apple iPad Air M2 11-inch" [level=3, ref=e108]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "156"
+      - StaticText ")"
+      - StaticText "₹69,900"
+      - StaticText "₹74,900"
+      - StaticText "7"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+  - generic
+    - heading "Top Rated" [level=2, ref=e51]
+    - button "View All" [ref=e52]
+    - generic [ref=e53] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e186]
+        - button "Add to cart" [ref=e239]
+      - paragraph
+      - heading "Apple MacBook Air M3" [level=3, ref=e109]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "218"
+      - StaticText ")"
+      - StaticText "₹1,14,900"
+      - StaticText "₹1,19,900"
+      - StaticText "4"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e54] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e187]
+        - button "Add to cart" [ref=e240]
+      - paragraph
+      - heading "The Psychology of Money by Morgan Housel" [level=3, ref=e110]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "12,456"
+      - StaticText ")"
+      - StaticText "₹299"
+      - StaticText "₹499"
+      - StaticText "40"
+      - StaticText "% off"
+    - generic [ref=e55] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e188]
+        - button "Add to cart" [ref=e241]
+      - paragraph
+      - heading "Samsung Galaxy S24 Ultra" [level=3, ref=e111]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "342"
+      - StaticText ")"
+      - StaticText "₹1,29,999"
+      - StaticText "₹1,49,999"
+      - StaticText "13"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e56] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e189]
+        - button "Add to cart" [ref=e242]
+      - paragraph
+      - heading "Dyson V15 Detect Cordless Vacuum Cleaner" [level=3, ref=e112]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "187"
+      - StaticText ")"
+      - StaticText "₹52,900"
+      - StaticText "₹62,900"
+      - StaticText "16"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e57] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e190]
+        - button "Add to cart" [ref=e243]
+      - paragraph
+      - heading "Adidas Ultraboost Light Running Shoes" [level=3, ref=e113]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "876"
+      - StaticText ")"
+      - StaticText "₹13,999"
+      - StaticText "₹18,999"
+      - StaticText "26"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e58] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e191]
+        - button "Add to cart" [ref=e244]
+      - paragraph
+      - heading "Indian Polity by M. Laxmikanth" [level=3, ref=e114]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "18,765"
+      - StaticText ")"
+      - StaticText "₹495"
+      - StaticText "₹795"
+      - StaticText "38"
+      - StaticText "% off"
+    - generic [ref=e59] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e192]
+        - button "Add to cart" [ref=e245]
+      - paragraph
+      - heading "Nike Air Max 270 Running Shoes" [level=3, ref=e115]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "1,024"
+      - StaticText ")"
+      - StaticText "₹11,995"
+      - StaticText "₹14,995"
+      - StaticText "20"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e60] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e193]
+        - button "Add to cart" [ref=e246]
+      - paragraph
+      - heading "Wakefit Orthopedic Memory Foam Mattress" [level=3, ref=e116]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "8,934"
+      - StaticText ")"
+      - StaticText "₹11,999"
+      - StaticText "₹21,999"
+      - StaticText "45"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+  - generic
+    - heading "All Products" [level=2, ref=e117]
+    - paragraph
+      - StaticText "31 products found"
+    - button "Featured" [ref=e194]
+      - StaticText "Featured"
+    - generic [ref=e61] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e195]
+        - button "Add to cart" [ref=e247]
+      - paragraph
+      - heading "Apple MacBook Air M3" [level=3, ref=e118]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "218"
+      - StaticText ")"
+      - StaticText "₹1,14,900"
+      - StaticText "₹1,19,900"
+      - StaticText "4"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e62] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e196]
+        - button "Add to cart" [ref=e248]
+      - paragraph
+      - heading "The Psychology of Money by Morgan Housel" [level=3, ref=e119]
+      - StaticText "4.8"
+      - StaticText "("
+      - StaticText "12,456"
+      - StaticText ")"
+      - StaticText "₹299"
+      - StaticText "₹499"
+      - StaticText "40"
+      - StaticText "% off"
+    - generic [ref=e63] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e197]
+        - button "Add to cart" [ref=e249]
+      - paragraph
+      - heading "Samsung Galaxy S24 Ultra" [level=3, ref=e120]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "342"
+      - StaticText ")"
+      - StaticText "₹1,29,999"
+      - StaticText "₹1,49,999"
+      - StaticText "13"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e64] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e198]
+        - button "Add to cart" [ref=e250]
+      - paragraph
+      - heading "Dyson V15 Detect Cordless Vacuum Cleaner" [level=3, ref=e121]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "187"
+      - StaticText ")"
+      - StaticText "₹52,900"
+      - StaticText "₹62,900"
+      - StaticText "16"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e65] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e199]
+        - button "Add to cart" [ref=e251]
+      - paragraph
+      - heading "Adidas Ultraboost Light Running Shoes" [level=3, ref=e122]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "876"
+      - StaticText ")"
+      - StaticText "₹13,999"
+      - StaticText "₹18,999"
+      - StaticText "26"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e66] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e200]
+        - button "Add to cart" [ref=e252]
+      - paragraph
+      - heading "Nike Air Max 270 Running Shoes" [level=3, ref=e123]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "1,024"
+      - StaticText ")"
+      - StaticText "₹11,995"
+      - StaticText "₹14,995"
+      - StaticText "20"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e67] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e201]
+        - button "Add to cart" [ref=e253]
+      - paragraph
+      - heading "Wakefit Orthopedic Memory Foam Mattress" [level=3, ref=e124]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "8,934"
+      - StaticText ")"
+      - StaticText "₹11,999"
+      - StaticText "₹21,999"
+      - StaticText "45"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e68] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e202]
+        - button "Add to cart" [ref=e254]
+      - paragraph
+      - heading "Rich Dad Poor Dad by Robert Kiyosaki" [level=3, ref=e125]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "23,456"
+      - StaticText ")"
+      - StaticText "₹399"
+      - StaticText "₹599"
+      - StaticText "33"
+      - StaticText "% off"
+    - generic [ref=e69] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e203]
+        - button "Add to cart" [ref=e255]
+      - paragraph
+      - heading "Apple iPad Air M2 11-inch" [level=3, ref=e126]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "156"
+      - StaticText ")"
+      - StaticText "₹69,900"
+      - StaticText "₹74,900"
+      - StaticText "7"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e70] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e204]
+        - button "Add to cart" [ref=e256]
+      - paragraph
+      - heading "Fossil Grant Chronograph Watch" [level=3, ref=e127]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "234"
+      - StaticText ")"
+      - StaticText "₹8,995"
+      - StaticText "₹12,995"
+      - StaticText "31"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e71] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e205]
+        - button "Add to cart" [ref=e257]
+      - paragraph
+      - heading "Philips Air Fryer HD9252/90" [level=3, ref=e128]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "1,567"
+      - StaticText ")"
+      - StaticText "₹8,999"
+      - StaticText "₹13,995"
+      - StaticText "36"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e72] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e206]
+        - button "Add to cart" [ref=e258]
+      - paragraph
+      - heading "Bombay Shaving Company Complete Grooming Kit" [level=3, ref=e129]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "1,234"
+      - StaticText ")"
+      - StaticText "₹1,799"
+      - StaticText "₹2,999"
+      - StaticText "40"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e73] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e207]
+        - button "Add to cart" [ref=e259]
+      - paragraph
+      - heading "Samsung 55\" Crystal 4K Neo UHD Smart TV" [level=3, ref=e130]
+      - StaticText "4.3"
+      - StaticText "("
+      - StaticText "678"
+      - StaticText ")"
+      - StaticText "₹42,990"
+      - StaticText "₹64,900"
+      - StaticText "34"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e74] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e208]
+        - button "Add to cart" [ref=e260]
+      - paragraph
+      - heading "Mamaearth Vitamin C Face Serum" [level=3, ref=e131]
+      - StaticText "4.3"
+      - StaticText "("
+      - StaticText "4,321"
+      - StaticText ")"
+      - StaticText "₹599"
+      - StaticText "₹999"
+      - StaticText "40"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e75] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e209]
+        - button "Add to cart" [ref=e261]
+      - paragraph
+      - heading "Indian Polity by M. Laxmikanth" [level=3, ref=e132]
+      - StaticText "4.7"
+      - StaticText "("
+      - StaticText "18,765"
+      - StaticText ")"
+      - StaticText "₹495"
+      - StaticText "₹795"
+      - StaticText "38"
+      - StaticText "% off"
+    - generic [ref=e76] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e210]
+        - button "Add to cart" [ref=e262]
+      - paragraph
+      - heading "Sony WH-1000XM5 Wireless Headphones" [level=3, ref=e133]
+      - StaticText "4.6"
+      - StaticText "("
+      - StaticText "567"
+      - StaticText ")"
+      - StaticText "₹26,990"
+      - StaticText "₹34,990"
+      - StaticText "23"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e77] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e211]
+        - button "Add to cart" [ref=e263]
+      - paragraph
+      - heading "JBL Flip 6 Bluetooth Speaker" [level=3, ref=e134]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "892"
+      - StaticText ")"
+      - StaticText "₹8,999"
+      - StaticText "₹14,999"
+      - StaticText "40"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e78] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e212]
+        - button "Add to cart" [ref=e264]
+      - paragraph
+      - heading "Yoga Mandir Premium Anti-Slip Yoga Mat" [level=3, ref=e135]
+      - StaticText "4.5"
+      - StaticText "("
+      - StaticText "3,456"
+      - StaticText ")"
+      - StaticText "₹899"
+      - StaticText "₹1,499"
+      - StaticText "40"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e79] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e213]
+        - button "Add to cart" [ref=e265]
+      - paragraph
+      - heading "OnePlus 12R 5G" [level=3, ref=e136]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "423"
+      - StaticText ")"
+      - StaticText "₹39,999"
+      - StaticText "₹45,999"
+      - StaticText "13"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e80] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e214]
+        - button "Add to cart" [ref=e266]
+      - paragraph
+      - heading "Levi's 511 Slim Fit Men's Jeans" [level=3, ref=e137]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "2,156"
+      - StaticText ")"
+      - StaticText "₹2,799"
+      - StaticText "₹4,999"
+      - StaticText "44"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e81] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e215]
+        - button "Add to cart" [ref=e267]
+      - paragraph
+      - heading "Prestige Popular Plus Induction Base Pressure Cooker 5L" [level=3, ref=e138]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "3,421"
+      - StaticText ")"
+      - StaticText "₹1,899"
+      - StaticText "₹2,850"
+      - StaticText "33"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e82] clickable [cursor:pointer, onclick]
+      - generic
+        - image "Ikigai: The Japanese Secret to a Long and Happy Life"
+        - button "Add to wishlist" [ref=e216]
+        - button "Add to cart" [ref=e268]
+      - paragraph
+      - heading "Ikigai: The Japanese Secret to a Long and Happy Life" [level=3, ref=e139]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "8,976"
+      - StaticText ")"
+      - StaticText "₹249"
+      - StaticText "₹399"
+      - StaticText "38"
+      - StaticText "% off"
+    - generic [ref=e83] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e217]
+        - button "Add to cart" [ref=e269]
+      - paragraph
+      - heading "Maybelline Fit Me Foundation Matte + Poreless" [level=3, ref=e140]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "7,865"
+      - StaticText ")"
+      - StaticText "₹449"
+      - StaticText "₹599"
+      - StaticText "25"
+      - StaticText "% off"
+    - generic [ref=e84] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e218]
+        - button "Add to cart" [ref=e270]
+      - paragraph
+      - heading "MuscleBlaze Biozyme Whey Protein 1kg" [level=3, ref=e141]
+      - StaticText "4.4"
+      - StaticText "("
+      - StaticText "5,678"
+      - StaticText ")"
+      - StaticText "₹2,499"
+      - StaticText "₹3,499"
+      - StaticText "29"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e85] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e219]
+        - button "Add to cart" [ref=e271]
+      - paragraph
+      - heading "Allen Solly Women's Formal Blazer" [level=3, ref=e142]
+      - StaticText "4.3"
+      - StaticText "("
+      - StaticText "387"
+      - StaticText ")"
+      - StaticText "₹3,999"
+      - StaticText "₹5,999"
+      - StaticText "33"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e86] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e220]
+        - button "Add to cart" [ref=e272]
+      - paragraph
+      - heading "Boldfit Adjustable Dumbbells Set 10kg Pair" [level=3, ref=e143]
+      - StaticText "4.3"
+      - StaticText "("
+      - StaticText "2,345"
+      - StaticText ")"
+      - StaticText "₹1,299"
+      - StaticText "₹2,499"
+      - StaticText "48"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e87] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e221]
+        - button "Add to cart" [ref=e273]
+      - paragraph
+      - heading "Puma Men's Sports T-Shirt" [level=3, ref=e144]
+      - StaticText "4.2"
+      - StaticText "("
+      - StaticText "876"
+      - StaticText ")"
+      - StaticText "₹999"
+      - StaticText "₹1,999"
+      - StaticText "50"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e88] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e222]
+        - button "Add to cart" [ref=e274]
+      - paragraph
+      - heading "Butterfly Rapid 4 Burner Gas Stove" [level=3, ref=e145]
+      - StaticText "4.2"
+      - StaticText "("
+      - StaticText "987"
+      - StaticText ")"
+      - StaticText "₹4,499"
+      - StaticText "₹6,999"
+      - StaticText "36"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e89] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e223]
+        - button "Add to cart" [ref=e275]
+      - paragraph
+      - heading "Lakme Absolute Perfect Radiance Skin Brightening Kit" [level=3, ref=e146]
+      - StaticText "4.2"
+      - StaticText "("
+      - StaticText "567"
+      - StaticText ")"
+      - StaticText "₹1,299"
+      - StaticText "₹1,999"
+      - StaticText "35"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e90] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e224]
+        - button "Add to cart" [ref=e276]
+      - paragraph
+      - heading "Decathlon Rockrider ST 100 Mountain Bicycle" [level=3, ref=e147]
+      - StaticText "4.2"
+      - StaticText "("
+      - StaticText "456"
+      - StaticText ")"
+      - StaticText "₹9,999"
+      - StaticText "₹13,999"
+      - StaticText "29"
+      - StaticText "% off"
+      - StaticText "Free Delivery"
+    - generic [ref=e91] clickable [cursor:pointer, onclick]
+      - generic
+        - button "Add to wishlist" [ref=e225]
+        - button "Add to cart" [ref=e277]
+      - heading "H&M Cotton Blend Kurta Set" [level=3, ref=e148]
+- contentinfo
+  - heading "Stay in the Loop" [level=3, ref=e12]
+  - paragraph
+    - StaticText "Subscribe to get exclusive deals, new arrivals, and insider-only discounts delivered to your inbox."
+  - form
+    - textbox "Enter your email" [required, ref=e149]
+    - button "Subscribe" [ref=e92]
+  - StaticText "Zylora"
+  - paragraph
+    - StaticText "The Future of Online Shopping. Discover premium products with unmatched quality and lightning-fast delivery."
+  - link "Instagram" [ref=e13]
+    - StaticText "Instagram"
+  - link "Twitter" [ref=e14]
+    - StaticText "Twitter"
+  - link "Facebook" [ref=e15]
+    - StaticText "Facebook"
+  - link "LinkedIn" [ref=e16]
+    - StaticText "LinkedIn"
+  - link "YouTube" [ref=e17]
+    - StaticText "YouTube"
+  - heading "SHOP" [level=4, ref=e18]
+  - list
+    - listitem [level=1]
+      - link "Electronics" [ref=e150]
+    - listitem [level=1]
+      - link "Fashion" [ref=e151]
+    - listitem [level=1]
+      - link "Home & Kitchen" [ref=e152]
+    - listitem [level=1]
+      - link "Books" [ref=e153]
+    - listitem [level=1]
+      - link "Beauty" [ref=e154]
+    - listitem [level=1]
+      - link "Sports" [ref=e155]
+  - heading "SUPPORT" [level=4, ref=e19]
+  - list
+    - listitem [level=1]
+      - link "Help Center" [ref=e156]
+    - listitem [level=1]
+      - link "Track Order" [ref=e157]
+    - listitem [level=1]
+      - link "Returns" [ref=e158]
+    - listitem [level=1]
+      - link "Shipping Info" [ref=e159]
+    - listitem [level=1]
+      - link "Contact Us" [ref=e160]
+  - heading "COMPANY" [level=4, ref=e20]
+  - list
+    - listitem [level=1]
+      - link "About Us" [ref=e161]
+    - listitem [level=1]
+      - link "Careers" [ref=e162]
+    - listitem [level=1]
+      - link "Press" [ref=e163]
+    - listitem [level=1]
+      - link "Blog" [ref=e164]
+    - listitem [level=1]
+      - link "Sell on Zylora" [ref=e165]
+  - link "support@zylora.com" [ref=e21]
+  - link "1800-ZYLORA-1" [ref=e22]
+  - link "Privacy Policy" [ref=e23]
+  - link "Terms of Service" [ref=e24]
+  - link "Cookie Policy" [ref=e25]
+- region "Notifications alt+T" [ref=e1]

@@ -1,0 +1,621 @@
+     1→'use client';
+     2→
+     3→import { useShopStore } from '@/store/shop-store';
+     4→import { Search, ShoppingCart, Menu, Package, Heart, User, ChevronDown, Bell, X, LayoutDashboard, LogIn, LogOut, Settings, Truck, ShieldCheck, Sparkles, Sun, Moon } from 'lucide-react';
+     5→import { Button } from '@/components/ui/button';
+     6→import { Badge } from '@/components/ui/badge';
+     7→import { Input } from '@/components/ui/input';
+     8→import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+     9→import { Separator } from '@/components/ui/separator';
+    10→import { useState, useEffect, useRef, useCallback } from 'react';
+    11→import { motion, AnimatePresence } from 'framer-motion';
+    12→import { signOut, useSession } from 'next-auth/react';
+    13→import { useTheme } from 'next-themes';
+    14→import { toast } from 'sonner';
+    15→import Image from 'next/image';
+    16→
+    17→export function Header() {
+    18→  const {
+    19→    searchQuery, setSearchQuery, selectedCategory, setSelectedCategory,
+    20→    categories, currentView, setCurrentView, getCartCount, goHome,
+    21→    user, wishlistIds, sortBy, setSortBy,
+    22→  } = useShopStore();
+    23→  const { data: session } = useSession();
+    24→
+    25→  const [localSearch, setLocalSearch] = useState(searchQuery);
+    26→  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    27→  const [showSearch, setShowSearch] = useState(false);
+    28→  const [showUserMenu, setShowUserMenu] = useState(false);
+    29→  const [showNotifications, setShowNotifications] = useState(false);
+    30→  const [searchFocused, setSearchFocused] = useState(false);
+    31→  const [scrolled, setScrolled] = useState(false);
+    32→  const [mounted, setMounted] = useState(false);
+    33→  const { theme, setTheme } = useTheme();
+    34→  const cartCount = getCartCount();
+    35→  const userMenuRef = useRef<HTMLDivElement>(null);
+    36→  const notifRef = useRef<HTMLDivElement>(null);
+    37→  const searchInputRef = useRef<HTMLInputElement>(null);
+    38→
+    39→  useEffect(() => { setLocalSearch(searchQuery); }, [searchQuery]);
+    40→  useEffect(() => { setMounted(true); }, []);
+    41→
+    42→  useEffect(() => {
+    43→    const handleScroll = () => setScrolled(window.scrollY > 10);
+    44→    window.addEventListener('scroll', handleScroll, { passive: true });
+    45→    return () => window.removeEventListener('scroll', handleScroll);
+    46→  }, []);
+    47→
+    48→  useEffect(() => {
+    49→    const handler = (e: MouseEvent) => {
+    50→      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setShowUserMenu(false);
+    51→      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setShowNotifications(false);
+    52→    };
+    53→    document.addEventListener('mousedown', handler);
+    54→    return () => document.removeEventListener('mousedown', handler);
+    55→  }, []);
+    56→
+    57→  // Listen for mobile bottom nav search focus event
+    58→  useEffect(() => {
+    59→    const handleSearchFocus = () => {
+    60→      setShowSearch(true);
+    61→      setTimeout(() => searchInputRef.current?.focus(), 150);
+    62→    };
+    63→    window.addEventListener('zylora-focus-search', handleSearchFocus);
+    64→    return () => window.removeEventListener('zylora-focus-search', handleSearchFocus);
+    65→  }, []);
+    66→
+    67→  const handleSearch = useCallback((e: React.FormEvent) => {
+    68→    e.preventDefault();
+    69→    setSearchQuery(localSearch);
+    70→    if (currentView !== 'home') setCurrentView('home');
+    71→    setShowSearch(false);
+    72→    if (searchInputRef.current) searchInputRef.current?.blur();
+    73→  }, [localSearch, setSearchQuery, currentView, setCurrentView]);
+    74→
+    75→  const handleSignOut = useCallback(async () => {
+    76→    try {
+    77→      useShopStore.getState().setUser(null);
+    78→      setShowUserMenu(false);
+    79→      setCurrentView('home');
+    80→      await signOut({ redirect: false });
+    81→      toast.success('Signed out successfully');
+    82→    } catch {
+    83→      toast.error('Failed to sign out');
+    84→    }
+    85→  }, [setCurrentView]);
+    86→
+    87→  const currentUser = user || (session?.user ? {
+    88→    id: (session.user as { id: string }).id,
+    89→    name: session.user.name || '',
+    90→    email: session.user.email || '',
+    91→    role: (session.user as { role: string }).role || 'user',
+    92→  } : null);
+    93→  const isAdmin = currentUser?.role === 'admin';
+    94→
+    95→  return (
+    96→    <header className="sticky top-0 z-50">
+    97→      {/* ── Top Announcement Bar ── */}
+    98→      <div className="bg-[#0F172A] text-white overflow-hidden relative">
+    99→        <div className="shimmer-overlay" />
+   100→        <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs relative z-10">
+   101→          <div className="flex items-center gap-2">
+   102→            <Truck className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+   103→            <span className="hidden sm:inline font-medium tracking-wide">
+   104→              Free delivery on orders above <span className="text-blue-300 font-semibold">₹499</span>
+   105→            </span>
+   106→            <span className="sm:hidden font-medium tracking-wide">
+   107→              Free delivery <span className="text-blue-300 font-semibold">₹499+</span>
+   108→            </span>
+   109→          </div>
+   110→          <div className="flex items-center gap-4">
+   111→            <button
+   112→              onClick={() => setCurrentView('orders')}
+   113→              className="hover:text-blue-300 transition-colors flex items-center gap-1.5 font-medium"
+   114→            >
+   115→              <Package className="h-3.5 w-3.5" />
+   116→              <span className="hidden sm:inline">My Orders</span>
+   117→            </button>
+   118→            <div className="hidden md:flex items-center gap-1.5 text-slate-400">
+   119→              <ShieldCheck className="h-3.5 w-3.5" />
+   120→              <span>100% Secure</span>
+   121→            </div>
+   122→          </div>
+   123→        </div>
+   124→      </div>
+   125→
+   126→      {/* ── Main Navbar ── */}
+   127→      <div className={`glass-strong dark:bg-slate-900/95 dark:backdrop-blur-xl transition-all duration-300`}>
+   128→        <div className="max-w-7xl mx-auto px-4">
+   129→          <div className="flex items-center gap-3 h-16">
+   130→            {/* Mobile Hamburger */}
+   131→            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+   132→              <SheetTrigger asChild className="lg:hidden">
+   133→                <Button variant="ghost" size="icon" className="shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30">
+   134→                  <Menu className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   135→                </Button>
+   136→              </SheetTrigger>
+   137→              <SheetContent side="left" className="w-80 p-0 glass-strong dark:bg-slate-900 dark:border-slate-700 border-r-0">
+   138→                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+   139→                {/* Mobile Menu Header */}
+   140→                <div className="p-5 border-b border-border/50">
+   141→                  <div className="flex items-center gap-3">
+   142→                    <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+   143→                      <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1" />
+   144→                    </div>
+   145→                    <div>
+   146→                      <h2 className="font-heading font-bold text-lg gradient-text">Zylora</h2>
+   147→                      <p className="text-[10px] text-muted-foreground tracking-widest uppercase">Premium Store</p>
+   148→                    </div>
+   149→                  </div>
+   150→                </div>
+   151→
+   152→                {/* Mobile User Info */}
+   153→                {currentUser && (
+   154→                  <div className="p-4 border-b border-border/50 bg-blue-50/50 dark:bg-blue-950/20">
+   155→                    <div className="flex items-center gap-3">
+   156→                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
+   157→                        {currentUser.name?.charAt(0).toUpperCase()}
+   158→                      </div>
+   159→                      <div className="min-w-0">
+   160→                        <p className="font-semibold text-sm truncate">{currentUser.name}</p>
+   161→                        <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+   162→                      </div>
+   163→                    </div>
+   164→                  </div>
+   165→                )}
+   166→
+   167→                {/* Mobile Categories */}
+   168→                <div className="p-3">
+   169→                  <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">Categories</p>
+   170→                  <button
+   171→                    onClick={() => { setSelectedCategory(null); setCurrentView('home'); setMobileMenuOpen(false); }}
+   172→                    className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-3 ${
+   173→                      !selectedCategory
+   174→                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   175→                        : 'hover:bg-blue-50 dark:hover:bg-blue-950/30 text-foreground'
+   176→                    }`}
+   177→                  >
+   178→                    <Sparkles className="h-4 w-4" /> All Categories
+   179→                  </button>
+   180→                  {categories.map((cat) => (
+   181→                    <button
+   182→                      key={cat.id}
+   183→                      onClick={() => { setSelectedCategory(cat.slug); setCurrentView('home'); setMobileMenuOpen(false); }}
+   184→                      className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-3 ${
+   185→                        selectedCategory === cat.slug
+   186→                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   187→                          : 'hover:bg-blue-50 dark:hover:bg-blue-950/30 text-foreground'
+   188→                      }`}
+   189→                    >
+   190→                      {cat.icon && <span className="text-base">{cat.icon}</span>}
+   191→                      {cat.name}
+   192→                    </button>
+   193→                  ))}
+   194→                </div>
+   195→
+   196→                <Separator className="mx-3" />
+   197→
+   198→                {/* Mobile Quick Links */}
+   199→                <div className="p-3 space-y-1">
+   200→                  <p className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">Quick Links</p>
+   201→                  <button
+   202→                    onClick={() => { setCurrentView('wishlist'); setMobileMenuOpen(false); }}
+   203→                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   204→                  >
+   205→                    <Heart className="h-4 w-4 text-blue-600" /> Wishlist
+   206→                    {wishlistIds.length > 0 && (
+   207→                      <Badge className="ml-auto bg-blue-500 text-white text-xs h-5 min-w-[20px] flex items-center justify-center">
+   208→                        {wishlistIds.length}
+   209→                      </Badge>
+   210→                    )}
+   211→                  </button>
+   212→                  <button
+   213→                    onClick={() => { setCurrentView('orders'); setMobileMenuOpen(false); }}
+   214→                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   215→                  >
+   216→                    <Package className="h-4 w-4 text-blue-600" /> My Orders
+   217→                  </button>
+   218→                  {currentUser && (
+   219→                    <button
+   220→                      onClick={() => { setCurrentView('user-dashboard'); setMobileMenuOpen(false); }}
+   221→                      className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   222→                    >
+   223→                      <Settings className="h-4 w-4 text-blue-600" /> My Dashboard
+   224→                    </button>
+   225→                  )}
+   226→                  {isAdmin && (
+   227→                    <button
+   228→                      onClick={() => { setCurrentView('admin'); setMobileMenuOpen(false); }}
+   229→                      className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   230→                    >
+   231→                      <LayoutDashboard className="h-4 w-4 text-blue-600" /> Admin Panel
+   232→                    </button>
+   233→                  )}
+   234→                  {/* Theme Toggle in Mobile Menu */}
+   235→                  <button
+   236→                    onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setMobileMenuOpen(false); }}
+   237→                    className="w-full text-left px-4 py-3 rounded-xl font-medium hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-all"
+   238→                  >
+   239→                    {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-blue-600" />}
+   240→                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+   241→                  </button>
+   242→                </div>
+   243→
+   244→                {/* Mobile Auth */}
+   245→                <div className="mt-auto p-4 border-t border-border/50">
+   246→                  {currentUser ? (
+   247→                    <Button
+   248→                      onClick={handleSignOut}
+   249→                      variant="outline"
+   250→                      className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/50 dark:hover:bg-red-950/30"
+   251→                    >
+   252→                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+   253→                    </Button>
+   254→                  ) : (
+   255→                    <Button
+   256→                      onClick={() => { setCurrentView('auth'); setMobileMenuOpen(false); }}
+   257→                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+   258→                    >
+   259→                      <LogIn className="h-4 w-4 mr-2" /> Sign In
+   260→                    </Button>
+   261→                  )}
+   262→                </div>
+   263→              </SheetContent>
+   264→            </Sheet>
+   265→
+   266→            {/* Logo */}
+   267→            <motion.button
+   268→              onClick={goHome}
+   269→              className="flex items-center gap-2.5 shrink-0 group"
+   270→              whileTap={{ scale: 0.97 }}
+   271→              whileHover={{ scale: 1.02 }}
+   272→            >
+   273→              <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center transition-shadow duration-300">
+   274→                <Image src="/zylora-logo.png" alt="Zylora" fill className="object-contain p-1.5" />
+   275→              </div>
+   276→              <span className="font-heading text-xl font-bold tracking-tight hidden sm:inline">
+   277→                <span className="gradient-text">Zylora</span>
+   278→              </span>
+   279→            </motion.button>
+   280→
+   281→            {/* Search - Desktop */}
+   282→            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl mx-4">
+   283→              <motion.div
+   284→                className="relative flex w-full"
+   285→                animate={searchFocused ? { scale: 1.01 } : { scale: 1 }}
+   286→                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+   287→              >
+   288→                <div className={`relative flex w-full rounded-xl transition-all duration-300 ${
+   289→                  searchFocused
+   290→                    ? 'ring-2 ring-blue-500/40'
+   291→                    : 'ring-1 ring-slate-200 dark:ring-slate-700'
+   292→                }`}>
+   293→                  <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
+   294→                    searchFocused ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'
+   295→                  }`} />
+   296→                  <Input
+   297→                    ref={searchInputRef}
+   298→                    type="text"
+   299→                    placeholder="Search products, brands and more..."
+   300→                    value={localSearch}
+   301→                    onChange={(e) => setLocalSearch(e.target.value)}
+   302→                    onFocus={() => setSearchFocused(true)}
+   303→                    onBlur={() => setSearchFocused(false)}
+   304→                    className="w-full h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-slate-400 dark:placeholder:text-slate-500 dark:text-slate-200"
+   305→                  />
+   306→                  <Button
+   307→                    type="submit"
+   308→                    className="h-10 rounded-l-none rounded-r-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-5 shadow-none border-0 transition-all duration-200"
+   309→                  >
+   310→                    <Search className="h-4 w-4" />
+   311→                  </Button>
+   312→                </div>
+   313→              </motion.div>
+   314→            </form>
+   315→
+   316→            {/* Search - Mobile toggle */}
+   317→            <Button
+   318→              variant="ghost"
+   319→              size="icon"
+   320→              className="md:hidden shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+   321→              onClick={() => {
+   322→                setShowSearch(!showSearch);
+   323→                if (!showSearch) {
+   324→                  setTimeout(() => searchInputRef.current?.focus(), 100);
+   325→                }
+   326→              }}
+   327→            >
+   328→              <Search className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   329→            </Button>
+   330→
+   331→            {/* Right Actions */}
+   332→            <div className="flex items-center gap-0.5 shrink-0">
+   333→              {/* Wishlist */}
+   334→              <Button
+   335→                variant="ghost"
+   336→                size="icon"
+   337→                className="hidden sm:flex relative hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   338→                onClick={() => setCurrentView('wishlist')}
+   339→              >
+   340→                <Heart className="h-5 w-5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-red-400 transition-colors" />
+   341→                {wishlistIds.length > 0 && (
+   342→                  <motion.div
+   343→                    key={wishlistIds.length}
+   344→                    initial={{ scale: 0 }}
+   345→                    animate={{ scale: 1 }}
+   346→                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+   347→                  >
+   348→                    <Badge className="absolute -top-1 -right-1 h-4.5 w-4.5 flex items-center justify-center p-0 bg-blue-500 text-white text-[10px] font-bold min-w-[18px]">
+   349→                      {wishlistIds.length}
+   350→                    </Badge>
+   351→                  </motion.div>
+   352→                )}
+   353→              </Button>
+   354→
+   355→              {/* Notifications */}
+   356→              <div className="relative hidden sm:block" ref={notifRef}>
+   357→                <Button
+   358→                  variant="ghost"
+   359→                  size="icon"
+   360→                  className="hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   361→                  onClick={() => setShowNotifications(!showNotifications)}
+   362→                >
+   363→                  <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   364→                </Button>
+   365→                <AnimatePresence>
+   366→                  {showNotifications && (
+   367→                    <motion.div
+   368→                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+   369→                      animate={{ opacity: 1, y: 0, scale: 1 }}
+   370→                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+   371→                      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+   372→                      className="absolute right-0 top-full mt-2 w-80 glass-strong dark:bg-slate-900 rounded-xl border border-white/20 dark:border-slate-700 overflow-hidden z-50"
+   373→                    >
+   374→                      <div className="p-4 border-b border-border/50">
+   375→                        <h3 className="font-heading font-semibold text-sm">Notifications</h3>
+   376→                      </div>
+   377→                      <div className="p-8 text-center">
+   378→                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center mx-auto mb-3">
+   379→                          <Bell className="h-5 w-5 text-blue-500" />
+   380→                        </div>
+   381→                        <p className="text-sm text-muted-foreground">No new notifications</p>
+   382→                        <p className="text-xs text-muted-foreground mt-1">We&apos;ll let you know when something arrives</p>
+   383→                      </div>
+   384→                    </motion.div>
+   385→                  )}
+   386→                </AnimatePresence>
+   387→              </div>
+   388→
+   389→              {/* Theme Toggle */}
+   390→              {mounted && (
+   391→                <Button
+   392→                  variant="ghost"
+   393→                  size="icon"
+   394→                  className="hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   395→                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+   396→                  aria-label="Toggle theme"
+   397→                >
+   398→                  {theme === 'dark' ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5 text-slate-600 dark:text-slate-300" />}
+   399→                </Button>
+   400→              )}
+   401→
+   402→              {/* Cart */}
+   403→              <Button
+   404→                variant="ghost"
+   405→                className="relative shrink-0 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors gap-1.5"
+   406→                onClick={() => setCurrentView('cart')}
+   407→              >
+   408→                <ShoppingCart className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+   409→                {cartCount > 0 && (
+   410→                  <motion.div
+   411→                    key={cartCount}
+   412→                    initial={{ scale: 0 }}
+   413→                    animate={{ scale: 1 }}
+   414→                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+   415→                  >
+   416→                    <Badge className="absolute -top-1 -right-1 h-5 min-w-[20px] flex items-center justify-center p-0 bg-blue-500 text-white text-xs font-bold">
+   417→                      {cartCount > 99 ? '99+' : cartCount}
+   418→                    </Badge>
+   419→                  </motion.div>
+   420→                )}
+   421→                <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">Cart</span>
+   422→              </Button>
+   423→
+   424→              {/* User */}
+   425→              <div className="relative" ref={userMenuRef}>
+   426→                {currentUser ? (
+   427→                  <Button
+   428→                    variant="ghost"
+   429→                    className="gap-1.5 shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   430→                    onClick={() => setShowUserMenu(!showUserMenu)}
+   431→                  >
+   432→                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold">
+   433→                      {currentUser.name?.charAt(0).toUpperCase()}
+   434→                    </div>
+   435→                    <ChevronDown className={`h-3 w-3 text-slate-500 dark:text-slate-400 transition-transform duration-200 hidden sm:inline ${showUserMenu ? 'rotate-180' : ''}`} />
+   436→                  </Button>
+   437→                ) : (
+   438→                  <Button
+   439→                    variant="ghost"
+   440→                    className="gap-1.5 shrink-0 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+   441→                    onClick={() => setCurrentView('auth')}
+   442→                  >
+   443→                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+   444→                      <User className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+   445→                    </div>
+   446→                    <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">Login</span>
+   447→                  </Button>
+   448→                )}
+   449→
+   450→                {/* User Dropdown */}
+   451→                <AnimatePresence>
+   452→                  {showUserMenu && currentUser && (
+   453→                    <motion.div
+   454→                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+   455→                      animate={{ opacity: 1, y: 0, scale: 1 }}
+   456→                      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+   457→                      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+   458→                      className="absolute right-0 top-full mt-2 w-64 glass-strong dark:bg-slate-900 rounded-xl border border-white/20 dark:border-slate-700 overflow-hidden z-50"
+   459→                    >
+   460→                      {/* User Info Header */}
+   461→                      <div className="p-4 border-b border-border/50 bg-gradient-to-r from-blue-600/5 to-blue-700/5 dark:from-blue-600/10 dark:to-blue-700/10">
+   462→                        <div className="flex items-center gap-3">
+   463→                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold">
+   464→                            {currentUser.name?.charAt(0).toUpperCase()}
+   465→                          </div>
+   466→                          <div className="min-w-0">
+   467→                            <p className="font-semibold text-sm truncate">{currentUser.name}</p>
+   468→                            <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+   469→                          </div>
+   470→                        </div>
+   471→                      </div>
+   472→
+   473→                      {/* Menu Items */}
+   474→                      <div className="p-1.5">
+   475→                        <button
+   476→                          onClick={() => { setCurrentView('user-dashboard'); setShowUserMenu(false); }}
+   477→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   478→                        >
+   479→                          <Settings className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   480→                          <span>My Dashboard</span>
+   481→                        </button>
+   482→                        <button
+   483→                          onClick={() => { setCurrentView('orders'); setShowUserMenu(false); }}
+   484→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   485→                        >
+   486→                          <Package className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   487→                          <span>My Orders</span>
+   488→                        </button>
+   489→                        <button
+   490→                          onClick={() => { setCurrentView('wishlist'); setShowUserMenu(false); }}
+   491→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   492→                        >
+   493→                          <Heart className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   494→                          <span>Wishlist</span>
+   495→                          {wishlistIds.length > 0 && (
+   496→                            <Badge className="ml-auto bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-xs h-5">
+   497→                              {wishlistIds.length}
+   498→                            </Badge>
+   499→                          )}
+   500→                        </button>
+   501→                        {isAdmin && (
+   502→                          <button
+   503→                            onClick={() => { setCurrentView('admin'); setShowUserMenu(false); }}
+   504→                            className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   505→                          >
+   506→                            <LayoutDashboard className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+   507→                            <span>Admin Panel</span>
+   508→                          </button>
+   509→                        )}
+   510→                      </div>
+   511→
+   512→                      <Separator className="mx-2" />
+   513→
+   514→                      {/* Theme Toggle */}
+   515→                      <div className="p-1.5">
+   516→                        <button
+   517→                          onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setShowUserMenu(false); }}
+   518→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center gap-3 transition-colors group"
+   519→                        >
+   520→                          {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />}
+   521→                          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+   522→                        </button>
+   523→                      </div>
+   524→
+   525→                      <Separator className="mx-2" />
+   526→
+   527→                      {/* Sign Out */}
+   528→                      <div className="p-1.5">
+   529→                        <button
+   530→                          onClick={handleSignOut}
+   531→                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center gap-3 transition-colors group"
+   532→                        >
+   533→                          <LogOut className="h-4 w-4 group-hover:text-red-600 transition-colors" />
+   534→                          <span>Sign Out</span>
+   535→                        </button>
+   536→                      </div>
+   537→                    </motion.div>
+   538→                  )}
+   539→                </AnimatePresence>
+   540→              </div>
+   541→            </div>
+   542→          </div>
+   543→
+   544→          {/* Mobile Search Bar */}
+   545→          <AnimatePresence>
+   546→            {showSearch && (
+   547→              <motion.form
+   548→                initial={{ height: 0, opacity: 0 }}
+   549→                animate={{ height: 'auto', opacity: 1 }}
+   550→                exit={{ height: 0, opacity: 0 }}
+   551→                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+   552→                onSubmit={handleSearch}
+   553→                className="md:hidden overflow-hidden"
+   554→              >
+   555→                <div className="pb-3 flex">
+   556→                  <div className={`relative flex w-full rounded-xl transition-all duration-300 ring-1 ${
+   557→                    searchFocused ? 'ring-blue-500/40' : 'ring-slate-200 dark:ring-slate-700'
+   558→                  }`}>
+   559→                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
+   560→                    <Input
+   561→                      ref={searchInputRef}
+   562→                      type="text"
+   563→                      placeholder="Search products..."
+   564→                      value={localSearch}
+   565→                      onChange={(e) => setLocalSearch(e.target.value)}
+   566→                      onFocus={() => setSearchFocused(true)}
+   567→                      onBlur={() => setSearchFocused(false)}
+   568→                      className="flex-1 h-10 pl-10 pr-4 rounded-l-xl rounded-r-none border-0 bg-white/80 dark:bg-slate-800/80 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-slate-200 dark:placeholder:text-slate-500"
+   569→                      autoFocus
+   570→                    />
+   571→                    <Button
+   572→                      type="submit"
+   573→                      className="h-10 rounded-l-none rounded-r-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-4 shadow-none border-0"
+   574→                    >
+   575→                      <Search className="h-4 w-4" />
+   576→                    </Button>
+   577→                  </div>
+   578→                </div>
+   579→              </motion.form>
+   580→            )}
+   581→          </AnimatePresence>
+   582→        </div>
+   583→      </div>
+   584→
+   585→      {/* ── Category Navigation Bar (hidden on mobile, shown on md+) ── */}
+   586→      <div className="hidden md:block glass dark:bg-slate-900/95 overflow-x-auto scrollbar-hide border-b border-border/30 dark:border-slate-700/30">
+   587→        <div className="max-w-7xl mx-auto px-4">
+   588→          <div className="flex items-center gap-1.5 py-2.5 whitespace-nowrap">
+   589→            <motion.button
+   590→              onClick={() => { setSelectedCategory(null); if (currentView !== 'home') setCurrentView('home'); }}
+   591→              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+   592→                !selectedCategory
+   593→                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   594→                  : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-slate-200'
+   595→              }`}
+   596→              whileTap={{ scale: 0.95 }}
+   597→            >
+   598→              All
+   599→            </motion.button>
+   600→            {categories.map((cat) => (
+   601→              <motion.button
+   602→                key={cat.id}
+   603→                onClick={() => { setSelectedCategory(cat.slug); if (currentView !== 'home') setCurrentView('home'); }}
+   604→                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+   605→                  selectedCategory === cat.slug
+   606→                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+   607→                    : 'text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-slate-200'
+   608→                }`}
+   609→                whileTap={{ scale: 0.95 }}
+   610→              >
+   611→                {cat.icon && <span className="mr-1.5">{cat.icon}</span>}
+   612→                {cat.name}
+   613→              </motion.button>
+   614→            ))}
+   615→          </div>
+   616→        </div>
+   617→      </div>
+   618→    </header>
+   619→  );
+   620→}
+   621→

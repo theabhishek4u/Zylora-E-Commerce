@@ -1,0 +1,987 @@
+     1→@import "tailwindcss";
+     2→@import "tw-animate-css";
+     3→
+     4→@custom-variant dark (&:is(.dark *));
+     5→
+     6→@theme inline {
+     7→  --color-background: var(--background);
+     8→  --color-foreground: var(--foreground);
+     9→  --font-sans: var(--font-inter);
+    10→  --font-heading: var(--font-poppins);
+    11→  --font-mono: var(--font-geist-mono);
+    12→  --color-sidebar-ring: var(--sidebar-ring);
+    13→  --color-sidebar-border: var(--sidebar-border);
+    14→  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    15→  --color-sidebar-accent: var(--sidebar-accent);
+    16→  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    17→  --color-sidebar-primary: var(--sidebar-primary);
+    18→  --color-sidebar-foreground: var(--sidebar-foreground);
+    19→  --color-sidebar: var(--sidebar);
+    20→  --color-chart-5: var(--chart-5);
+    21→  --color-chart-4: var(--chart-4);
+    22→  --color-chart-3: var(--chart-3);
+    23→  --color-chart-2: var(--chart-2);
+    24→  --color-chart-1: var(--chart-1);
+    25→  --color-ring: var(--ring);
+    26→  --color-input: var(--input);
+    27→  --color-border: var(--border);
+    28→  --color-destructive: var(--destructive);
+    29→  --color-accent-foreground: var(--accent-foreground);
+    30→  --color-accent: var(--accent);
+    31→  --color-muted-foreground: var(--muted-foreground);
+    32→  --color-muted: var(--muted);
+    33→  --color-secondary-foreground: var(--secondary-foreground);
+    34→  --color-secondary: var(--secondary);
+    35→  --color-primary-foreground: var(--primary-foreground);
+    36→  --color-primary: var(--primary);
+    37→  --color-popover-foreground: var(--popover-foreground);
+    38→  --color-popover: var(--popover);
+    39→  --color-card-foreground: var(--card-foreground);
+    40→  --color-card: var(--card);
+    41→  --radius-sm: calc(var(--radius) - 4px);
+    42→  --radius-md: calc(var(--radius) - 2px);
+    43→  --radius-lg: var(--radius);
+    44→  --radius-xl: calc(var(--radius) + 4px);
+    45→  --color-brand: #2563EB;
+    46→  --color-brand-light: #60A5FA;
+    47→  --color-brand-dark: #1D4ED8;
+    48→  --color-midnight: #0F172A;
+    49→  --color-success: #22C55E;
+    50→  --color-warning: #F59E0B;
+    51→  --color-error: #EF4444;
+    52→  --animate-float: float 3s ease-in-out infinite;
+    53→  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+    54→  --animate-slide-in-left: slideInLeft 0.5s ease-out forwards;
+    55→  --animate-slide-in-right: slideInRight 0.5s ease-out forwards;
+    56→  --animate-scale-up: scaleUp 0.3s ease-out forwards;
+    57→  --animate-gradient-shift: gradientShift 8s ease infinite;
+    58→  --animate-marquee: marquee 20s linear infinite;
+    59→  --animate-bounce-subtle: bounceSubtle 2s ease-in-out infinite;
+    60→  --animate-notification-pulse: notificationPulse 2s ease-in-out infinite;
+    61→  --animate-badge-pulse: badgePulse 1.5s ease-in-out infinite;
+    62→  --animate-gradient-border: gradientBorderRotate 3s linear infinite;
+    63→  --animate-page-transition: pageTransition 0.4s ease-out forwards;
+    64→}
+    65→
+    66→:root {
+    67→  --radius: 0.75rem;
+    68→  --background: oklch(0.99 0 0);
+    69→  --foreground: oklch(0.13 0.02 260);
+    70→  --card: oklch(1 0 0);
+    71→  --card-foreground: oklch(0.13 0.02 260);
+    72→  --popover: oklch(1 0 0);
+    73→  --popover-foreground: oklch(0.13 0.02 260);
+    74→  --primary: oklch(0.49 0.22 264);
+    75→  --primary-foreground: oklch(0.99 0 0);
+    76→  --secondary: oklch(0.96 0.01 260);
+    77→  --secondary-foreground: oklch(0.13 0.02 260);
+    78→  --muted: oklch(0.96 0.01 260);
+    79→  --muted-foreground: oklch(0.52 0.01 260);
+    80→  --accent: oklch(0.94 0.02 260);
+    81→  --accent-foreground: oklch(0.13 0.02 260);
+    82→  --destructive: oklch(0.577 0.245 27.325);
+    83→  --border: oklch(0.91 0.01 260);
+    84→  --input: oklch(0.91 0.01 260);
+    85→  --ring: oklch(0.49 0.22 264);
+    86→  --chart-1: oklch(0.49 0.22 264);
+    87→  --chart-2: oklch(0.55 0.18 200);
+    88→  --chart-3: oklch(0.65 0.15 160);
+    89→  --chart-4: oklch(0.72 0.19 84);
+    90→  --chart-5: oklch(0.60 0.20 300);
+    91→  --sidebar: oklch(0.98 0.005 260);
+    92→  --sidebar-foreground: oklch(0.13 0.02 260);
+    93→  --sidebar-primary: oklch(0.49 0.22 264);
+    94→  --sidebar-primary-foreground: oklch(0.99 0 0);
+    95→  --sidebar-accent: oklch(0.94 0.02 260);
+    96→  --sidebar-accent-foreground: oklch(0.13 0.02 260);
+    97→  --sidebar-border: oklch(0.91 0.01 260);
+    98→  --sidebar-ring: oklch(0.49 0.22 264);
+    99→}
+   100→
+   101→.dark {
+   102→  --background: oklch(0.13 0.02 260);
+   103→  --foreground: oklch(0.96 0.005 260);
+   104→  --card: oklch(0.17 0.02 260);
+   105→  --card-foreground: oklch(0.96 0.005 260);
+   106→  --popover: oklch(0.17 0.02 260);
+   107→  --popover-foreground: oklch(0.96 0.005 260);
+   108→  --primary: oklch(0.62 0.20 264);
+   109→  --primary-foreground: oklch(0.99 0 0);
+   110→  --secondary: oklch(0.22 0.02 260);
+   111→  --secondary-foreground: oklch(0.96 0.005 260);
+   112→  --muted: oklch(0.22 0.02 260);
+   113→  --muted-foreground: oklch(0.65 0.01 260);
+   114→  --accent: oklch(0.22 0.02 260);
+   115→  --accent-foreground: oklch(0.96 0.005 260);
+   116→  --destructive: oklch(0.704 0.191 22.216);
+   117→  --border: oklch(1 0 0 / 10%);
+   118→  --input: oklch(1 0 0 / 15%);
+   119→  --ring: oklch(0.62 0.20 264);
+   120→  --chart-1: oklch(0.55 0.22 264);
+   121→  --chart-2: oklch(0.60 0.17 200);
+   122→  --chart-3: oklch(0.72 0.15 160);
+   123→  --chart-4: oklch(0.65 0.20 84);
+   124→  --chart-5: oklch(0.58 0.22 300);
+   125→  --sidebar: oklch(0.15 0.02 260);
+   126→  --sidebar-foreground: oklch(0.96 0.005 260);
+   127→  --sidebar-primary: oklch(0.55 0.22 264);
+   128→  --sidebar-primary-foreground: oklch(0.99 0 0);
+   129→  --sidebar-accent: oklch(0.22 0.02 260);
+   130→  --sidebar-accent-foreground: oklch(0.96 0.005 260);
+   131→  --sidebar-border: oklch(1 0 0 / 10%);
+   132→  --sidebar-ring: oklch(0.55 0.22 264);
+   133→}
+   134→
+   135→@layer base {
+   136→  * {
+   137→    @apply border-border outline-ring/50;
+   138→  }
+   139→  body {
+   140→    @apply bg-background text-foreground;
+   141→  }
+   142→}
+   143→
+   144→/* ============================================
+   145→   KEYFRAME ANIMATIONS
+   146→   ============================================ */
+   147→
+   148→/* 1. Floating animation */
+   149→@keyframes float {
+   150→  0%, 100% {
+   151→    transform: translateY(0);
+   152→  }
+   153→  50% {
+   154→    transform: translateY(-8px);
+   155→  }
+   156→}
+   157→
+   158→/* 2. Pulse glow - brand color glow */
+   159→@keyframes pulseGlow {
+   160→  0%, 100% {
+   161→    opacity: 0.8;
+   162→  }
+   163→  50% {
+   164→    opacity: 1;
+   165→  }
+   166→}
+   167→
+   168→/* 3. Slide in from left */
+   169→@keyframes slideInLeft {
+   170→  from {
+   171→    opacity: 0;
+   172→    transform: translateX(-30px);
+   173→  }
+   174→  to {
+   175→    opacity: 1;
+   176→    transform: translateX(0);
+   177→  }
+   178→}
+   179→
+   180→/* 3. Slide in from right */
+   181→@keyframes slideInRight {
+   182→  from {
+   183→    opacity: 0;
+   184→    transform: translateX(30px);
+   185→  }
+   186→  to {
+   187→    opacity: 1;
+   188→    transform: translateX(0);
+   189→  }
+   190→}
+   191→
+   192→/* 4. Scale up animation */
+   193→@keyframes scaleUp {
+   194→  from {
+   195→    opacity: 0;
+   196→    transform: scale(0.92);
+   197→  }
+   198→  to {
+   199→    opacity: 1;
+   200→    transform: scale(1);
+   201→  }
+   202→}
+   203→
+   204→/* 5. Gradient background animation for hero */
+   205→@keyframes gradientShift {
+   206→  0% {
+   207→    background-position: 0% 50%;
+   208→  }
+   209→  50% {
+   210→    background-position: 100% 50%;
+   211→  }
+   212→  100% {
+   213→    background-position: 0% 50%;
+   214→  }
+   215→}
+   216→
+   217→/* 6. Marquee animation for deal tickers */
+   218→@keyframes marquee {
+   219→  0% {
+   220→    transform: translateX(0%);
+   221→  }
+   222→  100% {
+   223→    transform: translateX(-50%);
+   224→  }
+   225→}
+   226→
+   227→/* 7. Bounce subtle */
+   228→@keyframes bounceSubtle {
+   229→  0%, 100% {
+   230→    transform: translateY(0);
+   231→  }
+   232→  50% {
+   233→    transform: translateY(-4px);
+   234→  }
+   235→}
+   236→
+   237→/* Notification dot pulse */
+   238→@keyframes notificationPulse {
+   239→  0%, 100% {
+   240→    transform: scale(1);
+   241→    opacity: 1;
+   242→  }
+   243→  50% {
+   244→    transform: scale(1.3);
+   245→    opacity: 0.7;
+   246→  }
+   247→}
+   248→
+   249→/* Badge pulse */
+   250→@keyframes badgePulse {
+   251→  0%, 100% {
+   252→    transform: scale(1);
+   253→  }
+   254→  50% {
+   255→    transform: scale(1.05);
+   256→  }
+   257→}
+   258→
+   259→/* Animated gradient border rotation */
+   260→@keyframes gradientBorderRotate {
+   261→  0% {
+   262→    --gradient-angle: 0deg;
+   263→  }
+   264→  100% {
+   265→    --gradient-angle: 360deg;
+   266→  }
+   267→}
+   268→
+   269→/* Page transition */
+   270→@keyframes pageTransition {
+   271→  from {
+   272→    opacity: 0;
+   273→    transform: translateY(8px);
+   274→  }
+   275→  to {
+   276→    opacity: 1;
+   277→    transform: translateY(0);
+   278→  }
+   279→}
+   280→
+   281→/* Particle float variations */
+   282→@keyframes particleFloat1 {
+   283→  0%, 100% {
+   284→    transform: translate(0, 0) rotate(0deg);
+   285→    opacity: 0.6;
+   286→  }
+   287→  25% {
+   288→    transform: translate(10px, -15px) rotate(90deg);
+   289→    opacity: 0.3;
+   290→  }
+   291→  50% {
+   292→    transform: translate(-5px, -30px) rotate(180deg);
+   293→    opacity: 0.6;
+   294→  }
+   295→  75% {
+   296→    transform: translate(15px, -15px) rotate(270deg);
+   297→    opacity: 0.3;
+   298→  }
+   299→}
+   300→
+   301→@keyframes particleFloat2 {
+   302→  0%, 100% {
+   303→    transform: translate(0, 0) scale(1);
+   304→    opacity: 0.5;
+   305→  }
+   306→  33% {
+   307→    transform: translate(-12px, -20px) scale(1.2);
+   308→    opacity: 0.8;
+   309→  }
+   310→  66% {
+   311→    transform: translate(8px, -35px) scale(0.8);
+   312→    opacity: 0.4;
+   313→  }
+   314→}
+   315→
+   316→@keyframes particleFloat3 {
+   317→  0%, 100% {
+   318→    transform: translate(0, 0) rotate(0deg);
+   319→    opacity: 0.4;
+   320→  }
+   321→  50% {
+   322→    transform: translate(-8px, -25px) rotate(180deg);
+   323→    opacity: 0.7;
+   324→  }
+   325→}
+   326→
+   327→/* ============================================
+   328→   SCROLLBAR STYLES
+   329→   ============================================ */
+   330→
+   331→/* Custom scrollbar - hidden */
+   332→.scrollbar-hide::-webkit-scrollbar {
+   333→  display: none;
+   334→}
+   335→.scrollbar-hide {
+   336→  -ms-overflow-style: none;
+   337→  scrollbar-width: none;
+   338→}
+   339→
+   340→/* 19. Premium scrollbar for webkit browsers (thin, blue-tinted) */
+   341→::-webkit-scrollbar {
+   342→  width: 6px;
+   343→  height: 6px;
+   344→}
+   345→
+   346→::-webkit-scrollbar-track {
+   347→  background: transparent;
+   348→}
+   349→
+   350→::-webkit-scrollbar-thumb {
+   351→  background: oklch(0.78 0.02 260 / 60%);
+   352→  border-radius: 3px;
+   353→  transition: background 0.2s ease;
+   354→}
+   355→
+   356→::-webkit-scrollbar-thumb:hover {
+   357→  background: oklch(0.65 0.08 264 / 80%);
+   358→}
+   359→
+   360→/* Premium scrollbar for dark mode */
+   361→.dark ::-webkit-scrollbar-thumb {
+   362→  background: oklch(0.40 0.05 264 / 50%);
+   363→}
+   364→
+   365→.dark ::-webkit-scrollbar-thumb:hover {
+   366→  background: oklch(0.50 0.10 264 / 70%);
+   367→}
+   368→
+   369→/* ============================================
+   370→   GLASSMORPHISM STYLES
+   371→   ============================================ */
+   372→
+   373→/* Standard glass */
+   374→.glass {
+   375→  background: rgba(255, 255, 255, 0.7);
+   376→  backdrop-filter: blur(20px);
+   377→  -webkit-backdrop-filter: blur(20px);
+   378→  border: 1px solid rgba(255, 255, 255, 0.3);
+   379→}
+   380→
+   381→.dark .glass {
+   382→  background: rgba(15, 23, 42, 0.7);
+   383→  border: 1px solid rgba(255, 255, 255, 0.08);
+   384→}
+   385→
+   386→/* Strong glass */
+   387→.glass-strong {
+   388→  background: rgba(255, 255, 255, 0.85);
+   389→  backdrop-filter: blur(24px);
+   390→  -webkit-backdrop-filter: blur(24px);
+   391→  border: 1px solid rgba(255, 255, 255, 0.4);
+   392→}
+   393→
+   394→.dark .glass-strong {
+   395→  background: rgba(15, 23, 42, 0.85);
+   396→  border: 1px solid rgba(255, 255, 255, 0.1);
+   397→}
+   398→
+   399→/* 8. Premium glassmorphism - stronger blur, subtle gradient border */
+   400→.glass-premium {
+   401→  background: rgba(255, 255, 255, 0.65);
+   402→  backdrop-filter: blur(28px) saturate(180%);
+   403→  -webkit-backdrop-filter: blur(28px) saturate(180%);
+   404→  border: 1px solid rgba(255, 255, 255, 0.35);
+   405→  box-shadow: none;
+   406→}
+   407→
+   408→.dark .glass-premium {
+   409→  background: rgba(15, 23, 42, 0.6);
+   410→  border: 1px solid rgba(96, 165, 250, 0.12);
+   411→  box-shadow: none;
+   412→}
+   413→
+   414→/* ============================================
+   415→   GRADIENT TEXT STYLES
+   416→   ============================================ */
+   417→
+   418→/* Premium gradient text */
+   419→.gradient-text {
+   420→  background: linear-gradient(135deg, #2563EB 0%, #60A5FA 50%, #2563EB 100%);
+   421→  -webkit-background-clip: text;
+   422→  -webkit-text-fill-color: transparent;
+   423→  background-clip: text;
+   424→}
+   425→
+   426→/* 10. Animated blue gradient text */
+   427→.text-gradient-blue {
+   428→  background: linear-gradient(
+   429→    135deg,
+   430→    #1D4ED8 0%,
+   431→    #2563EB 25%,
+   432→    #60A5FA 50%,
+   433→    #2563EB 75%,
+   434→    #1D4ED8 100%
+   435→  );
+   436→  background-size: 200% auto;
+   437→  -webkit-background-clip: text;
+   438→  -webkit-text-fill-color: transparent;
+   439→  background-clip: text;
+   440→  animation: gradientShift 4s ease-in-out infinite;
+   441→}
+   442→
+   443→.dark .text-gradient-blue {
+   444→  background: linear-gradient(
+   445→    135deg,
+   446→    #60A5FA 0%,
+   447→    #93C5FD 25%,
+   448→    #BFDBFE 50%,
+   449→    #93C5FD 75%,
+   450→    #60A5FA 100%
+   451→  );
+   452→  background-size: 200% auto;
+   453→  -webkit-background-clip: text;
+   454→  -webkit-text-fill-color: transparent;
+   455→  background-clip: text;
+   456→}
+   457→
+   458→/* ============================================
+   459→   SHADOW UTILITIES
+   460→   ============================================ */
+   461→
+   462→/* Premium shadow utilities */
+   463→.shadow-brand {
+   464→  box-shadow: none;
+   465→}
+   466→
+   467→.shadow-brand-lg {
+   468→  box-shadow: none;
+   469→}
+   470→
+   471→/* ============================================
+   472→   BUTTON STYLES
+   473→   ============================================ */
+   474→
+   475→/* Premium button styles */
+   476→.btn-brand {
+   477→  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+   478→  color: white;
+   479→  font-weight: 600;
+   480→  border-radius: 0.75rem;
+   481→  transition: all 0.3s ease;
+   482→}
+   483→
+   484→.btn-brand:hover {
+   485→  background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+   486→  transform: translateY(-1px);
+   487→}
+   488→
+   489→/* ============================================
+   490→   SKELETON / SHIMMER STYLES
+   491→   ============================================ */
+   492→
+   493→/* Skeleton animation */
+   494→@keyframes shimmer {
+   495→  0% { background-position: -200% 0; }
+   496→  100% { background-position: 200% 0; }
+   497→}
+   498→
+   499→/* 11. Enhanced skeleton with better colors */
+   500→.skeleton {
+   501→  background: linear-gradient(
+   502→    90deg,
+   503→    oklch(0.94 0.01 260) 25%,
+   504→    oklch(0.97 0.005 264) 37%,
+   505→    oklch(0.95 0.01 264) 63%,
+   506→    oklch(0.94 0.01 260) 75%
+   507→  );
+   508→  background-size: 400% 100%;
+   509→  animation: shimmer 1.8s ease-in-out infinite;
+   510→  border-radius: 0.5rem;
+   511→}
+   512→
+   513→.dark .skeleton {
+   514→  background: linear-gradient(
+   515→    90deg,
+   516→    oklch(0.22 0.02 260) 25%,
+   517→    oklch(0.27 0.02 264) 37%,
+   518→    oklch(0.24 0.02 264) 63%,
+   519→    oklch(0.22 0.02 260) 75%
+   520→  );
+   521→  background-size: 400% 100%;
+   522→  animation: shimmer 1.8s ease-in-out infinite;
+   523→}
+   524→
+   525→/* Announcement bar shimmer overlay */
+   526→@keyframes shimmerSlide {
+   527→  0% { transform: translateX(-100%); }
+   528→  100% { transform: translateX(100%); }
+   529→}
+   530→
+   531→.shimmer-overlay {
+   532→  position: absolute;
+   533→  inset: 0;
+   534→  overflow: hidden;
+   535→  pointer-events: none;
+   536→}
+   537→
+   538→.shimmer-overlay::after {
+   539→  content: '';
+   540→  position: absolute;
+   541→  inset: 0;
+   542→  background: linear-gradient(
+   543→    90deg,
+   544→    transparent 0%,
+   545→    rgba(96, 165, 250, 0.08) 25%,
+   546→    rgba(96, 165, 250, 0.15) 50%,
+   547→    rgba(96, 165, 250, 0.08) 75%,
+   548→    transparent 100%
+   549→  );
+   550→  animation: shimmerSlide 3s ease-in-out infinite;
+   551→}
+   552→
+   553→/* ============================================
+   554→   CARD & INTERACTIVE STYLES
+   555→   ============================================ */
+   556→
+   557→/* 9. Card hover effect - lift + shadow transition */
+   558→.card-hover {
+   559→  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+   560→              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   561→  will-change: transform;
+   562→}
+   563→
+   564→.card-hover:hover {
+   565→  transform: translateY(-4px);
+   566→}
+   567→
+   568→/* ============================================
+   569→   NOTIFICATION & BADGE STYLES
+   570→   ============================================ */
+   571→
+   572→/* 12. Notification dot pulse */
+   573→.notification-pulse {
+   574→  position: relative;
+   575→}
+   576→
+   577→.notification-pulse::after {
+   578→  content: '';
+   579→  position: absolute;
+   580→  top: -2px;
+   581→  right: -2px;
+   582→  width: 10px;
+   583→  height: 10px;
+   584→  background: #EF4444;
+   585→  border-radius: 50%;
+   586→  border: 2px solid white;
+   587→  animation: notificationPulse 2s ease-in-out infinite;
+   588→}
+   589→
+   590→.dark .notification-pulse::after {
+   591→  border-color: oklch(0.17 0.02 260);
+   592→}
+   593→
+   594→/* 16. Badge pulse for animated badges */
+   595→.badge-pulse {
+   596→  position: relative;
+   597→  animation: badgePulse 1.5s ease-in-out infinite;
+   598→}
+   599→
+   600→.badge-pulse::before {
+   601→  content: '';
+   602→  position: absolute;
+   603→  inset: 0;
+   604→  border-radius: inherit;
+   605→  background: inherit;
+   606→  animation: badgePulse 1.5s ease-in-out infinite;
+   607→  z-index: -1;
+   608→}
+   609→
+   610→/* ============================================
+   611→   FLOATING PARTICLES
+   612→   ============================================ */
+   613→
+   614→/* 13. Floating particles with random animation */
+   615→.particle {
+   616→  position: absolute;
+   617→  pointer-events: none;
+   618→  border-radius: 50%;
+   619→  will-change: transform, opacity;
+   620→}
+   621→
+   622→.particle-1 {
+   623→  animation: particleFloat1 6s ease-in-out infinite;
+   624→}
+   625→
+   626→.particle-2 {
+   627→  animation: particleFloat2 8s ease-in-out infinite;
+   628→}
+   629→
+   630→.particle-3 {
+   631→  animation: particleFloat3 7s ease-in-out infinite;
+   632→}
+   633→
+   634→.particle-blue {
+   635→  background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
+   636→}
+   637→
+   638→.particle-light {
+   639→  background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
+   640→}
+   641→
+   642→.particle-white {
+   643→  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+   644→}
+   645→
+   646→/* ============================================
+   647→   PAGE TRANSITIONS
+   648→   ============================================ */
+   649→
+   650→/* 14. Smooth page transition class */
+   651→.page-transition {
+   652→  animation: pageTransition 0.4s ease-out forwards;
+   653→  opacity: 0;
+   654→}
+   655→
+   656→.page-transition-delay-1 {
+   657→  animation-delay: 0.1s;
+   658→}
+   659→
+   660→.page-transition-delay-2 {
+   661→  animation-delay: 0.2s;
+   662→}
+   663→
+   664→.page-transition-delay-3 {
+   665→  animation-delay: 0.3s;
+   666→}
+   667→
+   668→/* ============================================
+   669→   FOCUS STYLES
+   670→   ============================================ */
+   671→
+   672→/* 15. Premium focus ring with blue glow */
+   673→.focus-ring-blue {
+   674→  outline: none;
+   675→  transition: box-shadow 0.2s ease, outline 0.2s ease;
+   676→}
+   677→
+   678→.focus-ring-blue:focus-visible {
+   679→  box-shadow: 0 0 0 2px white, 0 0 0 4px rgba(37, 99, 235, 0.5);
+   680→  outline: none;
+   681→}
+   682→
+   683→.dark .focus-ring-blue:focus-visible {
+   684→  box-shadow: 0 0 0 2px oklch(0.17 0.02 260), 0 0 0 4px rgba(96, 165, 250, 0.5);
+   685→}
+   686→
+   687→/* ============================================
+   688→   SCROLL SNAP CONTAINER
+   689→   ============================================ */
+   690→
+   691→/* 17. Horizontal scroll snap container */
+   692→.snap-x {
+   693→  scroll-snap-type: x mandatory;
+   694→  -webkit-overflow-scrolling: touch;
+   695→  scrollbar-width: none;
+   696→  -ms-overflow-style: none;
+   697→}
+   698→
+   699→.snap-x::-webkit-scrollbar {
+   700→  display: none;
+   701→}
+   702→
+   703→.snap-x > * {
+   704→  scroll-snap-align: start;
+   705→}
+   706→
+   707→/* ============================================
+   708→   ANIMATED GRADIENT BORDER
+   709→   ============================================ */
+   710→
+   711→/* 18. Animated gradient border for cards */
+   712→@property --gradient-angle {
+   713→  syntax: "<angle>";
+   714→  initial-value: 0deg;
+   715→  inherits: false;
+   716→}
+   717→
+   718→.gradient-border {
+   719→  position: relative;
+   720→  border-radius: 0.75rem;
+   721→  overflow: hidden;
+   722→}
+   723→
+   724→.gradient-border::before {
+   725→  content: '';
+   726→  position: absolute;
+   727→  inset: 0;
+   728→  padding: 1.5px;
+   729→  border-radius: inherit;
+   730→  background: conic-gradient(
+   731→    from var(--gradient-angle),
+   732→    #2563EB,
+   733→    #60A5FA,
+   734→    #93C5FD,
+   735→    #60A5FA,
+   736→    #2563EB
+   737→  );
+   738→  -webkit-mask:
+   739→    linear-gradient(#fff 0 0) content-box,
+   740→    linear-gradient(#fff 0 0);
+   741→  -webkit-mask-composite: xor;
+   742→  mask-composite: exclude;
+   743→  animation: gradientBorderRotate 3s linear infinite;
+   744→  pointer-events: none;
+   745→}
+   746→
+   747→.dark .gradient-border::before {
+   748→  background: conic-gradient(
+   749→    from var(--gradient-angle),
+   750→    #60A5FA,
+   751→    #93C5FD,
+   752→    #BFDBFE,
+   753→    #93C5FD,
+   754→    #60A5FA
+   755→  );
+   756→}
+   757→
+   758→/* ============================================
+   759→   SAFE AREA (ENHANCED iOS SUPPORT)
+   760→   ============================================ */
+   761→
+   762→/* 20. Enhanced safe area bottom with better iOS support */
+   763→.safe-area-bottom {
+   764→  padding-bottom: env(safe-area-inset-bottom, 0px);
+   765→}
+   766→
+   767→@supports (padding-bottom: max(0px)) {
+   768→  .safe-area-bottom {
+   769→    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+   770→  }
+   771→}
+   772→
+   773→/* Safe area top for notch devices */
+   774→.safe-area-top {
+   775→  padding-top: env(safe-area-inset-top, 0px);
+   776→}
+   777→
+   778→@supports (padding-top: max(0px)) {
+   779→  .safe-area-top {
+   780→    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+   781→  }
+   782→}
+   783→
+   784→/* Full safe area container */
+   785→.safe-area-container {
+   786→  padding-left: env(safe-area-inset-left, 0px);
+   787→  padding-right: env(safe-area-inset-right, 0px);
+   788→  padding-bottom: env(safe-area-inset-bottom, 0px);
+   789→  padding-top: env(safe-area-inset-top, 0px);
+   790→}
+   791→
+   792→/* ============================================
+   793→   TOUCH & MOBILE ENHANCEMENTS
+   794→   ============================================ */
+   795→
+   796→/* Touch-friendly - disable hover on mobile */
+   797→@media (hover: none) {
+   798→  .group:hover .group-hover\:opacity-100,
+   799→  .group:hover .group-hover\:translate-y-0,
+   800→  .group:hover .group-hover\:scale-110 {
+   801→    opacity: 1 !important;
+   802→    transform: translateY(0) scale(1.1) !important;
+   803→  }
+   804→}
+   805→
+   806→/* Smooth scroll for mobile */
+   807→@media (max-width: 768px) {
+   808→  html {
+   809→    -webkit-overflow-scrolling: touch;
+   810→    scroll-behavior: smooth;
+   811→  }
+   812→
+   813→  /* Disable text selection on interactive elements for better touch */
+   814→  button, a, [role="button"] {
+   815→    -webkit-tap-highlight-color: transparent;
+   816→    -webkit-user-select: none;
+   817→    user-select: none;
+   818→  }
+   819→}
+   820→
+   821→/* ============================================
+   822→   UTILITY ANIMATION CLASSES
+   823→   ============================================ */
+   824→
+   825→/* Float animation utility */
+   826→.animate-float {
+   827→  animation: float 3s ease-in-out infinite;
+   828→}
+   829→
+   830→/* Pulse glow utility */
+   831→.animate-pulse-glow {
+   832→  animation: pulseGlow 2s ease-in-out infinite;
+   833→}
+   834→
+   835→/* Slide in left utility */
+   836→.animate-slide-in-left {
+   837→  animation: slideInLeft 0.5s ease-out forwards;
+   838→}
+   839→
+   840→/* Slide in right utility */
+   841→.animate-slide-in-right {
+   842→  animation: slideInRight 0.5s ease-out forwards;
+   843→}
+   844→
+   845→/* Scale up utility */
+   846→.animate-scale-up {
+   847→  animation: scaleUp 0.3s ease-out forwards;
+   848→}
+   849→
+   850→/* Gradient shift utility */
+   851→.animate-gradient-shift {
+   852→  animation: gradientShift 8s ease infinite;
+   853→  background-size: 200% 200%;
+   854→}
+   855→
+   856→/* Marquee utility */
+   857→.animate-marquee {
+   858→  animation: marquee 20s linear infinite;
+   859→}
+   860→
+   861→/* Bounce subtle utility */
+   862→.animate-bounce-subtle {
+   863→  animation: bounceSubtle 2s ease-in-out infinite;
+   864→}
+   865→
+   866→/* Gradient border animation utility */
+   867→.animate-gradient-border {
+   868→  animation: gradientBorderRotate 3s linear infinite;
+   869→}
+   870→
+   871→/* ============================================
+   872→   HOME-VIEW SPECIFIC ANIMATION CLASSES
+   873→   ============================================ */
+   874→
+   875→/* gradient-shift - animated background gradient for hero */
+   876→.gradient-shift {
+   877→  background-size: 200% 200%;
+   878→  animation: gradientShift 8s ease infinite;
+   879→}
+   880→
+   881→/* float-orb - floating decorative orbs */
+   882→.float-orb {
+   883→  animation: float 6s ease-in-out infinite;
+   884→}
+   885→
+   886→.float-orb-delay {
+   887→  animation: float 7s ease-in-out 1s infinite;
+   888→}
+   889→
+   890→.float-orb-slow {
+   891→  animation: float 9s ease-in-out 2s infinite;
+   892→}
+   893→
+   894→/* marquee-scroll - horizontal scrolling text */
+   895→.marquee-scroll {
+   896→  animation: marquee 25s linear infinite;
+   897→}
+   898→
+   899→/* pulse-glow - pulsing glow effect on icons */
+   900→.pulse-glow {
+   901→  animation: pulseGlow 2.5s ease-in-out infinite;
+   902→}
+   903→
+   904→/* count-shimmer - animated counter text shimmer */
+   905→.count-shimmer {
+   906→  background: linear-gradient(90deg, #ffffff 0%, #93c5fd 50%, #ffffff 100%);
+   907→  background-size: 200% auto;
+   908→  -webkit-background-clip: text;
+   909→  -webkit-text-fill-color: transparent;
+   910→  background-clip: text;
+   911→  animation: countShimmer 3s ease-in-out infinite;
+   912→}
+   913→
+   914→@keyframes countShimmer {
+   915→  0% { background-position: 0% center; }
+   916→  100% { background-position: 200% center; }
+   917→}
+   918→
+   919→/* Stagger delay utilities for sequential animations */
+   920→.stagger-1 { animation-delay: 0.05s; }
+   921→.stagger-2 { animation-delay: 0.1s; }
+   922→.stagger-3 { animation-delay: 0.15s; }
+   923→.stagger-4 { animation-delay: 0.2s; }
+   924→.stagger-5 { animation-delay: 0.25s; }
+   925→.stagger-6 { animation-delay: 0.3s; }
+   926→.stagger-7 { animation-delay: 0.35s; }
+   927→.stagger-8 { animation-delay: 0.4s; }
+   928→
+   929→/* ============================================
+   930→   MARQUEE CONTAINER
+   931→   ============================================ */
+   932→
+   933→/* Marquee container for deal tickers */
+   934→.marquee-container {
+   935→  overflow: hidden;
+   936→  position: relative;
+   937→  -webkit-mask-image: linear-gradient(
+   938→    to right,
+   939→    transparent,
+   940→    black 5%,
+   941→    black 95%,
+   942→    transparent
+   943→  );
+   944→  mask-image: linear-gradient(
+   945→    to right,
+   946→    transparent,
+   947→    black 5%,
+   948→    black 95%,
+   949→    transparent
+   950→  );
+   951→}
+   952→
+   953→.marquee-track {
+   954→  display: flex;
+   955→  width: max-content;
+   956→  animation: marquee 25s linear infinite;
+   957→}
+   958→
+   959→.marquee-track:hover {
+   960→  animation-play-state: paused;
+   961→}
+   962→
+   963→/* ============================================
+   964→   PREMIUM DECORATIVE ELEMENTS
+   965→   ============================================ */
+   966→
+   967→/* Subtle noise texture overlay */
+   968→.noise-overlay {
+   969→  position: relative;
+   970→}
+   971→
+   972→.noise-overlay::after {
+   973→  content: '';
+   974→  position: absolute;
+   975→  inset: 0;
+   976→  opacity: 0.015;
+   977→  pointer-events: none;
+   978→  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+   979→  background-repeat: repeat;
+   980→  background-size: 128px 128px;
+   981→  border-radius: inherit;
+   982→}
+   983→
+   984→.dark .noise-overlay::after {
+   985→  opacity: 0.03;
+   986→}
+   987→
